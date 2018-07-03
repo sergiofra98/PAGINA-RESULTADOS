@@ -1,0 +1,63 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/estiloGeneral.css">
+    <link rel="stylesheet" href="css/estiloColociacion.css">
+
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/Chart.bundle.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <form action="" class="form-group">
+            <div class="row">
+                <div class="col-sm">
+                    <h4>Resultados por colocación</h4>
+                </div>
+
+                <div class="col-sm">
+                    <label for="division">División: </label>
+                    <select name="division" id="division" class="form-control">
+                        <option value="CENTRO">Centro</option>
+                        <option value="SUR">Sur</option>
+                        <option value="NORESTE">Noreste</option>
+                        <option value="NORTE">Norte</option>
+                        <option value="VMNORTE">VM Norte</option>
+                        <option value="VMSUR">VM Sur</option>
+                        <option value="VMCENTRO">VM Centro</option>
+                    </select>
+                </div>
+                <div class="col-sm">
+                    <label for="mes">Resultados del mes: </label>
+                    <select name="mes" id="mes" class="form-control">
+                        <option value="CENTRO">Centro</option>
+                    </select>
+                </div>
+
+            </div>
+        </form>
+        <div class="row">
+            <div class="tabla" id="colocacion">
+
+            </div>
+            <div class="grafica">
+
+            </div>
+        </div>
+        <div class="tabla row" id="cartera">
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
