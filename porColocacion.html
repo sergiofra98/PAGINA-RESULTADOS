@@ -12,6 +12,7 @@
     <script src="js/jquery-3.3.1.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/Chart.bundle.js"></script>
+    <script src="js/scriptColocacion.js"></script>
 </head>
 
 <body>
@@ -19,7 +20,7 @@
         <form action="" class="form-group">
             <div class="row">
                 <div class="col-sm">
-                    <h4>Resultados por colocación</h4>
+                    <h3>Resultados por colocación</h3>
                 </div>
 
                 <div class="col-sm">
@@ -43,21 +44,159 @@
 
             </div>
         </form>
-        <div class="row">
-            <div class="tabla" id="colocacion">
 
+        <div class="row" id="body">
+            <div class="col">
+                <div class="tabla" id="colocacion">
+                    <h4>Colocación</h4>
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th colspan="1"></th>
+                                <th colspan="2">Total Mes</th>
+                                <th colspan="2">Total Mes AA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>GOBIERNO DE HIDALGO</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>SNTE 14 FEDERAL GUERRERO</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>PEMEX</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>SAGARPA</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>INE</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>SENTE 23 FEDERAL PUEBLA</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>IMSS PENSIONADOS</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>IMSS JUBILADOS</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>IMSS ACTIVOS</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>COBAEH</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                            <tr>
+                                <td>TELECOMM</td>
+                                <td>12312$</td>
+                                <td>4%</td>
+                                <td>asd</td>
+                                <td>6%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="grafica">
 
+            <div class="chart-container col">
+                <canvas id="canvasGraficaColocacion" width="500" height="700"></canvas>
             </div>
         </div>
-        <div class="tabla row" id="cartera">
+        <div class="row">
+            <h4 style="margin-left: 16px;">Cartera</h4>
+        </div>
 
+        <div class="tabla row" id="cartera">
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th id="tituloTabla" colspan="5">Vs Mes Anterior</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th colspan="1">Mayo 2018</th>
+                            <th colspan="1">Abril 2018</th>
+                            <th colspan="2">VS Ma</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Gobierno de Hidalgp</td>
+                            <td>2,500</td>
+                            <td>4,800</td>
+                            <td>1,300</td>
+                            <td>37%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th id="tituloTabla" colspan="4">VS Año Anterior</th>
+                        </tr>
+                        <tr>
+                            <th colspan="1">Mayo 2017</th>
+                            <th colspan="1">Mayo 2018</th>
+                            <th colspan="2">VS MAA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2,500</td>
+                            <td>4,800</td>
+                            <td>2,300</td>
+                            <td>92%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-
-
 </body>
 
 </html>
