@@ -13,11 +13,13 @@
     <script src="js/bootstrap.js"></script>
     <script src="js/Chart.bundle.js"></script>
     <script src="js/scriptColocacion.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+        crossorigin="anonymous">
 </head>
 
 <body>
     <div class="container">
-        <form action="" class="form-group">
+        <form onsubmit="getColocacion()" class="form-group" id="consulta">
             <div class="row">
                 <div class="col-sm">
                     <h3>Resultados por colocación</h3>
@@ -25,7 +27,8 @@
 
                 <div class="col-sm">
                     <label for="division">División: </label>
-                    <select name="division" id="division" class="form-control">
+                    <select required name="inputDivision" id="inputDivision" class="form-control">
+                        <option disabled hidden selected value="">Elija una opción</option>
                         <option value="CENTRO">Centro</option>
                         <option value="SUR">Sur</option>
                         <option value="NORESTE">Noreste</option>
@@ -37,13 +40,37 @@
                 </div>
                 <div class="col-sm">
                     <label for="mes">Resultados del mes: </label>
-                    <select name="mes" id="mes" class="form-control">
-                        <option value="CENTRO">Centro</option>
+                    <select required name="inputMes" id="inputMes" class="form-control">
+                        <option disabled hidden selected value="">Elija una opción</option>
+                        <option value="201801">2018/01</option>
+                        <option value="201802">2018/02</option>
+                        <option value="201803">2018/03</option>
+                        <option value="201804">2018/04</option>
+                        <option value="201805">2018/05</option>
+                        <option value="201806">2018/06</option>
+                        <option value="201807">2018/07</option>
+                        <option value="201808">2018/08</option>
+                        <option value="201809">2018/09</option>
+                        <option value="201810">2018/10</option>
+                        <option value="201811">2018/11</option>
+                        <option value="201812">2018/12</option>
                     </select>
                 </div>
 
+                <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
             </div>
         </form>
+
+        <div class="row" id="landing">
+            <h3>Realize una consulta</h3>
+        </div>
+
+        <div class="row" id="loading">
+            <div class="loader">
+                <i class="fas fa-sync"></i>
+                <h3>Cargando...</h3>
+            </div>
+        </div>
 
         <div class="row" id="body">
             <div class="col">
@@ -57,84 +84,7 @@
                                 <th colspan="2">Total Mes AA</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>GOBIERNO DE HIDALGO</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>SNTE 14 FEDERAL GUERRERO</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>PEMEX</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>SAGARPA</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>INE</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>SENTE 23 FEDERAL PUEBLA</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>IMSS PENSIONADOS</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>IMSS JUBILADOS</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>IMSS ACTIVOS</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>COBAEH</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
-                            <tr>
-                                <td>TELECOMM</td>
-                                <td>12312$</td>
-                                <td>4%</td>
-                                <td>asd</td>
-                                <td>6%</td>
-                            </tr>
+                        <tbody id="tablaColocacion">
                         </tbody>
                     </table>
                 </div>
@@ -144,11 +94,12 @@
                 <canvas id="canvasGraficaColocacion" width="500" height="700"></canvas>
             </div>
         </div>
-        <div class="row">
+
+        <div class="row" id="body">
             <h4 style="margin-left: 16px;">Cartera</h4>
         </div>
 
-        <div class="tabla row" id="cartera">
+        <div class="tabla row" id="body">
             <div class="col">
                 <table class="table table-bordered">
                     <thead class="thead-light">
@@ -162,14 +113,8 @@
                             <th colspan="2">VS Ma</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Gobierno de Hidalgp</td>
-                            <td>2,500</td>
-                            <td>4,800</td>
-                            <td>1,300</td>
-                            <td>37%</td>
-                        </tr>
+                    <tbody id="tablaCarteraMesA">
+
                     </tbody>
                 </table>
             </div>
@@ -185,13 +130,7 @@
                             <th colspan="2">VS MAA</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>2,500</td>
-                            <td>4,800</td>
-                            <td>2,300</td>
-                            <td>92%</td>
-                        </tr>
+                    <tbody id="tablaCarteraAnoA">
                     </tbody>
                 </table>
             </div>

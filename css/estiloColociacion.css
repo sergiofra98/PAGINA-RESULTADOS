@@ -4,11 +4,39 @@ body{
     background-color: rgba(2, 56, 103, 49)
 }
 
+#body{
+    display: none;
+}
+
 .container{
     min-width: 960px !important;
     background-color: white;
     border-radius: 18px;
     padding: 24px 18px; 
+}
+
+#landing h3, .loader{
+    margin:auto;
+}
+
+#loading{
+    display: none;
+}
+
+.loader .fas{
+    font-size: 36px;
+    float: left;
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader h3{
+    float: right;
+    margin-left: 20px;
 }
 
 .table{
@@ -20,12 +48,26 @@ body{
     margin: 0 auto;
 }
 
+canvas{
+    margin: auto;
+}
+
 #tituloTabla{
     background-color: #535353; 
     color: white;
 }
 
+.colObscuro{
+    background-color: #f6f6f6;
+}
+
 .form-group .row{
     padding-bottom: 16px;
     border-bottom: #535353 solid 2px;
+}
+
+.btn-primary{
+    height: 55px;
+    margin: 12px;
+    margin-bottom: 0;
 }
