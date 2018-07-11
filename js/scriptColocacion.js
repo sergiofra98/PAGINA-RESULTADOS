@@ -42,9 +42,6 @@ var options = {
     }
 };
 
-
-
-
 $(document).ready(function () {
     graficaColocacion = new Chart($("#canvasGraficaColocacion"), {
         type: 'pie',
@@ -67,6 +64,8 @@ function getColocacion() {
             mes: $("#inputMes").val(),
         },
         function (dataTablas) {
+
+            console.log(dataTablas);
             dataTablas.forEach(function (i) {
                 $("#tablaColocacion").append('<tr>' +
                     '<td>' + i.nombre + '</td>' +

@@ -108,32 +108,181 @@ def vendedores():
 	lista_vendedores.append(registro)
 	return json.dumps(lista_vendedores)
 
-@app.route(url_base+'/division/<div>',methods=['GET']) 
+@app.route(url_base+'/consulta_estado/<div>',methods=['GET']) 
 def division(div):
 	divs=['centro','sur','norte','noreste','vm_norte','vm_sur','vm_centro']
 	if div in divs:
 		print (div)#consulta por la division
 	else:
 		return 'Division no encontrada'
-	lista_empresas=[]
-	registro={}
-	registro['contrato']='9879556558'
-	registro['división']=div
-	registro['convenio']='AMLO'
-	registro['sucursal']='420'
-	registro['fecha_disp']='01/01/2018'
-	registro['monto_prestamo']=15000
-	registro['monto_financiar']=2589.56
-	registro['saldo_capital']=13500
-	registro['int_dev_no_cob']=240
-	registro['no_vendedor']='69666420'
-	lista_empresas.append(registro)
-	lista_empresas.append(registro)
-	lista_empresas.append(registro)
-	for i, x in enumerate(lista_empresas):
-		lista_empresas[i]['saldo_contable'] = x['saldo_capital'] + x['int_dev_no_cob']
-	return json.dumps(lista_empresas)
+	meses=['ene-17','feb-17','mar-17','abr-17','may-17','jun-17','jul-17','ago-17','sep-17','oct-17','nov-17','dic-17','ene-18','feb-18','mar-18','abr-18']
+	#[nombres, meses]
+	lista_estados_todos=[
+				['HIDALGO',38128,15654,180712,381427,399516,381346,423030,404383,490677,308609,245726,175715,876173,1318727,1079677,883818],
+				['PUEBLA',121297,31021,55242,221927,227049,69000,173043,313290,115000,229127,292404,124423,289156,447978,557991,371353],
+				['GUERRERO',0,25000,305000,177000,234734,456867,435856,299568,557175,504930,309023,142262,338514,315634,407835,372686],
+				['GUANAJUATO',163649,33302,160201,109121,114192,168942,70432,87027,210791,164855,111408,213427,279147,110599,389762,183667],
+				['QUERETARO',239233,195000,480982,156419,184994,87373,143277,20000,0,0,0,0,0,14110,3000,21000]
+				]
+	lista_estados_anio_actual=[
+				['HIDALGO',876173,1318727,1079677,883818],
+				['PUEBLA',289156,447978,557991,371353],
+				['GUERRERO',338514,315634,407835,372686],
+				['GUANAJUATO',279147,110599,389762,183667],
+				['QUERETARO',0,14110,3000,21000]
+				]
+	lista_brokers_todos=[ 
+					['BROKER_LEON',25173,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					['BROKER_PACHUCA_4',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,17000],
+					['BROKER_PACHUCA_5',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,205000],
+					['BROKER_PACHUCA_6',0,0,0,0,0,0,0,0,0,0,0,0,0,0,11000,82000],
+					['BROKERGUERRERO',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10000]
+				]
+	lista_brokers_anio_actual=[ 
+					['BROKER_LEON',0,0,0,0],
+					['BROKER_PACHUCA_4',0,0,0,17000],
+					['BROKER_PACHUCA_5',0,0,0,205000],
+					['BROKER_PACHUCA_6',0,0,11000,82000],
+					['BROKERGUERRERO',0,0,0,10000]
+				]
+	lista_asesores_todos=[ 
+					['GUANAJUATO',4,3,4,3,3,3,3,3,3,3,4,3,3,3,3,4],
+					['GUERRERO',2,6,4,7,2,2,2,8,8,8,7,7,10,9,9,14],
+					['HIDALGO',4,4,4,4,3,3,3,3,5,3,4,4,5,4,4,5],
+					['PUEBLA',7,6,7,6,3,2,1,5,1,6,6,6,4,4,5,5],
+					['QUERETARO',4,2,2,2,5,5,3,3,4,3,0,0,3,4,3,3]
+				]
+	
+	#Obtenemos totales
+	total_mes_general = []
+	total_mes_asesores = []
+	total_mes_promedio = []
+	#de esto podriamos hacer una consulta a DB con un SUM para quitarle carga al back
+	#ya que si es mucha informacion la que se va a sacar entonces esta iteracion lo hara
+	#más lento
 
+	#calculos para sacar info estados
+	lista_estados = calculo_x_estado(lista_estados_todos, lista_estados_anio_actual)
+	#calculos para sacar info brokers
+	lista_brokers = calculo_x_estado(lista_brokers_todos, lista_brokers_anio_actual)
+
+	#calculos para sacar info total general
+	total_general = {}
+	total_general['nombre'] = 'Total General'
+	aux_estados = lista_estados[len(lista_estados)-1]
+	aux_brokers = lista_brokers[len(lista_brokers)-1]
+	for i, row in enumerate(lista_estados_todos, 1):
+		if i == len(lista_estados_todos):
+			break
+		else:
+			total_general['mes_'+str(i)] = aux_estados['mes_'+str(i)] + aux_brokers['mes_'+str(i)]
+	total_general['suma_anio'] = aux_estados['suma_anio'] + aux_brokers['suma_anio']
+	total_general['promedio_anio'] = total_general['suma_anio']/2
+
+	#calculos para sacar info asesores
+	lista_asesores = []
+	total_asesores = {}
+	total_asesores['nombre'] = 'TOTAL'
+	for i, row in enumerate(lista_asesores_todos, 1):
+		registro = {}
+		registro['id'] = i
+		registro['nombre'] = row[0]
+		for j, row2 in enumerate(row, 1):
+			if j == len(row):
+				break
+			else:
+				registro['mes_'+str(j)] = row[j]
+				total_asesores['mes_'+str(j)] = total_asesores.get('mes_'+str(j), 0) +row[j]
+
+		lista_asesores.append(registro)
+	lista_asesores.append(total_asesores)
+
+	#calculos para sacar info promedios
+	lista_promedio = []
+	total_promedio = {}
+	total_promedio['nombre'] = 'Total General'
+	for i, row in enumerate(lista_estados_todos, 1):
+		registro = {}
+		registro['id'] = i
+		registro['nombre'] = row[0]
+		for j, row2 in enumerate(row, 1):
+			if j == len(row):
+				break
+			else:
+				if lista_asesores[i]['mes_'+str(j)] == 0:
+					registro['mes_'+str(j)] = 0
+				else:
+					registro['mes_'+str(j)] = lista_estados[i]['mes_'+str(j)] / lista_asesores[i]['mes_'+str(j)]
+				if registro['mes_'+str(j)] >= 80001 and registro['mes_'+str(j)] <= 120000:
+					registro['color_mes_'+str(j)] = 'amarillo'
+				elif registro['mes_'+str(j)] > 120000:
+					registro['color_mes_'+str(j)] = 'verde'
+				else:
+					registro['color_mes_'+str(j)] = 'rojo'
+
+		lista_promedio.append(registro)
+
+	for i, row in enumerate(lista_estados_todos, 1):
+		if i == len(lista_estados_todos):
+			break
+		else:
+			if lista_asesores[len(lista_asesores)-1]['mes_'+str(i)] == 0:
+				total_promedio['mes_'+str(i)] = 0
+			else:
+				total_promedio['mes_'+str(i)] = total_general['mes_'+str(i)] / lista_asesores[len(lista_asesores)-1]['mes_'+str(i)]
+			if total_promedio['mes_'+str(i)] >= 80001 and total_promedio['mes_'+str(i)] <= 120000:
+				total_promedio['color_mes_'+str(i)] = 'amarillo'
+			elif total_promedio['mes_'+str(i)] > 120000:
+				total_promedio['color_mes_'+str(i)] = 'verde'
+			else:
+				total_promedio['color_mes_'+str(i)] = 'rojo'
+	total_promedio['id']=len(lista_promedio)+1
+	lista_promedio.append(total_promedio)
+
+	retorno = {}
+	retorno['estados'] = lista_estados
+	retorno['brokers'] = lista_brokers
+	retorno['promedios'] = lista_promedio
+	retorno['asesores'] = lista_asesores
+	retorno['total_general'] = total_general
+
+	return json.dumps(retorno)
+
+def calculo_x_estado(lista_todo, lista_actual):
+	lista_resultado = []
+	total = {}
+	total['nombre'] = 'TOTAL'
+	suma_anio_total = 0
+	for i, row in enumerate(lista_todo, 1):
+		registro = {}
+		registro['id'] = i
+		registro['nombre'] = row[0]
+		for j, row2 in enumerate(row, 1):
+			if j == len(row):
+				break
+			else:
+				registro['mes_'+str(j)] = row[j]
+				total['mes_'+str(j)] = total.get('mes_'+str(j), 0) + row[j]
+		suma_anio = 0
+		turno = lista_actual[i-1]
+		for j, row2 in enumerate(turno, 1):
+			if j == len(turno):
+				break
+			else:
+				suma_anio += turno[j]
+				suma_anio_total += turno[j]
+		registro['suma_anio'] = suma_anio
+		registro['promedio_anio'] = suma_anio/(len(turno)-1)
+
+		lista_resultado.append(registro)
+
+	total['id'] = len(lista_resultado) + 1
+	total['suma_anio'] = suma_anio_total
+	total['promedio_anio'] = suma_anio_total/len(lista_resultado)
+
+	lista_resultado.append(total)
+	
+	return lista_resultado
 
 @app.route(url_base+'/consulta_convenio_cartera',methods=['GET']) 
 def consulta_convenio_cartera():
