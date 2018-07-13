@@ -1,56 +1,291 @@
 var linkREST = "http://127.0.0.1:9999/MasNomina/MonitorVentas/";
-var graficaColocacion;
-var options = {
-    responsive: false,
-    title: {
-        display: true,
-        position: "top",
-        text: "Colocación del mes",
-        fontSize: 24,
-        fontColor: "#111"
-    },
-    legend: {
-        display: true,
-        position: "bottom",
-        labels: {
-            fontColor: "#333",
-            fontSize: 12
-        }
-    },
-    layout: {
-        padding: {
-            left: 0, right: 0, top: 0, bottom: 0
-        }
-    },
-    tooltips: {
-        callbacks: {
-            label: function (tooltipItem, data) {
-                //get the concerned dataset
-                var dataset = data.datasets[tooltipItem.datasetIndex];
-                //calculate the total of this data set
-                var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
-                    return previousValue + currentValue;
-                });
-                //get the current items value
-                var currentValue = dataset.data[tooltipItem.index];
-                //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
-                var precentage = Math.floor(((currentValue / total) * 100) + 0.5);
-
-                return data.labels[tooltipItem.datasetIndex] + " : " + precentage + "% $" + currentValue.toLocaleString();
-            }
-        }
-    }
-};
+var currentTime = new Date();
+var mes = currentTime.getMonth() + 1;
+var ano = currentTime.getFullYear();
 
 $(document).ready(function () {
-    graficaColocacion = new Chart($("#canvasGraficaColocacion"), {
-        type: 'pie',
-        options: 0,
-        data: 0
-    });;
+    prepararSelectFecha()
+    getColocacion()
+    declararCharts()
 });
 
+function prepararSelectFecha() {
+    var i;
 
+    for (i = 1; i < mes; i++) {
+        $("#inputMes").append(
+            "<option>" + (mes - i) + "-" + ano + "</option>"
+        )
+    }
+
+    for (i = 12; i > 0; i--) {
+        $("#inputMes").append(
+            "<option>" + i + "-" + (ano - 1) + "</option>"
+        )
+    }
+    $("#fechaHoy").append(mes + "-" + ano)
+}
+
+function getColocacion() {
+    $.getJSON(linkREST + "consulta_estado_colocacion", {},
+        function (dataTablas) {
+            console.log(dataTablas);
+            var append = "";
+
+            append += '<th></th>'
+
+            for (const prop in dataTablas.meses) {
+                append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
+            }
+
+            append += '<th>Total ' + ano + ' </th> <th>Promedio</th>'
+            $("#tablaColocacionHead").append(append);
+            $("#tablaBrokersHead").append(append);
+
+            append = "";
+            for (let i = 0; i < dataTablas.estados.length; i++) {
+
+                if (i === dataTablas.estados.length - 1) {
+                    append += '<tr class="obscuro"><td>' + dataTablas.estados[i].nombre + '</td>';
+                }
+                else {
+                    append += "<tr><td>" + dataTablas.estados[i].nombre + "</td>";
+                }
+
+
+                for (const prop in dataTablas.estados[i].valores) {
+                    append += '<td>' + (`${dataTablas.estados[i].valores[prop]}`) + '</td>'
+                }
+                append += '<td class="obscuro">' + dataTablas.estados[i].suma_anio + '</td>'
+                append += '<td>' + dataTablas.estados[i].promedio_anio + '</td>'
+
+                append += "</tr>"
+            }
+
+            append += '<tr><td>BROOKERS</td>'
+            let totalBrokers = dataTablas.brokers.length - 1;
+
+            for (const prop in dataTablas.brokers[totalBrokers].valores) {
+                append += '<td >' + (`${dataTablas.brokers[totalBrokers].valores[prop]}`) + '</td>'
+            }
+            append += '<td class="obscuro">' + dataTablas.brokers[totalBrokers].suma_anio + '</td><td>' + dataTablas.brokers[totalBrokers].promedio_anio + '</td>'
+            append += '</tr>'
+
+            append += '<tr class="obscuro"><td>TOTAL GENERAL</td>'
+            for (const prop in dataTablas.total_general.valores) {
+                append += '<td >' + (`${dataTablas.total_general.valores[prop]}`) + '</td>'
+            }
+            append += '<td>' + dataTablas.total_general.suma_anio + '</td><td>' + dataTablas.total_general.promedio_anio + '</td>'
+            append += '</tr>'
+
+            $("#tablaColocacionBody").append(append);
+
+            //PEGAR TABLA DE BROKERS
+            append = "";
+
+            for (let i = 0; i < dataTablas.brokers.length; i++) {
+
+                if (i === dataTablas.brokers.length - 1) {
+                    append += '<tr class="obscuro"><td>' + dataTablas.brokers[i].nombre.replace(/_/g, ' '); + '</td>';
+                }
+                else {
+                    append += "<tr><td>" + dataTablas.brokers[i].nombre.replace(/_/g, ' '); + "</td>";
+                }
+
+
+                for (const prop in dataTablas.brokers[i].valores) {
+                    append += '<td>' + (`${dataTablas.brokers[i].valores[prop]}`) + '</td>'
+                }
+                append += '<td class="obscuro">' + dataTablas.brokers[i].suma_anio + '</td>'
+                append += '<td>' + dataTablas.brokers[i].promedio_anio + '</td>'
+
+                append += "</tr>"
+            }
+
+            $("#tablaBrokersBody").append(append);
+
+            //PEGAR TABLA DE ASESOR PROMEDIOS
+            append = "";
+
+            append += '<th></th>'
+            for (const prop in dataTablas.meses) {
+                append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
+            }
+            $("#tablaAsesorHead").append(append);
+            $("#tablaAsesorPromHead").append(append);
+
+            append = "";
+            for (let i = 0; i < dataTablas.promedios.length; i++) {
+
+                if (i === dataTablas.promedios.length - 1) {
+                    append += '<tr class="obscuro"><td>' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + '</td>';
+                }
+                else {
+                    append += "<tr><td>" + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + "</td>";
+                }
+
+
+                for (const prep in dataTablas.promedios[i].valores) {
+                    append += '<td class="' + (`${dataTablas.promedios[i].valores[prep][1]}`) + '">' + (`${dataTablas.promedios[i].valores[prep][0]}`) + '</td>'
+                }
+
+                append += "</tr>"
+            }
+
+            $("#tablaAsesorPromBody").append(append);
+
+            //PEGAR TABLA DE ASESOR 
+            append = "";
+            for (let i = 0; i < dataTablas.asesores.length; i++) {
+
+                if (i === dataTablas.asesores.length - 1) {
+                    append += '<tr class="obscuro"><td>' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + '</td>';
+                }
+                else {
+                    append += "<tr><td>" + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + "</td>";
+                }
+
+
+                for (const prep in dataTablas.asesores[i].valores) {
+                    append += '<td>' + (`${dataTablas.asesores[i].valores[prep]}`) + '</td>'
+                }
+                append += "</tr>"
+            }
+
+            $("#tablaAsesorBody").append(append);
+
+            totalAno = dataTablas.estados.pop().valores;
+
+            function esteAno() {
+                temp = []
+                for (const prep in totalAno) {
+                    if (prep < 13) {
+                        temp.push(parseInt((`${totalAno[prep]}`).replace(/,/g, '')));
+
+                    }
+                }
+                return temp
+            }
+
+            function pasadoAno() {
+                temp = []
+                for (const prep in totalAno) {
+                    if (prep > 12) {
+                        temp.push(parseInt((`${totalAno[prep]}`).replace(/,/g, '')));
+                    }
+                }
+                return temp;
+            }
+
+            function estadoGenerador() {
+                temp = [];
+                
+                for (i = 0; i < dataTablas.estados.length; i++) {
+                    temp2  =[];
+                    for (const prep in dataTablas.estados[i].valores) {
+                        if (prep > 12) {
+                            temp2.push(parseInt((`${dataTablas.estados[i].valores[prep]}`).replace(/,/g, '')))
+                        }
+                    }
+                    temp.push({
+                        data: temp2,
+                        label: dataTablas.estados[i].nombre,
+                        borderColor: generadorColores(1),
+                        fill: false
+                    });
+                }
+                return temp;
+            }
+
+            function generadorPromedio(){
+                temp = [];
+                promedio = dataTablas.promedios.pop()
+                for (const prep in promedio.valores) {
+                    temp.push(parseInt((`${promedio.valores[prep]}`).replace(/,/g, '')));
+                }
+                console.log(temp)
+                return temp;
+            }
+
+            function generadorMNvsBrokers(){
+                temp = [];
+                temp2 = [];
+                total = dataTablas.brokers.pop();
+
+                for (const prep in total.valores) {
+                    if (prep > 12)
+                    {
+                        temp.push(parseInt((`${total.valores[prep]}`).replace(/,/g, '')));
+                    }
+                }
+
+
+                for (const prep in dataTablas.total_general.valores) {
+                    if (prep > 12)
+                    {
+                        temp2.push(parseInt((`${dataTablas.total_general.valores[prep]}`).replace(/,/g, '')));
+                    }
+                }
+
+                for (let i = 0; i < temp.length; i++)
+                {
+                    temp[i] = (temp[i] * 100 /temp2[i]).toFixed(2);
+                }
+
+                console.log(temp)
+                return temp
+            }
+
+            declararCharts(
+                {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    datasets: [{
+                        data: esteAno(),
+                        label: ano,
+                        borderColor: "#3e95cd",
+                        backgroundColor: "#3e95cd",
+                        fill: false
+                    }, {
+                        data: pasadoAno(),
+                        label: ano - 1,
+                        borderColor: "#8e5ea2",
+                        backgroundColor: "#8e5ea2",
+                        fill: false
+                    }]
+                },
+                {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    datasets: estadoGenerador()
+                },
+                {
+                    labels:dataTablas.meses,
+                    datasets: [{
+                        data: generadorPromedio(),
+                        borderColor: "#007bff",
+                        backgroundColor: "#007bff",
+                        fill: false
+                    }]
+                },
+                {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    datasets:[{
+                        data: generadorMNvsBrokers(),
+                        borderColor: "#007bff",
+                        backgroundColor: "#007bff",
+                        fill: false,
+                        label: "Porcentaje de contribución de brokers"
+                    }]
+                }
+            )
+
+        })
+        .done(function () {
+
+        })
+        .fail(function (textStatus) {
+
+        });
+}
 
 function generadorColores(num) {
     arr = [];
@@ -62,3 +297,54 @@ function generadorColores(num) {
     return arr;
 };
 
+function declararCharts(data1, data2, data3, data4) {
+    graficaColocacion = new Chart($("#canvasGraficaColocacion"), {
+        type: 'line',
+        data: data1,
+        options: {
+            title: {
+                display: true,
+                text: 'Colocación'
+            }
+        }
+    });
+    graficaEstado = new Chart($("#canvasGraficaEstado"), {
+        type: 'line',
+        data: data2,
+        options: {
+            title: {
+                display: true,
+                text: 'Colocación por estado'
+            },
+            legend: {display:false}
+        }
+    });
+    graficaAsesor = new Chart($("#canvasGraficaAsesor"), {
+        type: 'line',
+        data: data3,
+        options: {
+            title: {
+                display: true,
+                text: 'Colocación Promedio de Asesor'
+            }
+        }
+    });
+    graficaMNBrokers = new Chart($("#canvasGraficaMNBrokers"), {
+        type: 'bar',
+        data: data4,
+        options: {
+            scales: {
+                xAxes: [{
+                    stacked: true
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            },
+            title: {
+                display: true,
+                text: 'MN vs Brokers'
+            }
+        }
+    });
+}

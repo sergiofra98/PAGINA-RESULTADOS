@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Por Estado</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/estiloGeneral.css">
     <link rel="stylesheet" href="css/estiloEstado.css">
@@ -19,218 +19,43 @@
 </head>
 
 <body>
+
     <div class="container">
-        <div class="row titulo">
-            <div class="col">
-                <h4>
-                    Colocación
-                </h4>
+        <form onsubmit="getColocacion()" class="form-group" id="consulta">
+            <div class="row">
+                <div class="col-sm">
+                    <h3>Resultados por estado</h3>
+                </div>
+
+                <div class="col-sm">
+                    <label for="division">Rango de tiempo: </label>
+                    <div id="selectorFecha">
+                        <select required name="inputTiempo" id="inputMes" class="form-control">
+                        </select>
+
+                        &nbsp; A hoy
+                        <span id="fechaHoy">
+
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <label for="mes">División: </label>
+                    <select required name="inputMes" id="inputMes" class="form-control">
+                        <option disabled hidden selected value="">Elija una opción</option>
+                        <option value="CENTRO">Centro</option>
+                        <option value="SUR">Sur</option>
+                        <option value="NORESTE">Noreste</option>
+                        <option value="NORTE">Norte</option>
+                        <option value="VMNORTE">VM Norte</option>
+                        <option value="VMSUR">VM Sur</option>
+                        <option value="VMCENTRO">VM Centro</option>
+                    </select>
+                </div>
+
+                <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
             </div>
-            <div class="col">
-                <h4>
-                    División: Centro
-                </h4>
-            </div>
-        </div>
-        <div class="row tabla">
-            <div class="col">
-                <table class="table table-bordered" >
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Estado</th>
-                            <th>Ene/2017</th>
-                            <th>Feb/2017</th>
-                            <th>Mar/2017</th>
-                            <th>Abr/2017</th>
-                            <th>May/2017</th>
-                            <th>Jun/2017</th>
-                            <th>Jul/2017</th>
-                            <th>Ago/2017</th>
-                            <th>Sep/2017</th>
-                            <th>Oct/2017</th>
-                            <th>Nov/2017</th>
-                            <th>Dic/2017</th>
-                            <th>Ene/2018</th>
-                            <th>Feb/2018</th>
-                            <th>Mar/2018</th>
-                            <th>Abr/2018</th>
-                            <th>May/2018</th>
-                            <th>Jun/2018</th>
-                            <th>Jul/2018</th>
-                            <th>Ago/2018</th>
-                            <th>Sep/2018</th>
-                            <th>Oct/2018</th>
-                            <th>Nov/2018</th>
-                            <th>Dic/2018</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Hidalgo</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr>
-                            <td>Puebla</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr>
-                            <td>Guerrero</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr>
-                            <td>Guanajuato</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr>
-                            <td>Queretaro</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr class="obscuro">
-                            <td>Total</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        </form>
 
         <div class="row titulo">
             <div class="col">
@@ -239,8 +64,8 @@
                 </h4>
             </div>
             <div class="col">
-                <h4>
-                    División: Centro
+                <h4 id="divisionTexto">
+
                 </h4>
             </div>
         </div>
@@ -248,199 +73,95 @@
             <div class="col">
                 <table class="table table-bordered">
                     <thead class="thead-light">
-                        <tr>
-                            <th>Estado</th>
-                            <th>Ene/2017</th>
-                            <th>Feb/2017</th>
-                            <th>Mar/2017</th>
-                            <th>Abr/2017</th>
-                            <th>May/2017</th>
-                            <th>Jun/2017</th>
-                            <th>Jul/2017</th>
-                            <th>Ago/2017</th>
-                            <th>Sep/2017</th>
-                            <th>Oct/2017</th>
-                            <th>Nov/2017</th>
-                            <th>Dic/2017</th>
-                            <th>Ene/2018</th>
-                            <th>Feb/2018</th>
-                            <th>Mar/2018</th>
-                            <th>Abr/2018</th>
-                            <th>May/2018</th>
-                            <th>Jun/2018</th>
-                            <th>Jul/2018</th>
-                            <th>Ago/2018</th>
-                            <th>Sep/2018</th>
-                            <th>Oct/2018</th>
-                            <th>Nov/2018</th>
-                            <th>Dic/2018</th>
+                        <tr id="tablaColocacionHead">
+
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Hidalgo</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr>
-                            <td>Puebla</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr>
-                            <td>Guerrero</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr>
-                            <td>Guanajuato</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr>
-                            <td>Queretaro</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
-                        <tr class="obscuro">
-                            <td>Total</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                            <td>43,230</td>
-                        </tr>
+                    <tbody id="tablaColocacionBody">
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="row titulo">
+            <div class="col">
+                <h4>
+                    Detalle Brokers
+                </h4>
+            </div>
+        </div>
+        <div class="row tabla">
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr id="tablaBrokersHead">
+
+                        </tr>
+                    </thead>
+                    <tbody id="tablaBrokersBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row titulo">
+            <div class="col">
+                <h4>
+                    Venta Promedio por Asesor
+                </h4>
+            </div>
+        </div>
+        <div class="row tabla">
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr id="tablaAsesorPromHead">
+
+                        </tr>
+                    </thead>
+                    <tbody id="tablaAsesorPromBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row titulo">
+            <div class="col">
+                <h4>
+                    Plantilla de Asesores
+                </h4>
+            </div>
+            <div class="col">
+                <h4 id="divisionTexto">
+
+                </h4>
+            </div>
+        </div>
+        <div class="row tabla">
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr id="tablaAsesorHead">
+
+                        </tr>
+                    </thead>
+                    <tbody id="tablaAsesorBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row chart">
+            <div class="col">
+                <canvas id="canvasGraficaColocacion" width="500" height="400"></canvas>
+            </div>
+            <div class="col">
+                <canvas id="canvasGraficaEstado" width="500" height="400"></canvas>
+            </div>
+        </div>
+        <div class="row chart">
+            <div class="col">
+                <canvas id="canvasGraficaAsesor" width="500" height="400"></canvas>
+            </div>
+            <div class="col">
+                <canvas id="canvasGraficaMNBrokers" width="500" height="400"></canvas>
             </div>
         </div>
     </div>

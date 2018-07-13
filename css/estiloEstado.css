@@ -15,6 +15,16 @@ body{
     padding: 24px 18px; 
 }
 
+#selectorFecha *{
+    width: 60%;
+    display: inline;
+    margin: auto
+}
+
+#fechaHoy{
+    font-weight: bold;
+}
+
 #landing h3, .loader{
     margin:auto;
 }
@@ -71,3 +81,19 @@ canvas{
     font-weight: bold;
 }
 
+.promedio{
+    background-color: #ffff2d;
+}
+
+.malo{
+    background-color: red;
+    color:white;
+}
+.bueno{
+    background-color: #4ea24e;
+    color:white;
+}
+
+.chart .col{
+    width: 50% important;
+}
