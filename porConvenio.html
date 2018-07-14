@@ -1,0 +1,143 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Costo Por Convenio</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="css/estiloGeneral.css">
+    <link rel="stylesheet" href="css/estiloConvenio.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="js/scriptGeneral.js"></script>
+    <script src="js/scriptConvenio.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+        crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <form onsubmit="getColocacion()" class="form-group" id="consulta">
+            <div class="row">
+                <div class="col-sm">
+                    <h3>Resultados por colocación</h3>
+                </div>
+
+                <div class="col-sm">
+                    <label for="division">División: </label>
+                    <select required name="inputDivision" id="inputDivision" class="form-control">
+                        <option disabled hidden selected value="">Elija una opción</option>
+                        <option value="CENTRO">Centro</option>
+                        <option value="SUR">Sur</option>
+                        <option value="NORESTE">Noreste</option>
+                        <option value="NORTE">Norte</option>
+                        <option value="VMNORTE">VM Norte</option>
+                        <option value="VMSUR">VM Sur</option>
+                        <option value="VMCENTRO">VM Centro</option>
+                    </select>
+                </div>
+                <div class="col-sm">
+                    <label for="mes">Resultados del mes: </label>
+                    <select required name="inputMes" id="inputMes" class="form-control">
+                        <option disabled hidden selected value="">Elija una opción</option>
+                        <option value="201801">2018/01</option>
+                        <option value="201802">2018/02</option>
+                        <option value="201803">2018/03</option>
+                        <option value="201804">2018/04</option>
+                        <option value="201805">2018/05</option>
+                        <option value="201806">2018/06</option>
+                        <option value="201807">2018/07</option>
+                        <option value="201808">2018/08</option>
+                        <option value="201809">2018/09</option>
+                        <option value="201810">2018/10</option>
+                        <option value="201811">2018/11</option>
+                        <option value="201812">2018/12</option>
+                    </select>
+                </div>
+
+                <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
+            </div>
+        </form>
+
+        <div class="row" id="landing">
+            <h3>Realize una consulta</h3>
+        </div>
+
+        <div class="row" id="loading">
+            <div class="loader">
+                <i class="fas fa-sync"></i>
+                <h3>Cargando...</h3>
+            </div>
+        </div>
+
+        <div class="row" id="body">
+            <div class="col">
+                <div class="tabla" id="colocacion">
+                    <h4>Colocación</h4>
+                    <table class="table table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th colspan="1"></th>
+                                <th colspan="2">Total Mes</th>
+                                <th colspan="2">Total Mes AA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaColocacion">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="chart-container col">
+                <canvas id="canvasGraficaColocacion" width="500" height="700"></canvas>
+            </div>
+        </div>
+
+        <div class="row" id="body">
+            <h4 style="margin-left: 16px;">Cartera</h4>
+        </div>
+
+        <div class="tabla row" id="body">
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th id="tituloTabla" colspan="5">Vs Mes Anterior</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th colspan="1">Mayo 2018</th>
+                            <th colspan="1">Abril 2018</th>
+                            <th colspan="2">VS Ma</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCarteraMesA">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th id="tituloTabla" colspan="4">VS Año Anterior</th>
+                        </tr>
+                        <tr>
+                            <th colspan="1">Mayo 2017</th>
+                            <th colspan="1">Mayo 2018</th>
+                            <th colspan="2">VS MAA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCarteraAnoA">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

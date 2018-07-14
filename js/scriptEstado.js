@@ -1,44 +1,43 @@
-var linkREST = "http://127.0.0.1:9999/MasNomina/MonitorVentas/";
-var currentTime = new Date();
-var mes = currentTime.getMonth() + 1;
-var ano = currentTime.getFullYear();
+var graficaColocacion = 0
+var graficaEstado = 0
+var graficaAsesor = 0
+var graficaMNBrokers = 0
 
 $(document).ready(function () {
-    prepararSelectFecha()
-    getColocacion()
-    declararCharts()
+    $("#selectorFecha").append("Se consultará de <b>1-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>")
 });
 
-function prepararSelectFecha() {
-    var i;
+function getEstado() {
+    $("#tablaColocacionHead").html("");
+    $("#tablaBrokersHead").html("");
+    $("#tablaColocacionBody").html("");
+    $("#tablaAsesorHead").html("");
+    $("#tablaAsesorPromHead").html("");
+    $("#tablaAsesorPromBody").html("");
+    $("#tablaBrokersBody").html("");
+    $("#tablaAsesorBody").html("");
 
-    for (i = 1; i < mes; i++) {
-        $("#inputMes").append(
-            "<option>" + (mes - i) + "-" + ano + "</option>"
-        )
-    }
+    if (graficaColocacion)
+        graficaColocacion.destroy()
+    if (graficaEstado)
+        graficaEstado.destroy()
+    if (graficaAsesor)
+        graficaAsesor.destroy()
+    if (graficaMNBrokers)
+        graficaMNBrokers.destroy()
 
-    for (i = 12; i > 0; i--) {
-        $("#inputMes").append(
-            "<option>" + i + "-" + (ano - 1) + "</option>"
-        )
-    }
-    $("#fechaHoy").append(mes + "-" + ano)
-}
+    $('#body, #titulo').hide();
+    $('#landing').css("display", "none");
+    $('#loading').css("display", "flex");
 
-function getColocacion() {
     $.getJSON(linkREST + "consulta_estado_colocacion", {},
         function (dataTablas) {
-            console.log(dataTablas);
-            var append = "";
-
-            append += '<th></th>'
-
+            var append = '<th></th>'
             for (const prop in dataTablas.meses) {
                 append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
             }
-
             append += '<th>Total ' + ano + ' </th> <th>Promedio</th>'
+
             $("#tablaColocacionHead").append(append);
             $("#tablaBrokersHead").append(append);
 
@@ -61,22 +60,20 @@ function getColocacion() {
 
                 append += "</tr>"
             }
-
+            
             append += '<tr><td>BROOKERS</td>'
             let totalBrokers = dataTablas.brokers.length - 1;
 
             for (const prop in dataTablas.brokers[totalBrokers].valores) {
                 append += '<td >' + (`${dataTablas.brokers[totalBrokers].valores[prop]}`) + '</td>'
             }
-            append += '<td class="obscuro">' + dataTablas.brokers[totalBrokers].suma_anio + '</td><td>' + dataTablas.brokers[totalBrokers].promedio_anio + '</td>'
-            append += '</tr>'
+            append += '<td class="obscuro">' + dataTablas.brokers[totalBrokers].suma_anio + '</td><td>' + 
+                dataTablas.brokers[totalBrokers].promedio_anio + '</td></tr><tr class="obscuro"><td>TOTAL GENERAL</td>'
 
-            append += '<tr class="obscuro"><td>TOTAL GENERAL</td>'
             for (const prop in dataTablas.total_general.valores) {
                 append += '<td >' + (`${dataTablas.total_general.valores[prop]}`) + '</td>'
             }
-            append += '<td>' + dataTablas.total_general.suma_anio + '</td><td>' + dataTablas.total_general.promedio_anio + '</td>'
-            append += '</tr>'
+            append += '<td>' + dataTablas.total_general.suma_anio + '</td><td>' + dataTablas.total_general.promedio_anio + '</td></tr>'
 
             $("#tablaColocacionBody").append(append);
 
@@ -96,18 +93,13 @@ function getColocacion() {
                 for (const prop in dataTablas.brokers[i].valores) {
                     append += '<td>' + (`${dataTablas.brokers[i].valores[prop]}`) + '</td>'
                 }
-                append += '<td class="obscuro">' + dataTablas.brokers[i].suma_anio + '</td>'
-                append += '<td>' + dataTablas.brokers[i].promedio_anio + '</td>'
-
-                append += "</tr>"
+                append += '<td class="obscuro">' + dataTablas.brokers[i].suma_anio + '</td><td>' + dataTablas.brokers[i].promedio_anio + '</td></tr>'
             }
 
             $("#tablaBrokersBody").append(append);
 
             //PEGAR TABLA DE ASESOR PROMEDIOS
-            append = "";
-
-            append += '<th></th>'
+            append = '<th></th>'
             for (const prop in dataTablas.meses) {
                 append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
             }
@@ -179,9 +171,9 @@ function getColocacion() {
 
             function estadoGenerador() {
                 temp = [];
-                
+
                 for (i = 0; i < dataTablas.estados.length; i++) {
-                    temp2  =[];
+                    temp2 = [];
                     for (const prep in dataTablas.estados[i].valores) {
                         if (prep > 12) {
                             temp2.push(parseInt((`${dataTablas.estados[i].valores[prep]}`).replace(/,/g, '')))
@@ -197,42 +189,36 @@ function getColocacion() {
                 return temp;
             }
 
-            function generadorPromedio(){
+            function generadorPromedio() {
                 temp = [];
                 promedio = dataTablas.promedios.pop()
                 for (const prep in promedio.valores) {
                     temp.push(parseInt((`${promedio.valores[prep]}`).replace(/,/g, '')));
                 }
-                console.log(temp)
                 return temp;
             }
 
-            function generadorMNvsBrokers(){
+            function generadorMNvsBrokers() {
                 temp = [];
                 temp2 = [];
                 total = dataTablas.brokers.pop();
 
                 for (const prep in total.valores) {
-                    if (prep > 12)
-                    {
+                    if (prep > 12) {
                         temp.push(parseInt((`${total.valores[prep]}`).replace(/,/g, '')));
                     }
                 }
 
 
                 for (const prep in dataTablas.total_general.valores) {
-                    if (prep > 12)
-                    {
+                    if (prep > 12) {
                         temp2.push(parseInt((`${dataTablas.total_general.valores[prep]}`).replace(/,/g, '')));
                     }
                 }
 
-                for (let i = 0; i < temp.length; i++)
-                {
-                    temp[i] = (temp[i] * 100 /temp2[i]).toFixed(2);
+                for (let i = 0; i < temp.length; i++) {
+                    temp[i] = (temp[i] * 100 / temp2[i]).toFixed(2);
                 }
-
-                console.log(temp)
                 return temp
             }
 
@@ -258,17 +244,18 @@ function getColocacion() {
                     datasets: estadoGenerador()
                 },
                 {
-                    labels:dataTablas.meses,
+                    labels: dataTablas.meses,
                     datasets: [{
                         data: generadorPromedio(),
                         borderColor: "#007bff",
                         backgroundColor: "#007bff",
+                        label: "Ventas de asesores por mes",
                         fill: false
                     }]
                 },
                 {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                    datasets:[{
+                    datasets: [{
                         data: generadorMNvsBrokers(),
                         borderColor: "#007bff",
                         backgroundColor: "#007bff",
@@ -280,22 +267,13 @@ function getColocacion() {
 
         })
         .done(function () {
-
+            $('#body, #titulo').css("display", "flex");
+            $('#loading').css("display", "none");
         })
         .fail(function (textStatus) {
-
+            $('#loading').css("display", "none");
         });
 }
-
-function generadorColores(num) {
-    arr = [];
-
-    for (let i = 0; i < num; i++) {
-        arr.push('rgb(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ')')
-    }
-
-    return arr;
-};
 
 function declararCharts(data1, data2, data3, data4) {
     graficaColocacion = new Chart($("#canvasGraficaColocacion"), {
@@ -315,8 +293,7 @@ function declararCharts(data1, data2, data3, data4) {
             title: {
                 display: true,
                 text: 'Colocación por estado'
-            },
-            legend: {display:false}
+            }
         }
     });
     graficaAsesor = new Chart($("#canvasGraficaAsesor"), {
@@ -326,7 +303,8 @@ function declararCharts(data1, data2, data3, data4) {
             title: {
                 display: true,
                 text: 'Colocación Promedio de Asesor'
-            }
+            },
+            legend: { display: false }
         }
     });
     graficaMNBrokers = new Chart($("#canvasGraficaMNBrokers"), {
@@ -344,7 +322,8 @@ function declararCharts(data1, data2, data3, data4) {
             title: {
                 display: true,
                 text: 'MN vs Brokers'
-            }
+            },
+            legend: { display: false }
         }
     });
 }

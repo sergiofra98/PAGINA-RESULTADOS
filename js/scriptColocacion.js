@@ -1,147 +1,191 @@
-var linkREST = "http://127.0.0.1:9999/MasNomina/MonitorVentas/";
-var graficaColocacion;
-var options = {
-    responsive: false,
-    title: {
-        display: true,
-        position: "top",
-        text: "Colocación del mes",
-        fontSize: 24,
-        fontColor: "#111"
-    },
-    legend: {
-        display: true,
-        position: "bottom",
-        labels: {
-            fontColor: "#333",
-            fontSize: 12
-        }
-    },
-    layout: {
-        padding: {
-            left: 0, right: 0, top: 0, bottom: 0
-        }
-    },
-    tooltips: {
-        callbacks: {
-            label: function (tooltipItem, data) {
-                //get the concerned dataset
-                var dataset = data.datasets[tooltipItem.datasetIndex];
-                //calculate the total of this data set
-                var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
-                    return previousValue + currentValue;
-                });
-                //get the current items value
-                var currentValue = dataset.data[tooltipItem.index];
-                //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
-                var precentage = Math.floor(((currentValue / total) * 100) + 0.5);
-
-                return data.labels[tooltipItem.datasetIndex] + " : " + precentage + "% $" + currentValue.toLocaleString();
-            }
-        }
-    }
-};
-
-$(document).ready(function () {
-    graficaColocacion = new Chart($("#canvasGraficaColocacion"), {
-        type: 'pie',
-        options: 0,
-        data: 0
-    });;
-});
+var graficaEstado = 0
 
 function getColocacion() {
-    $("#tablaColocacion").html("");
-    graficaColocacion.destroy();
+    $("#tablaMesHead").html("")
+    $("#tablaMesBody").html("")
+    $("#tablaAcumuladoBody").html("")
+    $("#tablaCostoBody").html("")
 
-    $('#body, #titulo, #cartera').hide();
+    if(graficaEstado)
+        graficaEstado.destroy()
+
+    $('#body, #titulo').hide();
     $('#landing').css("display", "none");
     $('#loading').css("display", "flex");
 
-    $.getJSON(linkREST + "consulta_convenio_colocacion",
-        {
-            division: $("#inputDivision").val(),
-            mes: $("#inputMes").val(),
-        },
+    $.getJSON(linkREST + "costos_colocacion", {},
         function (dataTablas) {
+            var i = 0;
+            append = "";
 
-            console.log(dataTablas);
-            dataTablas.forEach(function (i) {
-                $("#tablaColocacion").append('<tr>' +
-                    '<td>' + i.nombre + '</td>' +
-                    '<td>' + i.total_mes + '</td>' +
-                    '<td class="colObscuro">' + i.total_mes_pct + '</td>' +
-                    '<td>' + i.total_mes_aa + '</td>' +
-                    '<td class="colObscuro">' + i.total_mes_aa_pct + '</td>' +
-                    '</tr>');
-            });
+            switch (mes) {
+                case 1:
+                    {
+                        append = "Enero";
+                        break;
+                    }
+                case 2:
+                    {
+                        append = "Febrero";
+                        break;
+                    }
+                case 3:
+                    {
+                        append = "Marzo";
+                        break;
+                    }
+                case 4:
+                    {
+                        append = "Abril";
+                        break;
+                    }
+                case 5:
+                    {
+                        append = "Mayo";
+                        break;
+                    }
+                case 6:
+                    {
+                        append = "Junio";
+                        break;
+                    }
+                case 7:
+                    {
+                        append = "Julio";
+                        break;
+                    }
+                case 8:
+                    {
+                        append = "Agosto";
+                        break;
+                    }
+                case 9:
+                    {
+                        append = "Septiembre";
+                        break;
+                    }
+                case 10:
+                    {
+                        append = "Octubre";
+                        break;
+                    }
+                case 11:
+                    {
+                        append = "Noviembre";
+                        break;
+                    }
+                case 12:
+                    {
+                        append = "Diciembre";
+                        break;
+                    }
+            }
 
-            dataTablas.pop()
+            $("#tablaMesHead").append('<th colspan="3">' + append + " " + ano + "</th>");
 
-            graficaColocacion = new Chart($("#canvasGraficaColocacion"), {
-                type: 'pie',
-                options: options,
-                data: {
-                    labels: dataTablas.map(a => a.nombre),
+            append = "";
+
+            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.mes[0].nombre + "</td><td>" + dataTablas.mes[0].valor + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + "</td></tr>";
+
+            for (i = 1; i < dataTablas.mes.length; i++) {
+                if (i === dataTablas.mes.length - 1) {
+                    append += '<tr class="obscuro"><td>' + dataTablas.mes[i].nombre + "</td><td>" + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
+                }
+                else {
+                    append += '<tr><td>' + dataTablas.mes[i].nombre + "</td><td>" + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
+                }
+            }
+
+            $("#tablaMesBody").append(append);
+
+            append = "";
+
+            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.acumulado[0].nombre + "</td><td>" + dataTablas.acumulado[0].valor + '</td><td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + "</td></tr>";
+
+            for (i = 1; i < dataTablas.acumulado.length; i++) {
+                if (i === dataTablas.acumulado.length - 1) {
+                    append += '<tr class="obscuro"><td>' + dataTablas.acumulado[i].nombre + "</td><td>" + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
+                }
+                else {
+                    append += '<tr><td>' + dataTablas.acumulado[i].nombre + "</td><td>" + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
+                }
+            }
+
+            $("#tablaAcumuladoBody").append(append);
+
+            append = "";
+
+            for (i = 0; i < dataTablas.costo.length; i++) {
+                if (i === dataTablas.costo.length - 1) {
+                    append += '<tr class="obscuro"><td>' + dataTablas.costo[i].nombre + "</td><td>" + dataTablas.costo[i].porcentaje + "</td></tr>";
+                }
+                else {
+                    append += '<tr><td>' + dataTablas.costo[i].nombre + "</td><td>" + dataTablas.costo[i].porcentaje + "</td></tr>";
+                }
+            }
+
+            $("#tablaCostoBody").append(append);
+
+            function getdatos() {
+                temp = [];
+                let num;
+
+                dataTablas.costo.forEach(element => {
+                    num = parseFloat(element.porcentaje.replace(/%/g, ''));
+
+                    if (num) {
+                        temp.push(num);
+                    }
+                });
+
+                temp.pop();
+
+                return temp;
+            }
+
+            generarGraficas(
+                {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
                     datasets: [{
-                        data: dataTablas.map(a => parseInt(a.total_mes.replace(/,/g, ''))),
-                        backgroundColor: generadorColores(dataTablas.length),
+                        data: getdatos(),
+                        label: ano,
+                        borderColor: "#3e95cd",
+                        backgroundColor: "#3e95cd50",
                     }]
                 }
-            });
+            )
         })
         .done(function () {
-            console.log('getJSON request succeeded!');
-            $('#body, #titulo, #cartera').css("display", "flex");
+            $('#body, #titulo').css("display", "flex");
             $('#loading').css("display", "none");
         })
         .fail(function (textStatus) {
-            console.log(textStatus);
-            $('#loading').css("display", "none");
-        });
-
-        $.getJSON(linkREST + "consulta_convenio_cartera",
-        {
-            division: $("#inputDivision").val(),
-            mes: $("#inputMes").val(),
-        },
-        function (dataTablas) {
-            dataTablas.forEach(function (i) {
-                $("#tablaCarteraMesA").append('<tr>' +
-                    '<td>' + i.nombre + '</td>' +
-                    '<td>' + i.total_mes + '</td>' +
-                    '<td class="colObscuro">' + i.total_ma + '</td>' +
-                    '<td>' + i.total_mes_vs_ma + '</td>' +
-                    '<td class="colObscuro">' + i.total_mes_vs_ma_pct + '</td>' +
-                    '</tr>');
-            });
-
-            dataTablas.forEach(function (i) {
-                $("#tablaCarteraAnoA").append('<tr>' +
-                    '<td>' + i.total_mes + '</td>' +
-                    '<td class="colObscuro">' + i.total_maa + '</td>' +
-                    '<td>' + i.total_mes_vs_maa + '</td>' +
-                    '<td class="colObscuro">' + i.total_mes_vs_maa_pct + '</td>' +
-                    '</tr>');
-            });
-        })
-        .done(function () {
-            console.log('getJSON request succeeded!');
-            $('#body, #titulo, #cartera').css("display", "flex");
-            $('#loading').css("display", "none");
-        })
-        .fail(function (textStatus) {
-            console.log(textStatus);
             $('#loading').css("display", "none");
         });
 }
 
-function generadorColores(num) {
-    arr = [];
-
-    for (let i = 0; i < num; i++) {
-        arr.push('rgb(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ')')
-    }
-
-    return arr;
-};
+function generarGraficas(data) {
+    graficaEstado = new Chart($("#canvasCosto"), {
+        type: 'line',
+        data: data,
+        options: {
+            title: {
+                display: true,
+                text: 'Colocación por estado'
+            },
+            legend: { display: false },
+            elements: {
+                line: {
+                    tension: 0, // disables bezier curves
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}

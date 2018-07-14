@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Por Estado</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
+    <title>Costo Por Estado</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
     <link rel="stylesheet" href="css/estiloGeneral.css">
     <link rel="stylesheet" href="css/estiloEstado.css">
 
-    <script src="js/jquery-3.3.1.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/Chart.bundle.js"></script>
-    <script src="js/scriptEstado.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="js/scriptGeneral.js"></script>
+    <script src="js/scriptEstado.js"></script>
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
         crossorigin="anonymous">
 </head>
@@ -21,22 +25,15 @@
 <body>
 
     <div class="container">
-        <form onsubmit="getColocacion()" class="form-group" id="consulta">
+        <form onsubmit="getEstado()" class="form-group" id="consulta">
             <div class="row">
                 <div class="col-sm">
                     <h3>Resultados por estado</h3>
                 </div>
-
                 <div class="col-sm">
-                    <label for="division">Rango de tiempo: </label>
+                    <br>
                     <div id="selectorFecha">
-                        <select required name="inputTiempo" id="inputMes" class="form-control">
-                        </select>
 
-                        &nbsp; A hoy
-                        <span id="fechaHoy">
-
-                        </span>
                     </div>
                 </div>
                 <div class="col-sm">
@@ -52,24 +49,28 @@
                         <option value="VMCENTRO">VM Centro</option>
                     </select>
                 </div>
-
-                <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
+                <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getEstado()">Consultar</button>
             </div>
         </form>
 
-        <div class="row titulo">
+        <div class="row" id="landing">
+            <h3>Realize una consulta</h3>
+        </div>
+        <div class="row" id="loading">
+            <div class="loader">
+                <i class="fas fa-sync"></i>
+                <h3>Cargando...</h3>
+            </div>
+        </div>
+
+        <div class="row titulo" id="body">
             <div class="col">
                 <h4>
                     Colocación
                 </h4>
             </div>
-            <div class="col">
-                <h4 id="divisionTexto">
-
-                </h4>
-            </div>
         </div>
-        <div class="row tabla">
+        <div class="row tabla" id="body">
             <div class="col">
                 <table class="table table-bordered">
                     <thead class="thead-light">
@@ -82,14 +83,14 @@
                 </table>
             </div>
         </div>
-        <div class="row titulo">
+        <div class="row titulo" id="body">
             <div class="col">
                 <h4>
                     Detalle Brokers
                 </h4>
             </div>
         </div>
-        <div class="row tabla">
+        <div class="row tabla" id="body">
             <div class="col">
                 <table class="table table-bordered">
                     <thead class="thead-light">
@@ -102,14 +103,14 @@
                 </table>
             </div>
         </div>
-        <div class="row titulo">
+        <div class="row titulo" id="body">
             <div class="col">
                 <h4>
                     Venta Promedio por Asesor
                 </h4>
             </div>
         </div>
-        <div class="row tabla">
+        <div class="row tabla" id="body">
             <div class="col">
                 <table class="table table-bordered">
                     <thead class="thead-light">
@@ -122,7 +123,7 @@
                 </table>
             </div>
         </div>
-        <div class="row titulo">
+        <div class="row titulo" id="body">
             <div class="col">
                 <h4>
                     Plantilla de Asesores
@@ -134,7 +135,7 @@
                 </h4>
             </div>
         </div>
-        <div class="row tabla">
+        <div class="row tabla" id="body">
             <div class="col">
                 <table class="table table-bordered">
                     <thead class="thead-light">
@@ -148,7 +149,7 @@
             </div>
         </div>
 
-        <div class="row chart">
+        <div class="row chart" id="body">
             <div class="col">
                 <canvas id="canvasGraficaColocacion" width="500" height="400"></canvas>
             </div>
@@ -156,7 +157,7 @@
                 <canvas id="canvasGraficaEstado" width="500" height="400"></canvas>
             </div>
         </div>
-        <div class="row chart">
+        <div class="row chart" id="body">
             <div class="col">
                 <canvas id="canvasGraficaAsesor" width="500" height="400"></canvas>
             </div>
