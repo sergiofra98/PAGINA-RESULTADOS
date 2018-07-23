@@ -5,9 +5,9 @@ function getColocacion() {
     $("#tablaCarteraMesA").html("");
     $("#tablaCarteraAnoA").html("");
 
-    if(graficaColocacion)
+    if (graficaColocacion)
         graficaColocacion.destroy();
-    
+
 
     $('#body, #titulo, #cartera').hide();
     $('#landing').css("display", "none");
@@ -19,16 +19,31 @@ function getColocacion() {
             mes: $("#inputMes").val(),
         },
         function (dataTablas) {
-            dataTablas.forEach(function (i) {
-                $("#tablaColocacion").append('<tr>' +
-                    '<td>' + i.nombre + '</td>' +
-                    '<td>' + i.total_mes + '</td>' +
-                    '<td class="colObscuro">' + i.total_mes_pct + '</td>' +
-                    '<td>' + i.total_mes_aa + '</td>' +
-                    '<td class="colObscuro">' + i.total_mes_aa_pct + '</td>' +
-                    '</tr>');
-            });
-            dataTablas.pop()
+
+            append = "";
+
+            for (let i = 0; i < dataTablas.length; i++) {
+                if (i === dataTablas.length - 1) {
+                    append += '<tr class="obscuro">' +
+                        '<td>' + dataTablas[i].nombre + '</td>' +
+                        '<td>' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_mes_pct + '</td>' +
+                        '<td>' + dataTablas[i].total_mes_aa + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_mes_aa_pct + '</td>' +
+                        '</tr>';
+                }
+                else {
+                    append += '<tr>' +
+                        '<td>' + dataTablas[i].nombre + '</td>' +
+                        '<td>' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_mes_pct + '</td>' +
+                        '<td>' + dataTablas[i].total_mes_aa + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_mes_aa_pct + '</td>' +
+                        '</tr>';
+                }
+            }
+
+            $("#tablaColocacion").append(append);
         })
         .done(function () {
             $('#body, #titulo, #cartera').css("display", "flex");
@@ -38,30 +53,46 @@ function getColocacion() {
             $('#loading').css("display", "none");
         });
 
-        $.getJSON(linkREST + "consulta_convenio_cartera",
+    $.getJSON(linkREST + "consulta_convenio_cartera",
         {
             division: $("#inputDivision").val(),
             mes: $("#inputMes").val(),
         },
         function (dataTablas) {
-            dataTablas.forEach(function (i) {
-                $("#tablaCarteraMesA").append('<tr>' +
-                    '<td>' + i.nombre + '</td>' +
-                    '<td>' + i.total_mes + '</td>' +
-                    '<td class="colObscuro">' + i.total_ma + '</td>' +
-                    '<td>' + i.total_mes_vs_ma + '</td>' +
-                    '<td class="colObscuro">' + i.total_mes_vs_ma_pct + '</td>' +
-                    '</tr>');
-            });
+            append = "";
 
-            dataTablas.forEach(function (i) {
-                $("#tablaCarteraAnoA").append('<tr>' +
-                    '<td>' + i.total_mes + '</td>' +
-                    '<td class="colObscuro">' + i.total_maa + '</td>' +
-                    '<td>' + i.total_mes_vs_maa + '</td>' +
-                    '<td class="colObscuro">' + i.total_mes_vs_maa_pct + '</td>' +
-                    '</tr>');
-            });
+            for (let i = 0; i < dataTablas.length; i++) {
+                if (i === dataTablas.length - 1) {
+                    append += '<tr class="obscuro">' +
+                        '<td>' + dataTablas[i].nombre + '</td>' +
+                        '<td>' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_ma + '</td>' +
+                        '<td>' + dataTablas[i].total_mes_vs_ma + '</td>' +
+                        '<td class="colObscuro" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
+                        '<td>' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_maa + '</td>' +
+                        '<td>' + dataTablas[i].total_mes_vs_maa + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
+                        '</tr>';
+                }
+                else {
+                    append += '<tr >' +
+                        '<td>' + dataTablas[i].nombre + '</td>' +
+                        '<td>' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_ma + '</td>' +
+                        '<td>' + dataTablas[i].total_mes_vs_ma + '</td>' +
+                        '<td class="colObscuro" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
+                        '<td>' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_maa + '</td>' +
+                        '<td>' + dataTablas[i].total_mes_vs_maa + '</td>' +
+                        '<td class="colObscuro">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
+                        '</tr>';
+                }
+            }
+
+            $("#tablaCarteraMesA").append(append);
+
+            dataTablas.pop();
 
             generarGraficas(
                 dataTablas.map(a => a.nombre),
@@ -78,7 +109,7 @@ function getColocacion() {
         });
 }
 
-function generarGraficas(labels, data, colors){
+function generarGraficas(labels, data, colors) {
     graficaColocacion = new Chart($("#canvasGraficaColocacion"), {
         type: 'pie',
         options: {
@@ -101,24 +132,6 @@ function generarGraficas(labels, data, colors){
             layout: {
                 padding: {
                     left: 0, right: 0, top: 0, bottom: 0
-                }
-            },
-            tooltips: {
-                callbacks: {
-                    label: function (tooltipItem, data) {
-                        //get the concerned dataset
-                        var dataset = data.datasets[tooltipItem.datasetIndex];
-                        //calculate the total of this data set
-                        var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
-                            return previousValue + currentValue;
-                        });
-                        //get the current items value
-                        var currentValue = dataset.data[tooltipItem.index];
-                        //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
-                        var precentage = Math.floor(((currentValue / total) * 100) + 0.5);
-        
-                        return data.labels[tooltipItem.datasetIndex] + " : " + precentage + "% $" + currentValue.toLocaleString();
-                    }
                 }
             }
         },

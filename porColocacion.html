@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Costo Por Colocación</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
 
     <link rel="stylesheet" href="css/estiloGeneral.css">
     <link rel="stylesheet" href="css/estiloColociacion.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="js/scriptGeneral.js"></script>
     <script src="js/scriptColocacion.js"></script>
@@ -29,8 +31,21 @@
                     <h3>Costo por Colocación</h3>
                 </div>
                 <div class="col-sm">
+                    <div class="col" style="float: left;">
+                        <label for="mes">Periodo: </label>
+                        <select style="width: 50%;" required name="inputMes" id="inputMes" class="form-control">
+
+                        </select>
+                    </div>
+                    <div class="col">
+                        <b style="float: left;" id="ano">
+
+                        </b>
+                    </div>
+                </div>
+                <div class="col-sm">
                     <label for="mes">División: </label>
-                    <select required name="inputMes" id="inputMes" class="form-control">
+                    <select required name="inputDivision" id="inputDivision" class="form-control">
                         <option disabled hidden selected value="">Elija una opción</option>
                         <option value="CENTRO">Centro</option>
                         <option value="SUR">Sur</option>
@@ -47,16 +62,16 @@
         </form>
 
         <div class="row" id="landing">
-                <h3>Realize una consulta</h3>
+            <h3>Realize una consulta</h3>
+        </div>
+
+        <div class="row" id="loading">
+            <div class="loader">
+                <i class="fas fa-sync"></i>
+                <h3>Cargando...</h3>
             </div>
-    
-            <div class="row" id="loading">
-                <div class="loader">
-                    <i class="fas fa-sync"></i>
-                    <h3>Cargando...</h3>
-                </div>
-            </div>
-        
+        </div>
+
         <div class="row" id="body">
             <div class="col">
                 <div class="row tabla">
@@ -64,7 +79,7 @@
                         <table class="table table-bordered">
                             <thead class="thead-light">
                                 <tr id="tablaMesHead">
-        
+
                                 </tr>
                             </thead>
                             <tbody id="tablaMesBody">
@@ -80,7 +95,7 @@
                         <table class="table table-bordered">
                             <thead class="thead-light">
                                 <tr>
-                                    <th colspan="3">Acumulado</th>  
+                                    <th colspan="3">Acumulado</th>
                                 </tr>
                             </thead>
                             <tbody id="tablaAcumuladoBody">
@@ -92,7 +107,7 @@
         </div>
 
         <div class="row" id="body">
-            <div class="col">
+            <div class="col col-sm-4">
                 <div class="row tabla">
                     <div class="col">
                         <table class="table table-bordered">
@@ -108,7 +123,7 @@
                 </div>
             </div>
             <div class="col">
-                <canvas id="canvasCosto" width="500" height="500"></canvas>
+                <canvas id="canvasCosto" width="500" height="400"></canvas>
             </div>
         </div>
     </div>

@@ -4,7 +4,7 @@ var graficaAsesor = 0
 var graficaMNBrokers = 0
 
 $(document).ready(function () {
-    $("#selectorFecha").append("Se consultará de <b>1-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>")
+    $("#selectorFecha").append("Periodo:  <b>1-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>")
 });
 
 function getEstado() {
@@ -39,7 +39,6 @@ function getEstado() {
             append += '<th>Total ' + ano + ' </th> <th>Promedio</th>'
 
             $("#tablaColocacionHead").append(append);
-            $("#tablaBrokersHead").append(append);
 
             append = "";
             for (let i = 0; i < dataTablas.estados.length; i++) {
@@ -104,7 +103,6 @@ function getEstado() {
                 append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
             }
             $("#tablaAsesorHead").append(append);
-            $("#tablaAsesorPromHead").append(append);
 
             append = "";
             for (let i = 0; i < dataTablas.promedios.length; i++) {
