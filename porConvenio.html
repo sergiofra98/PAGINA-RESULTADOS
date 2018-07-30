@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Costo Por Convenio</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
     <link rel="stylesheet" href="css/estiloGeneral.css">
     <link rel="stylesheet" href="css/estiloConvenio.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="js/scriptGeneral.js"></script>
     <script src="js/scriptConvenio.js"></script>
@@ -22,13 +24,30 @@
 <body>
     <div class="container">
         <form onsubmit="getColocacion()" class="form-group" id="consulta">
+            <div class="row" style="border: none; text-align: center;">
+                <div class="col">
+                    <h3>Costo por Convenio</h3>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm">
-                    <h3>Resultados por colocación</h3>
+                    <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
                 </div>
-
                 <div class="col-sm">
-                    <label for="division">División: </label>
+                    <div class="col" style="float: left;">
+                        <label for="mes">Periodo: </label>
+                        <select required name="inputMes" id="inputMes" class="form-control">
+
+                        </select>
+                    </div>
+                    <div class="col">
+                        <b style="float: left;" id="ano">
+
+                        </b>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <label for="mes">División: </label>
                     <select required name="inputDivision" id="inputDivision" class="form-control">
                         <option disabled hidden selected value="">Elija una opción</option>
                         <option value="CENTRO">Centro</option>
@@ -38,24 +57,6 @@
                         <option value="VMNORTE">VM Norte</option>
                         <option value="VMSUR">VM Sur</option>
                         <option value="VMCENTRO">VM Centro</option>
-                    </select>
-                </div>
-                <div class="col-sm">
-                    <label for="mes">Resultados del mes: </label>
-                    <select required name="inputMes" id="inputMes" class="form-control">
-                        <option disabled hidden selected value="">Elija una opción</option>
-                        <option value="201801">2018/01</option>
-                        <option value="201802">2018/02</option>
-                        <option value="201803">2018/03</option>
-                        <option value="201804">2018/04</option>
-                        <option value="201805">2018/05</option>
-                        <option value="201806">2018/06</option>
-                        <option value="201807">2018/07</option>
-                        <option value="201808">2018/08</option>
-                        <option value="201809">2018/09</option>
-                        <option value="201810">2018/10</option>
-                        <option value="201811">2018/11</option>
-                        <option value="201812">2018/12</option>
                     </select>
                 </div>
 

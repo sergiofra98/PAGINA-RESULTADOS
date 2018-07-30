@@ -2,6 +2,11 @@
     overflow-x: scroll;
 }
 
+form h3{
+    display: block;
+    margin: auto;
+}
+
 .promedio{
     background-color: #ffff2d;
 }

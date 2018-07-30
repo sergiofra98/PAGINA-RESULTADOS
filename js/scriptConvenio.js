@@ -1,5 +1,19 @@
 var graficaColocacion = 0;
 
+$(document).ready(function () {
+    append = "";
+
+    for (let i = 0; i < mes; i++) {
+        append += "<option>" + (mes - i) + "/" + ano + "</option>"
+    }
+
+    for (let i = 1; i < 13; i++) {
+        append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
+    }
+
+    $("#inputMes").append(append)
+})
+
 function getColocacion() {
     $("#tablaColocacion").html("");
     $("#tablaCarteraMesA").html("");
@@ -19,6 +33,7 @@ function getColocacion() {
             mes: $("#inputMes").val(),
         },
         function (dataTablas) {
+            console.log(dataTablas)
 
             append = "";
 
@@ -44,7 +59,16 @@ function getColocacion() {
             }
 
             $("#tablaColocacion").append(append);
-        })
+
+            dataTablas.pop();
+
+            generarGraficas(
+                dataTablas.map(a => a.nombre),
+                dataTablas.map(a => parseInt(a.total_mes.replace(/,/g, ''))),
+                generadorColores(dataTablas.length)
+            )
+        }
+    )
         .done(function () {
             $('#body, #titulo, #cartera').css("display", "flex");
             $('#loading').css("display", "none");
@@ -91,14 +115,6 @@ function getColocacion() {
             }
 
             $("#tablaCarteraMesA").append(append);
-
-            dataTablas.pop();
-
-            generarGraficas(
-                dataTablas.map(a => a.nombre),
-                dataTablas.map(a => parseInt(a.total_mes.replace(/,/g, ''))),
-                generadorColores(dataTablas.length)
-            )
         })
         .done(function () {
             $('#body, #titulo, #cartera').css("display", "flex");
@@ -132,6 +148,23 @@ function generarGraficas(labels, data, colors) {
             layout: {
                 padding: {
                     left: 0, right: 0, top: 0, bottom: 0
+                }
+            },
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        //get the concerned dataset
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        //calculate the total of this data set
+                        var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
+                            return previousValue + currentValue;
+                        });
+                        //get the current items value
+                        var currentValue = dataset.data[tooltipItem.index];
+                        //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
+                        var precentage = Math.floor((currentValue / total) * 100);
+                        return labels[tooltipItem.index] + ": " + precentage + "%";
+                    }
                 }
             }
         },

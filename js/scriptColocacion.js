@@ -1,24 +1,20 @@
 var graficaEstado = 0
 
+
 $(document).ready(function () {
+    append = "";
 
-    for (let i = 1; i < mes + 1; i++) {
-
-
-        if (i === mes) {
-            $("#inputMes").append('<option selected value="' + i + '">' + i + '</option>')
-        }
-        else {
-            $("#inputMes").append('<option value="' + i + '">' + i + '</option>')
-        }
-
+    for (let i = 0; i < mes; i++) {
+        append += "<option>" + (mes - i) + "/" + ano + "</option>"
     }
 
-    $("#ano").append(
-        "/ " + ano
-    )
+    for (let i = 1; i < 13; i++) {
+        append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
+    }
 
+    $("#inputMes").append(append)
 });
+
 
 function getColocacion() {
     $("#tablaMesHead").html("")
@@ -106,14 +102,14 @@ function getColocacion() {
 
             append = "";
 
-            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.mes[0].nombre + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + "</td><td>" + dataTablas.mes[0].valor + '</td></tr>';
+            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.mes[0].nombre + '</td><td>' + dataTablas.mes[0].valor + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + '</td></tr>';
 
             for (i = 1; i < dataTablas.mes.length; i++) {
                 if (i === dataTablas.mes.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.mes[i].nombre + "</td><td>" + dataTablas.mes[i].porcentaje + "</td><td>" + dataTablas.mes[i].valor + "</td></tr>";
+                    append += '<tr class="obscuro"><td>' + dataTablas.mes[i].nombre + "</td><td>" + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
                 }
                 else {
-                    append += '<tr><td>' + dataTablas.mes[i].nombre + "</td><td>" + dataTablas.mes[i].porcentaje + "</td><td>" + dataTablas.mes[i].valor + "</td></tr>";
+                    append += '<tr><td>' + dataTablas.mes[i].nombre + "</td><td>" + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
                 }
             }
 
@@ -121,14 +117,14 @@ function getColocacion() {
 
             append = "";
 
-            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.acumulado[0].nombre + '</td><td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + "</td><td>" + dataTablas.acumulado[0].valor + '</td></tr>';
+            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.acumulado[0].nombre + '</td><td>' + dataTablas.acumulado[0].valor + '</td><<td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + '</td>/tr>';
 
             for (i = 1; i < dataTablas.acumulado.length; i++) {
                 if (i === dataTablas.acumulado.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.acumulado[i].nombre + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td><td>" + dataTablas.acumulado[i].valor + "</td></tr>";
+                    append += '<tr class="obscuro"><td>' + dataTablas.acumulado[i].nombre + "</td><td>" + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
                 }
                 else {
-                    append += '<tr><td>' + dataTablas.acumulado[i].nombre + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td><td>" + dataTablas.acumulado[i].valor + "</td></tr>";
+                    append += '<tr><td>' + dataTablas.acumulado[i].nombre + "</td><td>" + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
                 }
             }
 
@@ -138,10 +134,10 @@ function getColocacion() {
 
             for (i = 0; i < dataTablas.costo.length; i++) {
                 if (i === dataTablas.costo.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.costo[i].nombre + "</td><td>" + dataTablas.costo[i].porcentaje + "</td></tr>";
+                    append += '<tr class="obscuro"><td style="width = 100px;">' + dataTablas.costo[i].nombre + '</td><td style="width = 100px;">' + dataTablas.costo[i].porcentaje + "</td></tr>";
                 }
                 else {
-                    append += '<tr><td>' + dataTablas.costo[i].nombre + "</td><td>" + dataTablas.costo[i].porcentaje + "</td></tr>";
+                    append += '<tr><td style="width = 100px;">' + dataTablas.costo[i].nombre + ' </td><td style="width = 100px;">' + dataTablas.costo[i].porcentaje + "</td></tr>";
                 }
             }
 

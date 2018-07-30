@@ -26,14 +26,19 @@
 
     <div class="container">
         <form onsubmit="getColocacion()" class="form-group" id="consulta">
+            <div class="row" style="border: none; text-align: center;">
+                <div class="col">
+                    <h3>Costo por Colocación</h3>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm">
-                    <h3>Costo por Colocación</h3>
+                    <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
                 </div>
                 <div class="col-sm">
                     <div class="col" style="float: left;">
                         <label for="mes">Periodo: </label>
-                        <select style="width: 50%;" required name="inputMes" id="inputMes" class="form-control">
+                        <select required name="inputMes" id="inputMes" class="form-control">
 
                         </select>
                     </div>
@@ -106,9 +111,9 @@
             </div>
         </div>
 
-        <div class="row" id="body">
+        <div class="row" id="body" >
             <div class="col col-sm-4">
-                <div class="row tabla">
+                <div class="row tabla" style="display:block;">
                     <div class="col">
                         <table class="table table-bordered">
                             <thead class="thead-light">
@@ -123,7 +128,7 @@
                 </div>
             </div>
             <div class="col">
-                <canvas id="canvasCosto" width="500" height="400"></canvas>
+                <canvas id="canvasCosto" width="500" height="300"></canvas>
             </div>
         </div>
     </div>
