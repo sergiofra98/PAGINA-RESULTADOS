@@ -1,0 +1,29 @@
+canvas{
+    display: block !important;
+    width: 900px !important;
+    height: 610px !important;
+}
+
+@media only screen and (min-width: 1200px) {
+    canvas{
+        display: block !important;
+        width: 900px !important;
+        height: 610px !important;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    canvas{
+        display: block !important;
+        width: 720px !important;
+        height: 610px !important;
+    }
+}
+
+@media only screen and (min-width: 1700px) {
+    canvas{
+        display: block !important;
+        width: 1400px !important;
+        height: 610px !important;
+    }
+}

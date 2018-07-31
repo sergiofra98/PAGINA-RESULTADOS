@@ -102,14 +102,14 @@ function getColocacion() {
 
             append = "";
 
-            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.mes[0].nombre + '</td><td>' + dataTablas.mes[0].valor + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + '</td></tr>';
+            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.mes[0].nombre + '</td><td class="numero">$ ' + dataTablas.mes[0].valor + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + '</td></tr>';
 
             for (i = 1; i < dataTablas.mes.length; i++) {
                 if (i === dataTablas.mes.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.mes[i].nombre + "</td><td>" + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
+                    append += '<tr class="obscuro"><td>' + dataTablas.mes[i].nombre + '</td><td class="numero">$ ' + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
                 }
                 else {
-                    append += '<tr><td>' + dataTablas.mes[i].nombre + "</td><td>" + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
+                    append += '<tr><td>' + dataTablas.mes[i].nombre + '</td><td class="numero">$ ' + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
                 }
             }
 
@@ -117,14 +117,14 @@ function getColocacion() {
 
             append = "";
 
-            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.acumulado[0].nombre + '</td><td>' + dataTablas.acumulado[0].valor + '</td><<td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + '</td>/tr>';
+            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.acumulado[0].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[0].valor + '</td><td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + '</td></tr>';
 
             for (i = 1; i < dataTablas.acumulado.length; i++) {
                 if (i === dataTablas.acumulado.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.acumulado[i].nombre + "</td><td>" + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
+                    append += '<tr class="obscuro"><td>' + dataTablas.acumulado[i].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
                 }
                 else {
-                    append += '<tr><td>' + dataTablas.acumulado[i].nombre + "</td><td>" + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
+                    append += '<tr><td>' + dataTablas.acumulado[i].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
                 }
             }
 
@@ -196,6 +196,7 @@ function generarGraficas(data) {
                     tension: 0, // disables bezier curves
                 }
             },
+            responsive: true,
             scales: {
                 yAxes: [{
                     ticks: {

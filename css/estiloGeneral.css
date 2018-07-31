@@ -1,6 +1,6 @@
 @media only screen and (min-width: 1700px) {
     .container {
-        max-width: 1800px;
+        max-width: 1700px;
     }
 }
 
@@ -95,4 +95,8 @@ body{
 
 canvas{
     margin: auto;
+}
+
+.numero{
+    text-align: right;
 }

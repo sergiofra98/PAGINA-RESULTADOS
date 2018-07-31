@@ -4,21 +4,7 @@ var graficaAsesor = 0
 var graficaMNBrokers = 0
 
 $(document).ready(function () {
-    $("#selectorFecha").append("Periodo:  <b>1-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>")
-
-    $(document).ready(function () {
-        append = "";
-    
-        for (let i = 0; i < mes; i++) {
-            append += "<option>" + (mes  - i) + "/" + ano + "</option>"
-        }
-    
-        for (let i = 1; i < 13; i++) {
-            append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
-        }
-    
-        $("#inputMes").append(append)
-    })
+    $("#selectorFecha").append("Periodo:  <b>1-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>");
 });
 
 function getEstado() {
