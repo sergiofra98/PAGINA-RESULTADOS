@@ -52,13 +52,14 @@
                     <label for="mes">División: </label>
                     <select required name="inputDivision" id="inputDivision" class="form-control">
                         <option disabled hidden selected value="">Elija una opción</option>
-                        <option value="CENTRO">Centro</option>
-                        <option value="SUR">Sur</option>
-                        <option value="NORESTE">Noreste</option>
-                        <option value="NORTE">Norte</option>
-                        <option value="VMNORTE">VM Norte</option>
-                        <option value="VMSUR">VM Sur</option>
-                        <option value="VMCENTRO">VM Centro</option>
+                        <option value="TODOS">TODOS</option>
+                        <option value="CENTRO">CENTRO</option>
+                        <option value="SUR">SUR</option>
+                        <option value="NORESTE">NORESTE</option>
+                        <option value="NORTE">NORTE</option>
+                        <option value="VMNORTE">VM NORTE</option>
+                        <option value="VMSUR">VM SUR</option>
+                        <option value="VMCENTRO">VM CENTRO</option>
                     </select>
                 </div>
 
@@ -81,7 +82,7 @@
             <div class="col">
                 <div class="row tabla">
                     <div class="col">
-                        <table class="table table-bordered">
+                        <table class="table-hover table-bordered table">
                             <thead class="thead-light">
                                 <tr id="tablaMesHead">
 
@@ -97,7 +98,7 @@
             <div class="col">
                 <div class="row tabla">
                     <div class="col">
-                        <table class="table table-bordered">
+                        <table class="table table-hover table-bordered">
                             <thead class="thead-light">
                                 <tr>
                                     <th colspan="3">Acumulado</th>
@@ -113,9 +114,9 @@
 
         <div class="row" id="body" >
             <div class="col col-md-auto">
-                <div class="row tabla" style="display:block; width: 200px;">
+                <div class="row tabla" style="display:block; width: 380px;">
                     <div class="col">
-                        <table class="table table-bordered">
+                        <table class="table table-hover table-bordered">
                             <thead class="thead-light">
                                 <tr>
                                     <th colspan="2">Costo</th>

@@ -5,11 +5,25 @@ $(document).ready(function () {
     append = "";
 
     for (let i = 0; i < mes; i++) {
-        append += "<option>" + (mes - i) + "/" + ano + "</option>"
+        if(i < 10)
+        {
+            append += "<option> 0" + (mes - i) + "/" + ano + "</option>"
+        }
+        else{
+            append += "<option>" + (mes - i) + "/" + ano + "</option>"
+        }
     }
 
     for (let i = 1; i < 13; i++) {
-        append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
+        if(i < 4)
+        {
+            append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
+
+        }
+        else{
+            append += "<option> 0" + (13 - i) + "/" + (ano - 1) + "</option>"
+
+        }
     }
 
     $("#inputMes").append(append)
@@ -162,7 +176,7 @@ function getColocacion() {
 
             generarGraficas(
                 {
-                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
                     datasets: [{
                         data: getdatos(),
                         label: ano,
@@ -188,7 +202,8 @@ function generarGraficas(data) {
         options: {
             title: {
                 display: true,
-                text: 'Colocación por estado'
+                text: 'Colocación por estado',
+                fontSize: 22
             },
             legend: { display: false },
             elements: {

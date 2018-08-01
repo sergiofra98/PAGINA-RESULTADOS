@@ -4,11 +4,25 @@ $(document).ready(function () {
     append = "";
 
     for (let i = 0; i < mes; i++) {
-        append += "<option>" + (mes - i) + "/" + ano + "</option>"
+        if(i < 10)
+        {
+            append += "<option> 0" + (mes - i) + "/" + ano + "</option>"
+        }
+        else{
+            append += "<option>" + (mes - i) + "/" + ano + "</option>"
+        }
     }
 
     for (let i = 1; i < 13; i++) {
-        append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
+        if(i < 4)
+        {
+            append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
+
+        }
+        else{
+            append += "<option> 0" + (13 - i) + "/" + (ano - 1) + "</option>"
+
+        }
     }
 
     $("#inputMes").append(append)
@@ -84,6 +98,7 @@ function getColocacion() {
         },
         function (dataTablas) {
             append = "";
+            console.log(dataTablas);
 
             for (let i = 0; i < dataTablas.length; i++) {
                 if (i === dataTablas.length - 1) {
@@ -92,11 +107,11 @@ function getColocacion() {
                         '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
                         '<td class="colObscuro numero">$ ' + dataTablas[i].total_ma + '</td>' +
                         '<td class="numero">$ ' + dataTablas[i].total_mes_vs_ma + '</td>' +
-                        '<td class="colObscuro" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
+                        '<td class="colObscuro '+ dataTablas[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
                         '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
                         '<td class="colObscuro numero">$ ' + dataTablas[i].total_maa + '</td>' +
                         '<td class="numero">$ ' + dataTablas[i].total_mes_vs_maa + '</td>' +
-                        '<td class="colObscuro">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
+                        '<td class="colObscuro'+ dataTablas[i].colorMAA + '">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
                         '</tr>';
                 }
                 else {
@@ -105,11 +120,11 @@ function getColocacion() {
                         '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
                         '<td class="colObscuro numero">$ ' + dataTablas[i].total_ma + '</td>' +
                         '<td class="numero">$ ' + dataTablas[i].total_mes_vs_ma + '</td>' +
-                        '<td class="colObscuro" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
+                        '<td class="colObscuro '+ dataTablas[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
                         '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
                         '<td class="colObscuro numero">$ ' + dataTablas[i].total_maa + '</td>' +
                         '<td  class="numero">$ ' + dataTablas[i].total_mes_vs_maa + '</td>' +
-                        '<td class="colObscuro">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
+                        '<td class="colObscuro '+ dataTablas[i].colorMAA + '">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
                         '</tr>';
                 }
             }
@@ -133,7 +148,7 @@ function generarGraficas(labels, data, colors) {
             title: {
                 display: true,
                 position: "top",
-                text: "Colocación del mes",
+                text: "Colocación del Mes",
                 fontSize: 24,
                 fontColor: "#111"
             },

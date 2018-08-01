@@ -4,7 +4,12 @@ var graficaAsesor = 0
 var graficaMNBrokers = 0
 
 $(document).ready(function () {
-    $("#selectorFecha").append("Periodo:  <b>1-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>");
+    if (mes < 10) {
+        $("#selectorFecha").append("Periodo:  <b>01-" + (ano - 1) + "</b> a <b>0" + mes + "-" + ano + "</b>");
+    }
+    else {
+        $("#selectorFecha").append("Periodo:  <b>01-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>");
+    }
 });
 
 function getEstado() {
@@ -52,27 +57,27 @@ function getEstado() {
 
 
                 for (const prop in dataTablas.estados[i].valores) {
-                    append += '<td>' + (`${dataTablas.estados[i].valores[prop]}`) + '</td>'
+                    append += '<td class="numero">' + (`${dataTablas.estados[i].valores[prop]}`) + '</td>'
                 }
-                append += '<td class="obscuro">' + dataTablas.estados[i].suma_anio + '</td>'
-                append += '<td>' + dataTablas.estados[i].promedio_anio + '</td>'
+                append += '<td class="obscuro numero">' + dataTablas.estados[i].suma_anio + '</td>'
+                append += '<td class="numero">' + dataTablas.estados[i].promedio_anio + '</td>'
 
                 append += "</tr>"
             }
-            
+
             append += '<tr><td>BROOKERS</td>'
             let totalBrokers = dataTablas.brokers.length - 1;
 
             for (const prop in dataTablas.brokers[totalBrokers].valores) {
-                append += '<td >' + (`${dataTablas.brokers[totalBrokers].valores[prop]}`) + '</td>'
+                append += '<td class="numero">' + (`${dataTablas.brokers[totalBrokers].valores[prop]}`) + '</td>'
             }
-            append += '<td class="obscuro">' + dataTablas.brokers[totalBrokers].suma_anio + '</td><td>' + 
+            append += '<td class="obscuro numero">' + dataTablas.brokers[totalBrokers].suma_anio + '</td><td>' +
                 dataTablas.brokers[totalBrokers].promedio_anio + '</td></tr><tr class="obscuro"><td>TOTAL GENERAL</td>'
 
             for (const prop in dataTablas.total_general.valores) {
-                append += '<td >' + (`${dataTablas.total_general.valores[prop]}`) + '</td>'
+                append += '<td class="numero">' + (`${dataTablas.total_general.valores[prop]}`) + '</td>'
             }
-            append += '<td>' + dataTablas.total_general.suma_anio + '</td><td>' + dataTablas.total_general.promedio_anio + '</td></tr>'
+            append += '<td class="numero">' + dataTablas.total_general.suma_anio + '</td><td>' + dataTablas.total_general.promedio_anio + '</td></tr>'
 
             $("#tablaColocacionBody").append(append);
 
@@ -90,9 +95,9 @@ function getEstado() {
 
 
                 for (const prop in dataTablas.brokers[i].valores) {
-                    append += '<td>' + (`${dataTablas.brokers[i].valores[prop]}`) + '</td>'
+                    append += '<td class="numero">' + (`${dataTablas.brokers[i].valores[prop]}`) + '</td>'
                 }
-                append += '<td class="obscuro">' + dataTablas.brokers[i].suma_anio + '</td><td>' + dataTablas.brokers[i].promedio_anio + '</td></tr>'
+                append += '<td class="obscuro numero">' + dataTablas.brokers[i].suma_anio + '</td><td>' + dataTablas.brokers[i].promedio_anio + '</td></tr>'
             }
 
             $("#tablaBrokersBody").append(append);
@@ -116,7 +121,7 @@ function getEstado() {
 
 
                 for (const prep in dataTablas.promedios[i].valores) {
-                    append += '<td class="' + (`${dataTablas.promedios[i].valores[prep][1]}`) + '">' + (`${dataTablas.promedios[i].valores[prep][0]}`) + '</td>'
+                    append += '<td class="' + (`${dataTablas.promedios[i].valores[prep][1]}`) + ' numero">' + (`${dataTablas.promedios[i].valores[prep][0]}`) + '</td>'
                 }
 
                 append += "</tr>"
@@ -137,7 +142,7 @@ function getEstado() {
 
 
                 for (const prep in dataTablas.asesores[i].valores) {
-                    append += '<td>' + (`${dataTablas.asesores[i].valores[prep]}`) + '</td>'
+                    append += '<td class="numero">' + (`${dataTablas.asesores[i].valores[prep]}`) + '</td>'
                 }
                 append += "</tr>"
             }

@@ -220,6 +220,11 @@ def consulta_convenio_cartera():
 			pct_m_ma = (row[1] * 1.00)/ (row[2] * 1.00) - 1
 			pct_m_ma = pct_m_ma * 100.00
 			registro['total_mes_vs_ma_pct'] = '{:0,.2f}%'.format(pct_m_ma) 
+
+			if pct_m_ma < 0:
+				registro['colorMA'] = "rojo"
+			else:
+				registro['colorMA'] = "blanco"
 		if row[3] == 0:
 			registro['total_mes_vs_maa_pct'] = '0.00%'
 		else:
@@ -227,6 +232,11 @@ def consulta_convenio_cartera():
 			pct_m_maa = (row[1] * 1.00)/ (row[3] * 1.00) - 1
 			pct_m_maa = pct_m_maa * 100.00
 			registro['total_mes_vs_maa_pct'] = '{:0,.2f}%'.format(pct_m_maa)
+
+			if pct_m_maa < 0:
+				registro['colorMAA'] = "rojo"
+			else:
+				registro['colorMAA'] = "blanco"
 	
 		lista_resultado.append(registro)
 	
@@ -241,14 +251,25 @@ def consulta_convenio_cartera():
 	registro_totales['total_mes_vs_ma'] = '{:0,.2f}'.format(total_mes-total_ma) 
 	registro_totales['total_mes_vs_maa'] = '{:0,.2f}'.format(total_mes-total_maa)
 
+
 	if total_ma == 0:
 		registro_totales['total_mes_vs_ma_pct'] = '0.00%'
 	else:
 		registro_totales['total_mes_vs_ma_pct'] = '{:0,.2f}%'.format(((total_mes * 1.00) / (total_ma * 1.00)-1)*100) 
+		polaridad = ((total_mes * 1.00) / (total_ma * 1.00)-1)*100
+		if polaridad < 0:
+			registro_totales['colorMA'] = "rojo"
+		else:
+			registro_totales['colorMA'] = "blanco"
 	if total_maa == 0:
 		registro_totales['total_mes_vs_maa_pct'] = '0.00%'
 	else:
+		polaridad = ((total_mes * 1.00)/ (total_maa * 1.00)-1)*100
 		registro_totales['total_mes_vs_maa_pct'] = '{:0,.2f}%'.format(((total_mes * 1.00)/ (total_maa * 1.00)-1)*100)
+		if polaridad < 0:
+			registro_totales['colorMAA'] = "rojo"
+		else:
+			registro_totales['colorMAA'] = "blanco"
 	
 	lista_resultado.append(registro_totales)
 
@@ -266,7 +287,7 @@ def consulta_estado_colocacion():
 	else:
 		return 'Division no encontrada'
 	"""
-	meses=['ene-17','feb-17','mar-17','abr-17','may-17','jun-17','jul-17','ago-17','sep-17','oct-17','nov-17','dic-17','ene-18','feb-18','mar-18','abr-18']
+	meses=['ENE-17','FEB-17','MAR-17','ABR-17','MAY-17','JUN-17','JUL-17','AGO-17','SEP-17','OCT-17','NOV-17','DIC-17','ENE-18','FEB-18','MAR-18','ABR-18']
 	#[nombres, meses]
 	lista_estados_todos=[
 				['HIDALGO',38128,15654,180712,381427,399516,381346,423030,404383,490677,308609,245726,175715,876173,1318727,1079677,883818],
@@ -494,18 +515,18 @@ def costos_colocacion():
 						['Rentas', 61527]
 				]
 
-	lista_costo=[	['ene-18', '32.93%'],
-					['feb-18', '26.97%'],
-					['mar-18', '22.00%'],
-					['abr-18', '24.45%'],
-					['may-18', '0.00%'],
-					['jun-18', '0.00%'],
-					['jul-18', '0.00%'],
-					['ago-18', '0.00%'],
-					['sep-18', '0.00%'],
-					['oct-18', '0.00%'],
-					['nov-18', '0.00%'],
-					['dic-18', '0.00%'],
+	lista_costo=[	['ENE-18', '32.93%'],
+					['FEB-18', '26.97%'],
+					['MAR-18', '22.00%'],
+					['ABR-18', '24.45%'],
+					['MAY-18', '0.00%'],
+					['JUN-18', '0.00%'],
+					['JUL-18', '0.00%'],
+					['AGO-18', '0.00%'],
+					['SEP-18', '0.00%'],
+					['OCT-18', '0.00%'],
+					['NOV-18', '0.00%'],
+					['DIC-18', '0.00%'],
 					['TOTAL', '26.17%']
 				]
 
@@ -527,7 +548,7 @@ def costos_colocacion():
 		if i == 0:
 			registro['porcentaje'] = '%'
 		else:
-			registro['porcentaje'] = '{:0,.2f}%'.format((row[1] / total_mes) * 100.00)
+			registro['porcentaje'] = '{:0,.2f}%'.format(((row[1] * 1.00) / total_mes) * 100.00)
 		lista_resultado_mes.append(registro)
 
 	for i, row in enumerate(lista_acumulado):
@@ -538,7 +559,7 @@ def costos_colocacion():
 		if i == 0:
 			registro['porcentaje'] = '%'
 		else:
-			registro['porcentaje'] = '{:0,.2f}%'.format((row[1] / total_acumulado) * 100.00)
+			registro['porcentaje'] = '{:0,.2f}%'.format(((row[1] * 1.00)/ total_acumulado) * 100.00)
 		lista_resultado_acumulado.append(registro)
 	
 	for i, row in enumerate(lista_costo):

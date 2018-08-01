@@ -20,6 +20,7 @@ body{
 .table{
     float: left;
     margin-bottom: 0 !important;
+    text-align: center;
 }
 
 .chart-container {

@@ -1,13 +1,8 @@
-canvas{
-    display: block !important;
-    width: 900px !important;
-    height: 610px !important;
-}
 
 @media only screen and (min-width: 1200px) {
     canvas{
         display: block !important;
-        width: 900px !important;
+        width: 800px !important;
         height: 610px !important;
     }
 }
@@ -15,7 +10,7 @@ canvas{
 @media only screen and (min-width: 992px) {
     canvas{
         display: block !important;
-        width: 720px !important;
+        width: 540px !important;
         height: 610px !important;
     }
 }
@@ -23,7 +18,7 @@ canvas{
 @media only screen and (min-width: 1700px) {
     canvas{
         display: block !important;
-        width: 1400px !important;
+        width: 1200px !important;
         height: 610px !important;
     }
 }
