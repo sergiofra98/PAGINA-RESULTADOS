@@ -23,3 +23,44 @@ form h3{
 .chart .col{
     width: 50% important;
 }
+
+
+@media only screen and (min-width: 576px) {
+    canvas{
+        display: block !important;
+        width: 490px !important;
+        height: 380px !important;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    canvas{
+        display: block !important;
+        width: 680px !important;
+        height: 485px !important;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    canvas{
+        display: block !important;
+        width: 445px !important;
+        height: 360px !important;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    canvas{
+        display: block !important;
+        width: 535px !important;
+        height: 425px !important;
+    }
+}
+
+@media only screen and (min-width: 1700px) {
+    canvas{
+        display: block !important;
+        width: 800px !important;
+        height: 610px !important;
+    }
+}

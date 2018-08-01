@@ -6,7 +6,6 @@
 
 body{
     padding-top: 24px; 
-    min-width: 1024px;
     background-color: #003da5;
     color: #2d2026 !important;
 }
@@ -43,7 +42,6 @@ body{
 }
 
 .container{
-    min-width: 960px !important;
     background-color: white;
     border-radius: 18px;
     padding: 24px 18px; 
