@@ -116,7 +116,7 @@ function getColocacion() {
 
             append = "";
 
-            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.mes[0].nombre + '</td><td class="numero">$ ' + dataTablas.mes[0].valor + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + '</td></tr>';
+            append += '<tr style="border-bottom: 6px solid #9ba5af"><td>' + dataTablas.mes[0].nombre + '</td><td class="numero">$ ' + dataTablas.mes[0].valor + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + '</td></tr>';
 
             for (i = 1; i < dataTablas.mes.length; i++) {
                 if (i === dataTablas.mes.length - 1) {
@@ -131,7 +131,7 @@ function getColocacion() {
 
             append = "";
 
-            append += '<tr style="border-bottom: 4px solid #dee2e6"><td>' + dataTablas.acumulado[0].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[0].valor + '</td><td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + '</td></tr>';
+            append += '<tr style="border-bottom: 6px solid #9ba5af"><td>' + dataTablas.acumulado[0].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[0].valor + '</td><td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + '</td></tr>';
 
             for (i = 1; i < dataTablas.acumulado.length; i++) {
                 if (i === dataTablas.acumulado.length - 1) {

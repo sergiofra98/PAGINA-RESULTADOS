@@ -1,12 +1,48 @@
-@media only screen and (min-width: 1700px) {
-    .container {
-        max-width: 1700px;
+
+@media only screen and (min-width: 576px) {
+    .imgMasNomina{
+        width: 210px;
+        margin: auto;
+        display: block;
     }
 }
 
+@media only screen and (min-width: 768px) {
+    .imgMasNomina{
+        width: 210px;
+        margin: auto;
+        display: block;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .imgMasNomina{
+        width: 210px;
+        margin: auto;
+        display: block;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .imgMasNomina{
+        width: 210px;
+        margin: auto;
+        display: block;
+    }
+}
+
+@media only screen and (min-width: 1700px) {
+    .imgMasNomina{
+        width: 210px;
+        margin: auto;
+        display: block;
+    }
+}
+
+
 body{
     padding-top: 24px; 
-    background-color: #003da5;
+    background-color: #f3f3f3;
     color: #2d2026 !important;
 }
 
@@ -31,6 +67,11 @@ body{
     float: left;
 }
 
+thead{
+    background-color: #007bff;
+    color: white;
+}
+
 .form-group .row{
     padding-bottom: 16px;
     border-bottom: #535353 solid 2px;
@@ -43,7 +84,7 @@ body{
 
 .container{
     background-color: white;
-    border-radius: 18px;
+    border: #535353 solid 4px;
     padding: 24px 18px; 
 }
 
@@ -84,7 +125,7 @@ body{
 }
 
 #tituloTabla{
-    background-color: #535353; 
+    background-color: #00519D; 
     color: white;
 }
 
@@ -98,4 +139,8 @@ canvas{
 
 .numero{
     text-align: right;
+}
+
+.texto{
+    text-align: left;
 }

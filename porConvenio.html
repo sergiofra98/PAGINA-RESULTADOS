@@ -34,17 +34,10 @@
                     <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
                 </div>
                 <div class="col-sm">
-                    <div class="col" style="float: left;">
-                        <label for="mes">Periodo: </label>
-                        <select required name="inputMes" id="inputMes" class="form-control">
+                    <label for="mes">Periodo: </label>
+                    <select required name="inputMes" id="inputMes" class="form-control">
 
-                        </select>
-                    </div>
-                    <div class="col">
-                        <b style="float: left;" id="ano">
-
-                        </b>
-                    </div>
+                    </select>
                 </div>
                 <div class="col-sm">
                     <label for="mes">División: </label>
@@ -60,7 +53,15 @@
                         <option value="VMCENTRO">VM CENTRO</option>
                     </select>
                 </div>
-
+                <div class="col-sm">
+                    <label for="mes">Producto: </label>
+                    <select required name="inputMes" id="inputMes" class="form-control">
+                        <option disabled hidden selected value="">Elija una opción</option>
+                        <option value="TODOS">TODOS</option>
+                        <option value="CENTRO">CRÉDITO MAS NOMINA</option>
+                        <option value="SUR">CRÉDITO DOMICILIADO</option>
+                    </select>
+                </div>
                 <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
             </div>
         </form>
@@ -81,7 +82,7 @@
                 <div class="tabla" id="colocacion">
                     <h4>Colocación</h4>
                     <table class="table table-bordered">
-                        <thead class="thead-light">
+                        <thead>
                             <tr>
                                 <th colspan="1"></th>
                                 <th colspan="2">Total Mes</th>
@@ -95,7 +96,7 @@
             </div>
 
             <div class="chart-container col">
-                <canvas id="canvasGraficaColocacion" width="500" height="700"></canvas>
+                <canvas id="canvasGraficaColocacion" width="600" height="700"></canvas>
             </div>
         </div>
 
@@ -106,7 +107,7 @@
         <div class="tabla row" id="body">
             <div class="col">
                 <table class="table table-bordered">
-                    <thead class="thead-light">
+                    <thead>
                         <tr>
                             <th id="tituloTabla"></th>
                             <th id="tituloTabla" colspan="4">Vs Mes Anterior</th>

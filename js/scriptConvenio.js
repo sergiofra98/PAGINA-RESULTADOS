@@ -4,22 +4,20 @@ $(document).ready(function () {
     append = "";
 
     for (let i = 0; i < mes; i++) {
-        if(i < 10)
-        {
+        if (i < 10) {
             append += "<option> 0" + (mes - i) + "/" + ano + "</option>"
         }
-        else{
+        else {
             append += "<option>" + (mes - i) + "/" + ano + "</option>"
         }
     }
 
     for (let i = 1; i < 13; i++) {
-        if(i < 4)
-        {
+        if (i < 4) {
             append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
 
         }
-        else{
+        else {
             append += "<option> 0" + (13 - i) + "/" + (ano - 1) + "</option>"
 
         }
@@ -54,19 +52,19 @@ function getColocacion() {
             for (let i = 0; i < dataTablas.length; i++) {
                 if (i === dataTablas.length - 1) {
                     append += '<tr class="obscuro">' +
-                        '<td>' + dataTablas[i].nombre + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="texto">' + dataTablas[i].nombre + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes + '</td>' +
                         '<td class="colObscuro">' + dataTablas[i].total_mes_pct + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes_aa + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes_aa + '</td>' +
                         '<td class="colObscuro">' + dataTablas[i].total_mes_aa_pct + '</td>' +
                         '</tr>';
                 }
                 else {
                     append += '<tr>' +
-                        '<td>' + dataTablas[i].nombre + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
+                        '<td  class="texto">' + dataTablas[i].nombre + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes + '</td>' +
                         '<td class="colObscuro">' + dataTablas[i].total_mes_pct + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes_aa + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes_aa + '</td>' +
                         '<td class="colObscuro">' + dataTablas[i].total_mes_aa_pct + '</td>' +
                         '</tr>';
                 }
@@ -103,28 +101,28 @@ function getColocacion() {
             for (let i = 0; i < dataTablas.length; i++) {
                 if (i === dataTablas.length - 1) {
                     append += '<tr class="obscuro">' +
-                        '<td>' + dataTablas[i].nombre + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
-                        '<td class="colObscuro numero">$ ' + dataTablas[i].total_ma + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes_vs_ma + '</td>' +
-                        '<td class="colObscuro '+ dataTablas[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
-                        '<td class="colObscuro numero">$ ' + dataTablas[i].total_maa + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes_vs_maa + '</td>' +
-                        '<td class="colObscuro'+ dataTablas[i].colorMAA + '">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
+                        '<td  class="texto">' + dataTablas[i].nombre + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro numero"> ' + dataTablas[i].total_ma + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes_vs_ma + '</td>' +
+                        '<td class="colObscuro ' + dataTablas[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro numero"> ' + dataTablas[i].total_maa + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes_vs_maa + '</td>' +
+                        '<td class="colObscuro' + dataTablas[i].colorMAA + '">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
                         '</tr>';
                 }
                 else {
                     append += '<tr >' +
-                        '<td>' + dataTablas[i].nombre + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
-                        '<td class="colObscuro numero">$ ' + dataTablas[i].total_ma + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes_vs_ma + '</td>' +
-                        '<td class="colObscuro '+ dataTablas[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
-                        '<td class="numero">$ ' + dataTablas[i].total_mes + '</td>' +
-                        '<td class="colObscuro numero">$ ' + dataTablas[i].total_maa + '</td>' +
-                        '<td  class="numero">$ ' + dataTablas[i].total_mes_vs_maa + '</td>' +
-                        '<td class="colObscuro '+ dataTablas[i].colorMAA + '">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
+                        '<td  class="texto">' + dataTablas[i].nombre + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro numero"> ' + dataTablas[i].total_ma + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes_vs_ma + '</td>' +
+                        '<td class="colObscuro ' + dataTablas[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
+                        '<td class="numero"> ' + dataTablas[i].total_mes + '</td>' +
+                        '<td class="colObscuro numero"> ' + dataTablas[i].total_maa + '</td>' +
+                        '<td  class="numero"> ' + dataTablas[i].total_mes_vs_maa + '</td>' +
+                        '<td class="colObscuro ' + dataTablas[i].colorMAA + '">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
                         '</tr>';
                 }
             }
@@ -142,9 +140,8 @@ function getColocacion() {
 
 function generarGraficas(labels, data, colors) {
     graficaColocacion = new Chart($("#canvasGraficaColocacion"), {
-        type: 'pie',
+        type: 'bar',
         options: {
-            responsive: false,
             title: {
                 display: true,
                 position: "top",
@@ -152,19 +149,9 @@ function generarGraficas(labels, data, colors) {
                 fontSize: 24,
                 fontColor: "#111"
             },
-            legend: {
-                display: true,
-                position: "bottom",
-                labels: {
-                    fontColor: "#333",
-                    fontSize: 12
-                }
-            },
-            layout: {
-                padding: {
-                    left: 0, right: 0, top: 0, bottom: 0
-                }
-            },
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: { display: false },
             tooltips: {
                 callbacks: {
                     label: function (tooltipItem, data) {
@@ -181,6 +168,13 @@ function generarGraficas(labels, data, colors) {
                         return labels[tooltipItem.index] + ": " + precentage + "%";
                     }
                 }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }]
             }
         },
         data: {
@@ -192,3 +186,4 @@ function generarGraficas(labels, data, colors) {
         }
     });
 }
+

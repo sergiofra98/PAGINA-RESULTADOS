@@ -1,4 +1,43 @@
 .rojo{
-    background-color: red;
-    color: white;
+    color: red;
+}
+
+@media only screen and (min-width: 576px) {
+    canvas{
+        display: block !important;
+        width: 490px !important;
+        height: 450px !important;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    canvas{
+        display: block !important;
+        width: 680px !important;
+        height: 485px !important;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    canvas{
+        display: block !important;
+        width: 915px !important;
+        height: 510px !important;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    canvas{
+        display: block !important;
+        width: 554px !important;
+        height: 905px !important;
+    }
+}
+
+@media only screen and (min-width: 1700px) {
+    canvas{
+        display: block !important;
+        width: 800px !important;
+        height: 610px !important;
+    }
 }

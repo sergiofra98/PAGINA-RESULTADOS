@@ -2,6 +2,10 @@
     overflow-x: scroll;
 }
 
+table{
+    display: block;
+}
+
 form h3{
     display: block;
     margin: auto;
@@ -21,7 +25,7 @@ form h3{
 }
 
 .chart .col{
-    width: 50% important;
+    width: 50% !important;
 }
 
 

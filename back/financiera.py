@@ -206,12 +206,12 @@ def consulta_convenio_cartera():
 		registro['id'] = i+1
 		registro['nombre'] = row[0]
 		
-		registro['total_mes'] = '{:0,.2f}'.format(row[1])
-		registro['total_ma'] = '{:0,.2f}'.format(row[2])
-		registro['total_maa'] = '{:0,.2f}'.format(row[3])
+		registro['total_mes'] = '{:0,.0f}'.format(row[1])
+		registro['total_ma'] = '{:0,.0f}'.format(row[2])
+		registro['total_maa'] = '{:0,.0f}'.format(row[3])
 		
-		registro['total_mes_vs_ma'] = '{:0,.2f}'.format(row[1]-row[2]) 
-		registro['total_mes_vs_maa'] = '{:0,.2f}'.format(row[1]-row[3]) 
+		registro['total_mes_vs_ma'] = '{:0,.0f}'.format(row[1]-row[2]) 
+		registro['total_mes_vs_maa'] = '{:0,.0f}'.format(row[1]-row[3]) 
 
 		if row[2] == 0:
 			registro['total_mes_vs_ma_pct'] = '0.00%'
@@ -244,12 +244,12 @@ def consulta_convenio_cartera():
 	registro_totales['id'] = len(lista_resultado) + 1
 	registro_totales['nombre'] = 'TOTAL'
 
-	registro_totales['total_mes'] = '{:0,.2f}'.format(total_mes)
-	registro_totales['total_ma'] = '{:0,.2f}'.format(total_ma)
-	registro_totales['total_maa'] = '{:0,.2f}'.format(total_maa)
+	registro_totales['total_mes'] = '{:0,.0f}'.format(total_mes)
+	registro_totales['total_ma'] = '{:0,.0f}'.format(total_ma)
+	registro_totales['total_maa'] = '{:0,.0f}'.format(total_maa)
 
-	registro_totales['total_mes_vs_ma'] = '{:0,.2f}'.format(total_mes-total_ma) 
-	registro_totales['total_mes_vs_maa'] = '{:0,.2f}'.format(total_mes-total_maa)
+	registro_totales['total_mes_vs_ma'] = '{:0,.0f}'.format(total_mes-total_ma) 
+	registro_totales['total_mes_vs_maa'] = '{:0,.0f}'.format(total_mes-total_maa)
 
 
 	if total_ma == 0:
@@ -348,10 +348,10 @@ def consulta_estado_colocacion():
 		if i == len(lista_estados_todos[0]):
 			break
 		else:
-			total_general['valores'][str(i)] = '{:0,.2f}'.format(float(aux_estados['valores'][str(i)].replace(',','')) + float(aux_brokers['valores'][str(i)].replace(',','')))
+			total_general['valores'][str(i)] = '{:0,.0f}'.format(float(aux_estados['valores'][str(i)].replace(',','')) + float(aux_brokers['valores'][str(i)].replace(',','')))
 	total_general['suma_anio'] = float(aux_estados['suma_anio'].replace(',','')) + float(aux_brokers['suma_anio'].replace(',',''))
-	total_general['promedio_anio'] = '{:0,.2f}'.format(total_general['suma_anio']/2)
-	total_general['suma_anio'] = '{:0,.2f}'.format(total_general['suma_anio'])
+	total_general['promedio_anio'] = '{:0,.0f}'.format(total_general['suma_anio']/2)
+	total_general['suma_anio'] = '{:0,.0f}'.format(total_general['suma_anio'])
 
 	#calculos para sacar info asesores
 	lista_asesores = []
@@ -400,7 +400,7 @@ def consulta_estado_colocacion():
 				else:
 					temp.append('malo')
 
-				temp[0] = '{:0,.2f}'.format(temp[0])
+				temp[0] = '{:0,.0f}'.format(temp[0])
 
 			registro['valores'].append(temp)
 
@@ -425,7 +425,7 @@ def consulta_estado_colocacion():
 			else:
 				temp.append('malo')
 
-			temp[0] = '{:0,.2f}'.format(temp[0])
+			temp[0] = '{:0,.0f}'.format(temp[0])
 		total.append(temp)
 
 	total_promedio['id']=len(lista_promedio)+1
@@ -457,8 +457,8 @@ def calculo_x_estado(lista_todo, lista_actual):
 			if j == len(row):
 				break
 			else:
-				registro['valores'][str(j)] = '{:0,.2f}'.format(row[j])
-				total['valores'][str(j)] = '{:0,.2f}'.format( float( total['valores'].get(str(j), '0').replace(',','') ) + row[j] )
+				registro['valores'][str(j)] = '{:0,.0f}'.format(row[j])
+				total['valores'][str(j)] = '{:0,.0f}'.format( float( total['valores'].get(str(j), '0').replace(',','') ) + row[j] )
 		suma_anio = 0
 		turno = lista_actual[i-1]
 		for j, row2 in enumerate(turno, 1):
@@ -467,14 +467,14 @@ def calculo_x_estado(lista_todo, lista_actual):
 			else:
 				suma_anio += turno[j]
 				suma_anio_total += turno[j]
-		registro['suma_anio'] = '{:0,.2f}'.format(suma_anio)
-		registro['promedio_anio'] = '{:0,.2f}'.format(suma_anio/(len(turno)-1))
+		registro['suma_anio'] = '{:0,.0f}'.format(suma_anio)
+		registro['promedio_anio'] = '{:0,.0f}'.format(suma_anio/(len(turno)-1))
 
 		lista_resultado.append(registro)
 
 	total['id'] = len(lista_resultado) + 1
-	total['suma_anio'] = '{:0,.2f}'.format(suma_anio_total)
-	total['promedio_anio'] = '{:0,.2f}'.format(suma_anio_total/len(lista_resultado))
+	total['suma_anio'] = '{:0,.0f}'.format(suma_anio_total)
+	total['promedio_anio'] = '{:0,.0f}'.format(suma_anio_total/len(lista_resultado))
 
 	lista_resultado.append(total)
 	

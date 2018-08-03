@@ -49,10 +49,10 @@ function getEstado() {
             for (let i = 0; i < dataTablas.estados.length; i++) {
 
                 if (i === dataTablas.estados.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.estados[i].nombre + '</td>';
+                    append += '<tr class="obscuro texto"><td>' + dataTablas.estados[i].nombre + '</td>';
                 }
                 else {
-                    append += "<tr><td>" + dataTablas.estados[i].nombre + "</td>";
+                    append += '<tr><td class="texto">' + dataTablas.estados[i].nombre + "</td>";
                 }
 
 
@@ -65,7 +65,7 @@ function getEstado() {
                 append += "</tr>"
             }
 
-            append += '<tr><td>BROOKERS</td>'
+            append += '<tr><td  class="texto">BROKERS</td>'
             let totalBrokers = dataTablas.brokers.length - 1;
 
             for (const prop in dataTablas.brokers[totalBrokers].valores) {
@@ -82,25 +82,25 @@ function getEstado() {
             $("#tablaColocacionBody").append(append);
 
             //PEGAR TABLA DE BROKERS
-            append = "";
+            // append = "";
 
-            for (let i = 0; i < dataTablas.brokers.length; i++) {
+            // for (let i = 0; i < dataTablas.brokers.length; i++) {
 
-                if (i === dataTablas.brokers.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.brokers[i].nombre.replace(/_/g, ' '); + '</td>';
-                }
-                else {
-                    append += "<tr><td>" + dataTablas.brokers[i].nombre.replace(/_/g, ' '); + "</td>";
-                }
+            //     if (i === dataTablas.brokers.length - 1) {
+            //         append += '<tr class="obscuro texto"><td>' + dataTablas.brokers[i].nombre.replace(/_/g, ' '); + '</td>';
+            //     }
+            //     else {
+            //         append += '<tr><td class="texto">' + dataTablas.brokers[i].nombre.replace(/_/g, ' '); + "</td>";
+            //     }
 
 
-                for (const prop in dataTablas.brokers[i].valores) {
-                    append += '<td class="numero">' + (`${dataTablas.brokers[i].valores[prop]}`) + '</td>'
-                }
-                append += '<td class="obscuro numero">' + dataTablas.brokers[i].suma_anio + '</td><td>' + dataTablas.brokers[i].promedio_anio + '</td></tr>'
-            }
+            //     for (const prop in dataTablas.brokers[i].valores) {
+            //         append += '<td class="numero">' + (`${dataTablas.brokers[i].valores[prop]}`) + '</td>'
+            //     }
+            //     append += '<td class="obscuro numero">' + dataTablas.brokers[i].suma_anio + '</td><td>' + dataTablas.brokers[i].promedio_anio + '</td></tr>'
+            // }
 
-            $("#tablaBrokersBody").append(append);
+            // $("#tablaBrokersBody").append(append);
 
             //PEGAR TABLA DE ASESOR PROMEDIOS
             append = '<th></th>'
@@ -113,10 +113,10 @@ function getEstado() {
             for (let i = 0; i < dataTablas.promedios.length; i++) {
 
                 if (i === dataTablas.promedios.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + '</td>';
+                    append += '<tr class="obscuro texto"><td>' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + '</td>';
                 }
                 else {
-                    append += "<tr><td>" + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + "</td>";
+                    append += '<tr><td class="texto">' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + "</td>";
                 }
 
 
@@ -134,10 +134,10 @@ function getEstado() {
             for (let i = 0; i < dataTablas.asesores.length; i++) {
 
                 if (i === dataTablas.asesores.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + '</td>';
+                    append += '<tr class="obscuro texto"><td>' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + '</td>';
                 }
                 else {
-                    append += "<tr><td>" + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + "</td>";
+                    append += '<tr><td class="texto">' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + "</td>";
                 }
 
 
@@ -186,6 +186,7 @@ function getEstado() {
                         data: temp2,
                         label: dataTablas.estados[i].nombre,
                         borderColor: generadorColores(1),
+                        backgroundColor: generadorColores(1),
                         fill: false
                     });
                 }
@@ -283,6 +284,8 @@ function declararCharts(data1, data2, data3, data4) {
         type: 'line',
         data: data1,
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             title: {
                 display: true,
                 text: 'Colocación'
@@ -293,6 +296,8 @@ function declararCharts(data1, data2, data3, data4) {
         type: 'line',
         data: data2,
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             title: {
                 display: true,
                 text: 'Colocación por estado'
@@ -303,6 +308,8 @@ function declararCharts(data1, data2, data3, data4) {
         type: 'line',
         data: data3,
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             title: {
                 display: true,
                 text: 'Colocación Promedio de Asesor'
@@ -314,6 +321,8 @@ function declararCharts(data1, data2, data3, data4) {
         type: 'bar',
         data: data4,
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 xAxes: [{
                     stacked: true

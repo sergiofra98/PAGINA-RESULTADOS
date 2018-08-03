@@ -36,17 +36,10 @@
                     <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
                 </div>
                 <div class="col-sm">
-                    <div class="col" style="float: left;">
-                        <label for="mes">Periodo: </label>
-                        <select required name="inputMes" id="inputMes" class="form-control">
+                    <label for="mes">Periodo: </label>
+                    <select required name="inputMes" id="inputMes" class="form-control">
 
-                        </select>
-                    </div>
-                    <div class="col">
-                        <b style="float: left;" id="ano">
-
-                        </b>
-                    </div>
+                    </select>
                 </div>
                 <div class="col-sm">
                     <label for="mes">División: </label>
@@ -62,7 +55,15 @@
                         <option value="VMCENTRO">VM CENTRO</option>
                     </select>
                 </div>
-
+                <div class="col-sm">
+                    <label for="mes">Producto: </label>
+                    <select required name="inputMes" id="inputMes" class="form-control">
+                        <option disabled hidden selected value="">Elija una opción</option>
+                        <option value="TODOS">TODOS</option>
+                        <option value="CENTRO">CRÉDITO MAS NOMINA</option>
+                        <option value="SUR">CRÉDITO DOMICILIADO</option>
+                    </select>
+                </div>
                 <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
             </div>
         </form>
@@ -83,7 +84,7 @@
                 <div class="row tabla">
                     <div class="col">
                         <table class="table-hover table-bordered table">
-                            <thead class="thead-light">
+                            <thead>
                                 <tr id="tablaMesHead">
 
                                 </tr>
@@ -99,7 +100,7 @@
                 <div class="row tabla">
                     <div class="col">
                         <table class="table table-hover table-bordered">
-                            <thead class="thead-light">
+                            <thead>
                                 <tr>
                                     <th colspan="3">Acumulado</th>
                                 </tr>
@@ -112,12 +113,12 @@
             </div>
         </div>
 
-        <div class="row" id="body" >
+        <div class="row" id="body">
             <div class="col col-md-auto">
                 <div class="row tabla" style="display:block; width: 380px;">
                     <div class="col">
                         <table class="table table-hover table-bordered">
-                            <thead class="thead-light">
+                            <thead>
                                 <tr>
                                     <th colspan="2">Costo</th>
                                 </tr>

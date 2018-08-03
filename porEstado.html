@@ -53,6 +53,15 @@
                         <option value="VMCENTRO">VM CENTRO</option>
                     </select>
                 </div>
+                <div class="col-sm">
+                    <label for="mes">Producto: </label>
+                    <select required name="inputMes" id="inputMes" class="form-control">
+                        <option disabled hidden selected value="">Elija una opción</option>
+                        <option value="TODOS">TODOS</option>
+                        <option value="CENTRO">CRÉDITO MAS NOMINA</option>
+                        <option value="SUR">CRÉDITO DOMICILIADO</option>
+                    </select>
+                </div>
                 <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getEstado()">Consultar</button>
             </div>
         </form>
@@ -70,7 +79,7 @@
         <div class="row tabla" id="body">
             <div class="col">
                 <table class="table table-bordered">
-                    <thead class="thead-light">
+                    <thead >
                         <tr>
                             <th id="tituloTabla" colspan="99">Colocación</th>
                         </tr>
@@ -80,14 +89,14 @@
                     </thead>
                     <tbody id="tablaColocacionBody">
                     </tbody>
-                    <thead class="thead-light">
+                    <!-- <thead >
                         <tr>
                             <th id="tituloTabla" colspan="99">Detalle Brokers</th>
                         </tr>
                     </thead>
                     <tbody id="tablaBrokersBody">
-                    </tbody>
-                    <thead class="thead-light">
+                    </tbody> -->
+                    <thead >
                         <tr>
                             <th id="tituloTabla" colspan="99">Venta Promedio por Asesor</th>
                         </tr>
@@ -97,7 +106,7 @@
                     </thead>
                     <tbody id="tablaAsesorPromBody">
                     </tbody>
-                    <thead class="thead-light">
+                    <thead >
                         <tr>
                             <th id="tituloTabla" colspan="99">Plantilla de Asesores</th>
                         </tr>
