@@ -72,7 +72,7 @@ function getEstado() {
                 append += '<td class="numero">' + (`${dataTablas.brokers[totalBrokers].valores[prop]}`) + '</td>'
             }
             append += '<td class="obscuro numero">' + dataTablas.brokers[totalBrokers].suma_anio + '</td><td>' +
-                dataTablas.brokers[totalBrokers].promedio_anio + '</td></tr><tr class="obscuro"><td>TOTAL GENERAL</td>'
+                dataTablas.brokers[totalBrokers].promedio_anio + '</td></tr><tr class="texto obscuro"><td>TOTAL GENERAL</td>'
 
             for (const prop in dataTablas.total_general.valores) {
                 append += '<td class="numero">' + (`${dataTablas.total_general.valores[prop]}`) + '</td>'
@@ -113,7 +113,7 @@ function getEstado() {
             for (let i = 0; i < dataTablas.promedios.length; i++) {
 
                 if (i === dataTablas.promedios.length - 1) {
-                    append += '<tr class="obscuro texto"><td>' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + '</td>';
+                    append += '<tr class="obscuro"><td class="texto">' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + '</td>';
                 }
                 else {
                     append += '<tr><td class="texto">' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + "</td>";
