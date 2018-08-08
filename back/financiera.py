@@ -101,32 +101,41 @@ def consulta_convenio_colocacion():
 	
 	#se realiza la consulta
 	lista_resultado = []
-	lista_datos=[['GOBIERNO DE HIDALGO',967203.15,379404.20,3707870.52],
-				 ['SNTE 14 FEDERAL GUERRERO',332979,42000,1290814],
-				 ['PEMEX',301332,0,988869],
-				 ['SAGARPA',207681,0,739000],
-				 ['INE',154272,343852,657500],
-				 ['SENTE 23 FEDERAL PUEBLA',63500,0,189963],
-				 ['IMSS PENSIONADOS',68055,107720,562569],
-				 ['IMSS JUBILADOS',51853,272508,157500],
-				 ['IMSS ACTIVOS',0,0,125762],
-				 ['IMSS PARITARIA',0,15000,21000],
-				 ['COBAEH',0,0,141980],
-				 ['TELECOMM',0,0,3000]
+	lista_datos=[['GOBIERNO DE HIDALGO',967203.15,379404.20,3707870.52, 3707870.52],
+				 ['SNTE 14 FEDERAL GUERRERO',332979,42000,1290814, 370870.52],
+				 ['PEMEX',301332,0,988869, 3707870.52],
+				 ['SAGARPA',207681,0,739000, 37070.52],
+				 ['INE',154272,343852,657500, 37070.52],
+				 ['SENTE 23 FEDERAL PUEBLA',63500,0,189963, 37870.52],
+				 ['IMSS PENSIONADOS',68055,107720,562569, 377870.52],
+				 ['IMSS JUBILADOS',51853,272508,157500, 370870.52],
+				 ['IMSS ACTIVOS',0,0,125762, 37870.52],
+				 ['IMSS PARITARIA',0,15000,21000,37070.52],
+				 ['COBAEH',0,0,141980,3870.52],
+				 ['TELECOMM',0,0,3000,37870.52]
 				]
 
 	#Obtenemos totales
 	total_mes = 0
 	total_mes_aa = 0
 	total_acu = 0
+	total_acu_aa = 0
+
 	for row in lista_datos:
 		total_mes = total_mes + row[1]
 		total_mes_aa = total_mes_aa + row[2]
 		total_acu = total_acu + row[3]
+		total_acu_aa = total_acu_aa + row[4]
 	
 	contador = 1
 	for row in lista_datos:
 		registro = {}
+
+		if(row[3]):
+			comparacion_acum = ((row[4] * 1.00)/ (row[3] * 1.00) - 1)*100
+		else:
+			comparacion_acum = 0
+		
 		registro['id'] = contador
 		registro['nombre'] = row[0]
 		
@@ -139,9 +148,17 @@ def consulta_convenio_colocacion():
 		registro['total_mes_aa_pct'] = '{:0,.2f}%'.format(total_mes_aa_pct)
 		
 		registro['total_acu'] = '{:0,.0f}'.format(row[3]) 
+		registro['total_acu_aa'] = '{:0,.0f}'.format(row[4]) 
 		total_acu_pct = (row[3] / total_acu) * 100.00
 		registro['total_acu_pct'] = '{:0,.2f}%'.format(total_acu_pct)
-		
+		registro['total_acu_comp_pct'] = '{:0,.2f}%'.format(comparacion_acum)
+
+		if(comparacion_acum < 0):
+			registro['color_acu'] = 'rojo'
+		else:
+			registro['color_acu'] = ''
+
+
 		contador = contador + 1
 		lista_resultado.append(registro)
 	
@@ -153,7 +170,9 @@ def consulta_convenio_colocacion():
 	registro_totales['total_mes_aa'] = '{:0,.0f}'.format(total_mes_aa)
 	registro_totales['total_mes_aa_pct'] = '{:0,.2f}%'.format(100) 
 	registro_totales['total_acu'] = '{:0,.0f}'.format(total_acu)
+	registro_totales['total_acu_aa'] = '{:0,.0f}'.format(total_acu_aa)
 	registro_totales['total_acu_pct'] = '{:0,.2f}%'.format(100) 
+	registro_totales['total_acu_comp_pct'] = '-'
 	
 	lista_resultado.append(registro_totales)
 	
@@ -435,8 +454,10 @@ def consulta_estado_colocacion():
 	retorno = {}
 	retorno['estados'] = lista_estados
 	retorno['brokers'] = lista_brokers
-	retorno['promedios'] = lista_promedio
+	retorno['promedios_asesor'] = lista_promedio
+	retorno['promedios_supervisor'] = lista_promedio
 	retorno['asesores'] = lista_asesores
+	retorno['supervisores'] = lista_asesores
 	retorno['total_general'] = total_general
 	retorno['meses'] = meses
 

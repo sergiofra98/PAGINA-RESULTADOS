@@ -110,18 +110,18 @@ function getEstado() {
             $("#tablaAsesorHead").append(append);
 
             append = "";
-            for (let i = 0; i < dataTablas.promedios.length; i++) {
+            for (let i = 0; i < dataTablas.promedios_asesor.length; i++) {
 
-                if (i === dataTablas.promedios.length - 1) {
-                    append += '<tr class="obscuro"><td class="texto">' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + '</td>';
+                if (i === dataTablas.promedios_asesor.length - 1) {
+                    append += '<tr class="obscuro"><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + '</td>';
                 }
                 else {
-                    append += '<tr><td class="texto">' + dataTablas.promedios[i].nombre.replace(/_/g, ' '); + "</td>";
+                    append += '<tr><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + "</td>";
                 }
 
 
-                for (const prep in dataTablas.promedios[i].valores) {
-                    append += '<td class="' + (`${dataTablas.promedios[i].valores[prep][1]}`) + ' numero">' + (`${dataTablas.promedios[i].valores[prep][0]}`) + '</td>'
+                for (const prep in dataTablas.promedios_asesor[i].valores) {
+                    append += '<td class="' + (`${dataTablas.promedios_asesor[i].valores[prep][1]}`) + ' numero">' + (`${dataTablas.promedios_asesor[i].valores[prep][0]}`) + '</td>'
                 }
 
                 append += "</tr>"
@@ -148,6 +148,55 @@ function getEstado() {
             }
 
             $("#tablaAsesorBody").append(append);
+
+             //PEGAR TABLA DE SUPEERVISORES PROMEDIOS
+             append = '<th></th>'
+             for (const prop in dataTablas.meses) {
+                 append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
+             }
+             $("#tablaAsesorHead").append(append);
+ 
+             append = "";
+             for (let i = 0; i < dataTablas.promedios_asesor.length; i++) {
+ 
+                 if (i === dataTablas.promedios_asesor.length - 1) {
+                     append += '<tr class="obscuro"><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + '</td>';
+                 }
+                 else {
+                     append += '<tr><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + "</td>";
+                 }
+ 
+ 
+                 for (const prep in dataTablas.promedios_asesor[i].valores) {
+                     append += '<td class="' + (`${dataTablas.promedios_asesor[i].valores[prep][1]}`) + ' numero">' + (`${dataTablas.promedios_asesor[i].valores[prep][0]}`) + '</td>'
+                 }
+ 
+                 append += "</tr>"
+             }
+ 
+             $("#tablaSupervisorPromBody").append(append);
+ 
+             //PEGAR TABLA DE SUPEERVISORES 
+             append = "";
+             for (let i = 0; i < dataTablas.asesores.length; i++) {
+ 
+                 if (i === dataTablas.asesores.length - 1) {
+                     append += '<tr class="obscuro texto"><td>' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + '</td>';
+                 }
+                 else {
+                     append += '<tr><td class="texto">' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + "</td>";
+                 }
+ 
+ 
+                 for (const prep in dataTablas.asesores[i].valores) {
+                     append += '<td class="numero">' + (`${dataTablas.asesores[i].valores[prep]}`) + '</td>'
+                 }
+                 append += "</tr>"
+             }
+ 
+             $("#tablaSupervisorBody").append(append);
+ 
+             
 
             totalAno = dataTablas.estados.pop().valores;
 
@@ -195,7 +244,7 @@ function getEstado() {
 
             function generadorPromedio() {
                 temp = [];
-                promedio = dataTablas.promedios.pop()
+                promedio = dataTablas.promedios_asesor.pop()
                 for (const prep in promedio.valores) {
                     temp.push(parseInt((`${promedio.valores[prep]}`).replace(/,/g, '')));
                 }
@@ -205,6 +254,7 @@ function getEstado() {
             function generadorMNvsBrokers() {
                 temp = [];
                 temp2 = [];
+                temp3 = [];
                 total = dataTablas.brokers.pop();
 
                 for (const prep in total.valores) {
@@ -222,9 +272,13 @@ function getEstado() {
 
                 for (let i = 0; i < temp.length; i++) {
                     temp[i] = (temp[i] * 100 / temp2[i]).toFixed(2);
+                    temp3.push( 100 - temp[i])
                 }
-                return temp
+
+                return [temp, temp3]
             }
+
+            arregloMNN = generadorMNvsBrokers()
 
             declararCharts(
                 {
@@ -260,11 +314,18 @@ function getEstado() {
                 {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
                     datasets: [{
-                        data: generadorMNvsBrokers(),
-                        borderColor: "#007bff",
-                        backgroundColor: "#007bff",
+                        data: arregloMNN[0],
+                        borderColor: "#8e5ea2",
+                        backgroundColor: "#8e5ea2",
                         fill: false,
-                        label: "Porcentaje de contribución de brokers"
+                        label: "Porcentaje de contribución de asesores"
+                    },
+                    {
+                        data: arregloMNN[1],
+                        borderColor: "#3e95cd",
+                        backgroundColor: "#3e95cd",
+                        fill: false,
+                        label: "Porcentaje de contribución de asesores MN"
                     }]
                 }
             )
@@ -335,7 +396,6 @@ function declararCharts(data1, data2, data3, data4) {
                 display: true,
                 text: 'MN vs Brokers'
             },
-            legend: { display: false }
         }
     });
 }

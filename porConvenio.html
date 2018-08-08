@@ -80,13 +80,19 @@
         <div class="row" id="body">
             <div class="col">
                 <div class="tabla" id="colocacion">
-                    <h4>Colocación</h4>
                     <table class="table table-bordered">
                         <thead>
+                            <tr>
+                                <th id="tituloTabla" colspan="5">Colocación</th>
+                                <th id="tituloTabla" colspan="3">Acumulado vs AA</th>
+                            </tr>
                             <tr>
                                 <th colspan="1"></th>
                                 <th colspan="2">Total Mes</th>
                                 <th colspan="2">Total Mes AA</th>
+                                <th>AA</th>
+                                <th>Este año</th>
+                                <th>Comparado</th>
                             </tr>
                         </thead>
                         <tbody id="tablaColocacion">
@@ -99,17 +105,12 @@
                 <canvas id="canvasGraficaColocacion" width="600" height="700"></canvas>
             </div>
         </div>
-
-        <div class="row" id="body">
-            <h4 style="margin-left: 16px;">Cartera</h4>
-        </div>
-
         <div class="tabla row" id="body">
             <div class="col">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th id="tituloTabla"></th>
+                            <th id="tituloTabla">Cartera</th>
                             <th id="tituloTabla" colspan="4">Vs Mes Anterior</th>
                             <th id="tituloTabla" colspan="4">VS Año Anterior</th>
                         </tr>

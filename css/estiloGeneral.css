@@ -1,3 +1,8 @@
+@media only screen and (min-width: 1700px) {
+    .container{
+        max-width: 1780px;
+    }
+}
 
 @media only screen and (min-width: 576px) {
     .imgMasNomina{
@@ -113,7 +118,7 @@ thead{
 }
 
 .obscuro{
-    background-color: #dcdcff;
+    background-color: #e2e2f1;
     font-weight: bold;
 }
 
