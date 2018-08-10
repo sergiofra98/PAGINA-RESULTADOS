@@ -24,11 +24,11 @@
 
 
 body{
-    padding: 24px; 
     background-color: white;
     color: #2d2026 !important;
-   width: 100%;
-min-width: 1024px;
+    width: calc(100% - 68px);
+    margin: auto;
+    min-width: 1024px;
 }
 
 .imgMasNomina{
@@ -41,6 +41,7 @@ min-width: 1024px;
     float: left;
     margin-bottom: 0 !important;
     text-align: center;
+    font-size: 11px;
 }
 
 .chart-container {
@@ -48,9 +49,16 @@ min-width: 1024px;
     margin: 0 auto;
 }
 
-.table{
-    float: left;
-    font-size: 12px;
+@media only screen and (min-width: 1500px) {
+    .table{
+        font-size: 14px;
+    }
+}
+
+@media only screen and (min-width: 1360px) {
+    .table{
+        font-size: 12px;
+    }
 }
 
 thead{

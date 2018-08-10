@@ -5,10 +5,10 @@ var graficaMNBrokers = 0
 
 $(document).ready(function () {
     if (mes < 10) {
-        $("#selectorFecha").append("Periodo:  <b>01-" + (ano - 1) + "</b> a <br><b>0" + mes + "-" + ano + "</b>");
+        $("#selectorFecha").append("<b>01-" + (ano - 1) + "</b> a <b>0" + mes + "-" + ano + "</b>");
     }
     else {
-        $("#selectorFecha").append("Periodo:  <b>01-" + (ano - 1) + "</b> a <br><b>" + mes + "-" + ano + "</b>");
+        $("#selectorFecha").append("<b>01-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>");
     }
 });
 
@@ -314,14 +314,14 @@ function getEstado() {
                         borderColor: "#8e5ea2",
                         backgroundColor: "#8e5ea2",
                         fill: false,
-                        label: "Porcentaje de contribución de asesores"
+                        label: "Brookers"
                     },
                     {
                         data: arregloMNN[1],
                         borderColor: "#3e95cd",
                         backgroundColor: "#3e95cd",
                         fill: false,
-                        label: "Porcentaje de contribución de asesores MN"
+                        label: "Asesores MN"
                     }]
                 }
             )
