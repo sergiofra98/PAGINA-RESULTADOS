@@ -34,3 +34,12 @@ canvas{
     height: 380px !important;
 }
 
+#tituloTabla{
+    width: 105%;
+}
+
+#selectorFecha{
+    text-align: right;
+    margin-right: 20%;
+}
+

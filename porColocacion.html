@@ -24,114 +24,113 @@
 
 <body>
 
-    <div class="container">
-        <form onsubmit="getColocacion()" class="form-group" id="consulta">
-            <div class="row" style="border: none; text-align: center;">
+
+    <form onsubmit="getColocacion()" class="form-group" id="consulta">
+        <div class="row" style="border: none; text-align: center;">
+            <div class="col">
+                <h3>Costo por Colocación</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
+            </div>
+            <div class="col-sm">
+                <label for="mes">Periodo: </label>
+                <select required name="inputMes" id="inputMes" class="form-control">
+
+                </select>
+            </div>
+            <div class="col-sm">
+                <label for="mes">División: </label>
+                <select required name="inputDivision" id="inputDivision" class="form-control">
+                    <option disabled hidden selected value="">Elija una opción</option>
+                    <option value="TODOS">TODOS</option>
+                    <option value="CENTRO">CENTRO</option>
+                    <option value="SUR">SUR</option>
+                    <option value="NORESTE">NORESTE</option>
+                    <option value="NORTE">NORTE</option>
+                    <option value="VMNORTE">VM NORTE</option>
+                    <option value="VMSUR">VM SUR</option>
+                    <option value="VMCENTRO">VM CENTRO</option>
+                </select>
+            </div>
+            <div class="col-sm">
+                <label for="mes">Producto: </label>
+                <select required name="inputMes" id="inputMes" class="form-control">
+                    <option disabled hidden selected value="">Elija una opción</option>
+                    <option value="TODOS">TODOS</option>
+                    <option value="CENTRO">CRÉDITO MAS NOMINA</option>
+                    <option value="SUR">CRÉDITO DOMICILIADO</option>
+                </select>
+            </div>
+            <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
+        </div>
+    </form>
+
+    <div class="row" id="landing">
+        <h3>Realize una consulta</h3>
+    </div>
+
+    <div class="row" id="loading">
+        <div class="loader">
+            <i class="fas fa-sync"></i>
+            <h3>Cargando...</h3>
+        </div>
+    </div>
+
+    <div class="row" id="body">
+        <div class="col">
+            <div class="row tabla">
                 <div class="col">
-                    <h3>Costo por Colocación</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm">
-                    <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
-                </div>
-                <div class="col-sm">
-                    <label for="mes">Periodo: </label>
-                    <select required name="inputMes" id="inputMes" class="form-control">
+                    <table class="table-hover table-bordered table">
+                        <thead>
+                            <tr id="tablaMesHead">
 
-                    </select>
-                </div>
-                <div class="col-sm">
-                    <label for="mes">División: </label>
-                    <select required name="inputDivision" id="inputDivision" class="form-control">
-                        <option disabled hidden selected value="">Elija una opción</option>
-                        <option value="TODOS">TODOS</option>
-                        <option value="CENTRO">CENTRO</option>
-                        <option value="SUR">SUR</option>
-                        <option value="NORESTE">NORESTE</option>
-                        <option value="NORTE">NORTE</option>
-                        <option value="VMNORTE">VM NORTE</option>
-                        <option value="VMSUR">VM SUR</option>
-                        <option value="VMCENTRO">VM CENTRO</option>
-                    </select>
-                </div>
-                <div class="col-sm">
-                    <label for="mes">Producto: </label>
-                    <select required name="inputMes" id="inputMes" class="form-control">
-                        <option disabled hidden selected value="">Elija una opción</option>
-                        <option value="TODOS">TODOS</option>
-                        <option value="CENTRO">CRÉDITO MAS NOMINA</option>
-                        <option value="SUR">CRÉDITO DOMICILIADO</option>
-                    </select>
-                </div>
-                <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
-            </div>
-        </form>
-
-        <div class="row" id="landing">
-            <h3>Realize una consulta</h3>
-        </div>
-
-        <div class="row" id="loading">
-            <div class="loader">
-                <i class="fas fa-sync"></i>
-                <h3>Cargando...</h3>
-            </div>
-        </div>
-
-        <div class="row" id="body">
-            <div class="col">
-                <div class="row tabla">
-                    <div class="col">
-                        <table class="table-hover table-bordered table">
-                            <thead>
-                                <tr id="tablaMesHead">
-
-                                </tr>
-                            </thead>
-                            <tbody id="tablaMesBody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="row tabla">
-                    <div class="col">
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th colspan="3">Acumulado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaAcumuladoBody">
-                            </tbody>
-                        </table>
-                    </div>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaMesBody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <div class="row" id="body">
-            <div class="col col-md-auto">
-                <div class="row tabla" style="display:block; width: 380px;">
-                    <div class="col">
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Costo</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaCostoBody">
-                            </tbody>
-                        </table>
-                    </div>
+        <div class="col">
+            <div class="row tabla">
+                <div class="col">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Acumulado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaAcumuladoBody">
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col col-lg">
-                <canvas id="canvasCosto" width="400" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="row" id="body">
+        <div class="col col-md-auto">
+            <div class="row tabla" style="display:block; width: 380px;">
+                <div class="col">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Costo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCostoBody">
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        </div>
+        <div class="col col-lg">
+            <canvas id="canvasCosto" width="400" height="300"></canvas>
         </div>
     </div>
 </body>

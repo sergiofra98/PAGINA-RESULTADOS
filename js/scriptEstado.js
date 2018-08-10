@@ -5,10 +5,10 @@ var graficaMNBrokers = 0
 
 $(document).ready(function () {
     if (mes < 10) {
-        $("#selectorFecha").append("Periodo:  <b>01-" + (ano - 1) + "</b> a <b>0" + mes + "-" + ano + "</b>");
+        $("#selectorFecha").append("Periodo:  <b>01-" + (ano - 1) + "</b> a <br><b>0" + mes + "-" + ano + "</b>");
     }
     else {
-        $("#selectorFecha").append("Periodo:  <b>01-" + (ano - 1) + "</b> a <b>" + mes + "-" + ano + "</b>");
+        $("#selectorFecha").append("Periodo:  <b>01-" + (ano - 1) + "</b> a <br><b>" + mes + "-" + ano + "</b>");
     }
 });
 
@@ -21,6 +21,8 @@ function getEstado() {
     $("#tablaAsesorPromBody").html("");
     $("#tablaBrokersBody").html("");
     $("#tablaAsesorBody").html("");
+    $("#tablaSupervisorPromBody").html("");
+    $("#tablaSupervisorBody").html("");
 
     if (graficaColocacion)
         graficaColocacion.destroy()
@@ -150,12 +152,6 @@ function getEstado() {
             $("#tablaAsesorBody").append(append);
 
              //PEGAR TABLA DE SUPEERVISORES PROMEDIOS
-             append = '<th></th>'
-             for (const prop in dataTablas.meses) {
-                 append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
-             }
-             $("#tablaAsesorHead").append(append);
- 
              append = "";
              for (let i = 0; i < dataTablas.promedios_asesor.length; i++) {
  
