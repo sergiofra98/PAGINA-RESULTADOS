@@ -1,31 +1,5 @@
 var graficaColocacion = 0;
 
-$(document).ready(function () {
-    append = "";
-
-    for (let i = 0; i < mes; i++) {
-        if (i < 10) {
-            append += "<option> 0" + (mes - i) + "/" + ano + "</option>"
-        }
-        else {
-            append += "<option>" + (mes - i) + "/" + ano + "</option>"
-        }
-    }
-
-    for (let i = 1; i < 13; i++) {
-        if (i < 4) {
-            append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
-
-        }
-        else {
-            append += "<option> 0" + (13 - i) + "/" + (ano - 1) + "</option>"
-
-        }
-    }
-
-    $("#inputMes").append(append)
-})
-
 function getColocacion() {
     $("#tablaColocacion").html("");
     $("#tablaCarteraMesA").html("");
@@ -102,8 +76,6 @@ function getColocacion() {
         },
         function (dataTablas) {
             append = "";
-            console.log(dataTablas);
-
             for (let i = 0; i < dataTablas.length; i++) {
                 if (i === dataTablas.length - 1) {
                     append += '<tr class="obscuro">' +

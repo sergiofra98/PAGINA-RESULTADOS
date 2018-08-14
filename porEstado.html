@@ -32,10 +32,15 @@
                 <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
             </div>
             <div class="col-sm">
-                <label for="mes">Periodo: </label>
-                <div id="selectorFecha">
-
+                <div>
+                    <label for="mes">Periodo: </label>
                 </div>
+                <select required name="inputMes" id="inputMes" class="form-control">
+
+                </select>
+                <select required name="inputAno" id="inputAno" class="form-control">
+
+                </select>
             </div>
             <div class="col-sm">
                 <label for="mes">División: </label>
@@ -53,7 +58,7 @@
             </div>
             <div class="col-sm">
                 <label for="mes">Producto: </label>
-                <select required name="inputMes" id="inputMes" class="form-control">
+                <select required name="inputCredito" id="inputCredito" class="form-control">
                     <option disabled hidden selected value="">Elija una opción</option>
                     <option value="TODOS">TODOS</option>
                     <option value="CENTRO">CRÉDITO MAS NOMINA</option>
@@ -65,7 +70,7 @@
     </form>
 
     <div class="row" id="landing">
-        <h3>Realize una consulta</h3>
+        <h3>Realice una consulta</h3>
     </div>
     <div class="row" id="loading">
         <div class="loader">
@@ -94,40 +99,58 @@
                     </thead>
                     <tbody id="tablaBrokersBody">
                     </tbody> -->
+            </table>
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th id="tituloTabla" colspan="99">Venta Promedio por Asesor</th>
                     </tr>
-                    <tr id="tablaAsesorHead">
+                    <tr class="tablaAsesorHead">
 
                     </tr>
                 </thead>
                 <tbody id="tablaAsesorPromBody">
                 </tbody>
+            </table>
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th id="tituloTabla" colspan="99">Plantilla de Asesores</th>
                     </tr>
+                    <tr class="tablaAsesorHead">
+
+                    </tr>
                 </thead>
                 <tbody id="tablaAsesorBody">
                 </tbody>
+            </table>
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th id="tituloTabla" colspan="99">Venta Promedio por Supervisores</th>
                     </tr>
-                    <tr id="tablaAsesorHead">
+                    <tr class="tablaAsesorHead">
 
                     </tr>
                 </thead>
                 <tbody id="tablaSupervisorPromBody">
                 </tbody>
+            </table>
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th id="tituloTabla" colspan="99">Plantilla de Supervisores</th>
                     </tr>
+                    <tr class="tablaAsesorHead">
+
+                    </tr>
                 </thead>
                 <tbody id="tablaSupervisorBody">
                 </tbody>
+            </table>
+
+
+
             </table>
         </div>
     </div>

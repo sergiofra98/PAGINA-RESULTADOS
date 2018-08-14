@@ -36,8 +36,13 @@
                 <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
             </div>
             <div class="col-sm">
-                <label for="mes">Periodo: </label>
+                <div>
+                    <label for="mes">Periodo: </label>
+                </div>
                 <select required name="inputMes" id="inputMes" class="form-control">
+
+                </select>
+                <select required name="inputAno" id="inputAno" class="form-control">
 
                 </select>
             </div>
@@ -57,7 +62,7 @@
             </div>
             <div class="col-sm">
                 <label for="mes">Producto: </label>
-                <select required name="inputMes" id="inputMes" class="form-control">
+                <select required name="inputMes" id="inpuCreditos" class="form-control">
                     <option disabled hidden selected value="">Elija una opción</option>
                     <option value="TODOS">TODOS</option>
                     <option value="CENTRO">CRÉDITO MAS NOMINA</option>
@@ -69,7 +74,7 @@
     </form>
 
     <div class="row" id="landing">
-        <h3>Realize una consulta</h3>
+        <h3>Realice una consulta</h3>
     </div>
 
     <div class="row" id="loading">
@@ -115,15 +120,18 @@
 
     <div class="row" id="body">
         <div class="col col-md-auto">
-            <div class="row tabla" style="display:block; width: 380px;">
+            <div class="row tabla" style="display:block; width: 270px;">
                 <div class="col">
                     <table class="table table-hover table-bordered">
+                        <col width="90">
+                        <col width="60">
                         <thead>
                             <tr>
                                 <th colspan="2">Costo</th>
                             </tr>
                         </thead>
                         <tbody id="tablaCostoBody">
+
                         </tbody>
                     </table>
                 </div>

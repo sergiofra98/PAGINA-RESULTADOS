@@ -109,7 +109,7 @@ function getEstado() {
             for (const prop in dataTablas.meses) {
                 append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
             }
-            $("#tablaAsesorHead").append(append);
+            $(".tablaAsesorHead").append(append);
 
             append = "";
             for (let i = 0; i < dataTablas.promedios_asesor.length; i++) {
@@ -151,48 +151,48 @@ function getEstado() {
 
             $("#tablaAsesorBody").append(append);
 
-             //PEGAR TABLA DE SUPEERVISORES PROMEDIOS
-             append = "";
-             for (let i = 0; i < dataTablas.promedios_asesor.length; i++) {
- 
-                 if (i === dataTablas.promedios_asesor.length - 1) {
-                     append += '<tr class="obscuro"><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + '</td>';
-                 }
-                 else {
-                     append += '<tr><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + "</td>";
-                 }
- 
- 
-                 for (const prep in dataTablas.promedios_asesor[i].valores) {
-                     append += '<td class="' + (`${dataTablas.promedios_asesor[i].valores[prep][1]}`) + ' numero">' + (`${dataTablas.promedios_asesor[i].valores[prep][0]}`) + '</td>'
-                 }
- 
-                 append += "</tr>"
-             }
- 
-             $("#tablaSupervisorPromBody").append(append);
- 
-             //PEGAR TABLA DE SUPEERVISORES 
-             append = "";
-             for (let i = 0; i < dataTablas.asesores.length; i++) {
- 
-                 if (i === dataTablas.asesores.length - 1) {
-                     append += '<tr class="obscuro texto"><td>' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + '</td>';
-                 }
-                 else {
-                     append += '<tr><td class="texto">' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + "</td>";
-                 }
- 
- 
-                 for (const prep in dataTablas.asesores[i].valores) {
-                     append += '<td class="numero">' + (`${dataTablas.asesores[i].valores[prep]}`) + '</td>'
-                 }
-                 append += "</tr>"
-             }
- 
-             $("#tablaSupervisorBody").append(append);
- 
-             
+            //PEGAR TABLA DE SUPEERVISORES PROMEDIOS
+            append = "";
+            for (let i = 0; i < dataTablas.promedios_asesor.length; i++) {
+
+                if (i === dataTablas.promedios_asesor.length - 1) {
+                    append += '<tr class="obscuro"><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + '</td>';
+                }
+                else {
+                    append += '<tr><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + "</td>";
+                }
+
+
+                for (const prep in dataTablas.promedios_asesor[i].valores) {
+                    append += '<td class="' + (`${dataTablas.promedios_asesor[i].valores[prep][1]}`) + ' numero">' + (`${dataTablas.promedios_asesor[i].valores[prep][0]}`) + '</td>'
+                }
+
+                append += "</tr>"
+            }
+
+            $("#tablaSupervisorPromBody").append(append);
+
+            //PEGAR TABLA DE SUPEERVISORES 
+            append = "";
+            for (let i = 0; i < dataTablas.asesores.length; i++) {
+
+                if (i === dataTablas.asesores.length - 1) {
+                    append += '<tr class="obscuro texto"><td>' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + '</td>';
+                }
+                else {
+                    append += '<tr><td class="texto">' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + "</td>";
+                }
+
+
+                for (const prep in dataTablas.asesores[i].valores) {
+                    append += '<td class="numero">' + (`${dataTablas.asesores[i].valores[prep]}`) + '</td>'
+                }
+                append += "</tr>"
+            }
+
+            $("#tablaSupervisorBody").append(append);
+
+
 
             totalAno = dataTablas.estados.pop().valores;
 
@@ -230,8 +230,8 @@ function getEstado() {
                     temp.push({
                         data: temp2,
                         label: dataTablas.estados[i].nombre,
-                        borderColor: generadorColores(1),
-                        backgroundColor: generadorColores(1),
+                        borderColor: generadorColoresUno(i),
+                        backgroundColor: generadorColoresUno(i),
                         fill: false
                     });
                 }
@@ -268,7 +268,7 @@ function getEstado() {
 
                 for (let i = 0; i < temp.length; i++) {
                     temp[i] = (temp[i] * 100 / temp2[i]).toFixed(2);
-                    temp3.push( 100 - temp[i])
+                    temp3.push(100 - temp[i])
                 }
 
                 return [temp, temp3]
@@ -278,7 +278,7 @@ function getEstado() {
 
             declararCharts(
                 {
-                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
                     datasets: [{
                         data: esteAno(),
                         label: ano,
@@ -288,13 +288,13 @@ function getEstado() {
                     }, {
                         data: pasadoAno(),
                         label: ano - 1,
-                        borderColor: "#8e5ea2",
-                        backgroundColor: "#8e5ea2",
+                        borderColor: "#cc0d0d",
+                        backgroundColor: "#cc0d0d",
                         fill: false
                     }]
                 },
                 {
-                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
                     datasets: estadoGenerador()
                 },
                 {
@@ -308,21 +308,23 @@ function getEstado() {
                     }]
                 },
                 {
-                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                    datasets: [{
-                        data: arregloMNN[0],
-                        borderColor: "#8e5ea2",
-                        backgroundColor: "#8e5ea2",
-                        fill: false,
-                        label: "Brookers"
-                    },
-                    {
-                        data: arregloMNN[1],
-                        borderColor: "#3e95cd",
-                        backgroundColor: "#3e95cd",
-                        fill: false,
-                        label: "Asesores MN"
-                    }]
+                    labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
+                    datasets: [
+                        {
+                            data: arregloMNN[1],
+                            borderColor: "#3e95cd",
+                            backgroundColor: "#3e95cd",
+                            fill: false,
+                            label: "Asesores MN"
+                        },
+                        {
+                            data: arregloMNN[0],
+                            borderColor: "#cc0d0d",
+                            backgroundColor: "#cc0d0d",
+                            fill: false,
+                            label: "Brookers"
+                        }
+                    ]
                 }
             )
 
@@ -345,7 +347,35 @@ function declararCharts(data1, data2, data3, data4) {
             maintainAspectRatio: false,
             title: {
                 display: true,
-                text: 'Colocación'
+                text: 'Colocación',
+                fontSize: 16
+            },
+            legend: {
+                position: "bottom"
+            },
+            tooltips: {
+                mode: 'label',
+                label: 'mylabel',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        return '$' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    },
+                }
+            },
+            scales: {
+                yAxes: [
+                    {
+                        ticks: {
+                            callback: function (label, index, labels) {
+                                return label / 1000000 + 'm';
+                            }
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: '1m = 1,000,000'
+                        }
+                    }
+                ]
             }
         }
     });
@@ -357,7 +387,35 @@ function declararCharts(data1, data2, data3, data4) {
             maintainAspectRatio: false,
             title: {
                 display: true,
-                text: 'Colocación por estado'
+                text: 'Colocación por estado',
+                fontSize: 16
+            },
+            legend: {
+                position: "bottom"
+            },
+            tooltips: {
+                mode: 'label',
+                label: 'mylabel',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        return '$' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    },
+                }
+            },
+            scales: {
+                yAxes: [
+                    {
+                        ticks: {
+                            callback: function (label, index, labels) {
+                                return label / 1000 + 'k';
+                            }
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: '1k = 1,000'
+                        }
+                    }
+                ]
             }
         }
     });
@@ -369,9 +427,36 @@ function declararCharts(data1, data2, data3, data4) {
             maintainAspectRatio: false,
             title: {
                 display: true,
-                text: 'Colocación Promedio de Asesor'
+                text: 'Colocación Promedio de Asesor',
+                fontSize: 16
             },
-            legend: { display: false }
+            legend: {
+                display: false
+            },
+            tooltips: {
+                mode: 'label',
+                label: 'mylabel',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        return '$' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    },
+                }
+            },
+            scales: {
+                yAxes: [
+                    {
+                        ticks: {
+                            callback: function (label, index, labels) {
+                                return label / 1000 + 'k';
+                            }
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: '1k = 1,000'
+                        }
+                    }
+                ]
+            }
         }
     });
     graficaMNBrokers = new Chart($("#canvasGraficaMNBrokers"), {
@@ -390,8 +475,21 @@ function declararCharts(data1, data2, data3, data4) {
             },
             title: {
                 display: true,
-                text: 'MN vs Brokers'
+                text: 'MN vs Brokers',
+                fontSize: 16
             },
+            legend: {
+                position: "bottom"
+            },
+            tooltips: {
+                mode: 'label',
+                label: 'mylabel',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        return tooltipItem.yLabel + '%';
+                    },
+                }
+            }
         }
     });
 }

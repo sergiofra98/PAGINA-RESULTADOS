@@ -2,8 +2,9 @@
     overflow-x: scroll;
 }
 
-table{
+.table{
     display: block;
+    margin-bottom: 32px !important;
 }
 
 form h3{
@@ -16,7 +17,7 @@ form h3{
 }
 
 .malo{
-    background-color: red;
+    background-color: #cc0d0d;
     color:white;
 }
 .bueno{

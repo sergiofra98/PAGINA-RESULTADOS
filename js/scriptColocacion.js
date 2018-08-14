@@ -1,35 +1,6 @@
 var graficaEstado = 0
 
 
-$(document).ready(function () {
-    append = "";
-
-    for (let i = 0; i < mes; i++) {
-        if(i < 10)
-        {
-            append += "<option> 0" + (mes - i) + "/" + ano + "</option>"
-        }
-        else{
-            append += "<option>" + (mes - i) + "/" + ano + "</option>"
-        }
-    }
-
-    for (let i = 1; i < 13; i++) {
-        if(i < 4)
-        {
-            append += "<option>" + (13 - i) + "/" + (ano - 1) + "</option>"
-
-        }
-        else{
-            append += "<option> 0" + (13 - i) + "/" + (ano - 1) + "</option>"
-
-        }
-    }
-
-    $("#inputMes").append(append)
-});
-
-
 function getColocacion() {
     $("#tablaMesHead").html("")
     $("#tablaMesBody").html("")
@@ -46,84 +17,21 @@ function getColocacion() {
     $.getJSON(linkREST + "costos_colocacion", {},
         function (dataTablas) {
             var i = 0;
-            append = "";
+            append = getStringMes(mes);
             console.log(dataTablas);
-
-            switch (mes) {
-                case 1:
-                    {
-                        append = "Enero";
-                        break;
-                    }
-                case 2:
-                    {
-                        append = "Febrero";
-                        break;
-                    }
-                case 3:
-                    {
-                        append = "Marzo";
-                        break;
-                    }
-                case 4:
-                    {
-                        append = "Abril";
-                        break;
-                    }
-                case 5:
-                    {
-                        append = "Mayo";
-                        break;
-                    }
-                case 6:
-                    {
-                        append = "Junio";
-                        break;
-                    }
-                case 7:
-                    {
-                        append = "Julio";
-                        break;
-                    }
-                case 8:
-                    {
-                        append = "Agosto";
-                        break;
-                    }
-                case 9:
-                    {
-                        append = "Septiembre";
-                        break;
-                    }
-                case 10:
-                    {
-                        append = "Octubre";
-                        break;
-                    }
-                case 11:
-                    {
-                        append = "Noviembre";
-                        break;
-                    }
-                case 12:
-                    {
-                        append = "Diciembre";
-                        break;
-                    }
-            }
 
             $("#tablaMesHead").append('<th colspan="3">' + append + " " + ano + "</th>");
 
             append = "";
 
-            append += '<tr style="border-bottom: 12px solid #9ba5af"><td>' + dataTablas.mes[0].nombre + '</td><td class="numero">$ ' + dataTablas.mes[0].valor + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + '</td></tr>';
+            append += '<tr style="border-bottom: 12px solid #9ba5af"><td class="texto">' + dataTablas.mes[0].nombre + '</td><td class="numero">$ ' + dataTablas.mes[0].valor + '</td><td style="text-align:center;">' + dataTablas.mes[0].porcentaje + '</td></tr>';
 
             for (i = 1; i < dataTablas.mes.length; i++) {
                 if (i === dataTablas.mes.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.mes[i].nombre + '</td><td class="numero">$ ' + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
+                    append += '<tr class="obscuro"><td class="texto">' + dataTablas.mes[i].nombre + '</td><td class="numero">$ ' + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
                 }
                 else {
-                    append += '<tr><td>' + dataTablas.mes[i].nombre + '</td><td class="numero">$ ' + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
+                    append += '<tr><td class="texto">' + dataTablas.mes[i].nombre + '</td><td class="numero">$ ' + dataTablas.mes[i].valor + "</td><td>" + dataTablas.mes[i].porcentaje + "</td></tr>";
                 }
             }
 
@@ -131,14 +39,14 @@ function getColocacion() {
 
             append = "";
 
-            append += '<tr style="border-bottom: 12px solid #9ba5af"><td>' + dataTablas.acumulado[0].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[0].valor + '</td><td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + '</td></tr>';
+            append += '<tr style="border-bottom: 12px solid #9ba5af"><td class="texto">' + dataTablas.acumulado[0].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[0].valor + '</td><td style="text-align:center;">' + dataTablas.acumulado[0].porcentaje + '</td></tr>';
 
             for (i = 1; i < dataTablas.acumulado.length; i++) {
                 if (i === dataTablas.acumulado.length - 1) {
-                    append += '<tr class="obscuro"><td>' + dataTablas.acumulado[i].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
+                    append += '<tr class="obscuro"><td class="texto">' + dataTablas.acumulado[i].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
                 }
                 else {
-                    append += '<tr><td>' + dataTablas.acumulado[i].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
+                    append += '<tr><td class="texto">' + dataTablas.acumulado[i].nombre + '</td><td class="numero">$ ' + dataTablas.acumulado[i].valor + "</td><td>" + dataTablas.acumulado[i].porcentaje + "</td></tr>";
                 }
             }
 
@@ -148,10 +56,10 @@ function getColocacion() {
 
             for (i = 0; i < dataTablas.costo.length; i++) {
                 if (i === dataTablas.costo.length - 1) {
-                    append += '<tr class="obscuro"><td style="width = 100px;">' + dataTablas.costo[i].nombre + '</td><td style="width = 100px;">' + dataTablas.costo[i].porcentaje + "</td></tr>";
+                    append += '<tr class="obscuro"><td style="width = 100px;" class="texto">' + dataTablas.costo[i].nombre + '</td><td style="width = 100px;">' + dataTablas.costo[i].porcentaje + "</td></tr>";
                 }
                 else {
-                    append += '<tr><td style="width = 100px;">' + dataTablas.costo[i].nombre + ' </td><td style="width = 100px;">' + dataTablas.costo[i].porcentaje + "</td></tr>";
+                    append += '<tr><td style="width = 100px;" class="texto">' + dataTablas.costo[i].nombre + ' </td><td style="width = 100px;">' + dataTablas.costo[i].porcentaje + "</td></tr>";
                 }
             }
 

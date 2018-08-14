@@ -120,6 +120,7 @@ def consulta_convenio_colocacion():
 	total_mes_aa = 0
 	total_acu = 0
 	total_acu_aa = 0
+	total_prc_comp = 0
 
 	for row in lista_datos:
 		total_mes = total_mes + row[1]
@@ -158,7 +159,7 @@ def consulta_convenio_colocacion():
 		else:
 			registro['color_acu'] = ''
 
-
+		total_prc_comp += comparacion_acum
 		contador = contador + 1
 		lista_resultado.append(registro)
 	
@@ -172,7 +173,7 @@ def consulta_convenio_colocacion():
 	registro_totales['total_acu'] = '{:0,.0f}'.format(total_acu)
 	registro_totales['total_acu_aa'] = '{:0,.0f}'.format(total_acu_aa)
 	registro_totales['total_acu_pct'] = '{:0,.2f}%'.format(100) 
-	registro_totales['total_acu_comp_pct'] = '-'
+	registro_totales['total_acu_comp_pct'] = '{:0,.2f}%'.format(total_prc_comp) 
 	
 	lista_resultado.append(registro_totales)
 	
@@ -554,6 +555,8 @@ def costos_colocacion():
 	#Obtenemos totales
 	total_mes = 0
 	total_acumulado = 0
+	total_acumulado_col= lista_acumulado[0][1]
+
 	for i, row in enumerate(lista_mes):
 		if not i == 0:
 			total_mes += row[1]
@@ -569,7 +572,7 @@ def costos_colocacion():
 		if i == 0:
 			registro['porcentaje'] = '%'
 		else:
-			registro['porcentaje'] = '{:0,.2f}%'.format(((row[1] * 1.00) / total_mes) * 100.00)
+			registro['porcentaje'] = '{:0,.2f}%'.format(((row[1] * 1.00) / total_acumulado) * 100.00)
 		lista_resultado_mes.append(registro)
 
 	for i, row in enumerate(lista_acumulado):
@@ -580,7 +583,7 @@ def costos_colocacion():
 		if i == 0:
 			registro['porcentaje'] = '%'
 		else:
-			registro['porcentaje'] = '{:0,.2f}%'.format(((row[1] * 1.00)/ total_acumulado) * 100.00)
+			registro['porcentaje'] = '{:0,.2f}%'.format(((row[1] * 1.00)/ total_acumulado_col) * 100.00)
 		lista_resultado_acumulado.append(registro)
 	
 	for i, row in enumerate(lista_costo):
@@ -594,14 +597,14 @@ def costos_colocacion():
 	registro_totales['id'] = len(lista_mes) + 1
 	registro_totales['nombre'] = 'TOTAL'
 	registro_totales['valor'] = '{:0,.2f}'.format(total_mes)
-	registro_totales['porcentaje'] = '100%'
+	registro_totales['porcentaje'] = '{:0,.2f}%'.format((total_mes*100.00)/total_acumulado)
 	lista_resultado_mes.append(registro_totales)
 
 	registro_totales = {}
 	registro_totales['id'] = len(lista_acumulado) + 1
 	registro_totales['nombre'] = 'TOTAL'
 	registro_totales['valor'] = '{:0,.2f}'.format(total_acumulado)
-	registro_totales['porcentaje'] = '100%'
+	registro_totales['porcentaje'] = '{:0,.2f}%'.format((total_acumulado*100.00)/total_acumulado_col)
 	lista_resultado_acumulado.append(registro_totales)
 	
 	lista_resultado = {}
