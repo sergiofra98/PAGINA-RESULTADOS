@@ -33,7 +33,7 @@ function getColocacion() {
                         '<td class="colObscuro">' + dataTablas[i].total_mes_aa_pct + '</td>' +
                         '<td class="numero">' + dataTablas[i].total_acu + '</td>' +
                         '<td class="numero">' + dataTablas[i].total_acu_aa + '</td>' +
-                        '<td class="colObscuro">' + dataTablas[i].total_acu_comp_pct + '</td>' +
+                        '<td class="colObscuro '+ dataTablas[i].color_acu +'">' + dataTablas[i].total_acu_comp_pct + '</td>' +
                         '</tr>';
                 }
                 else {

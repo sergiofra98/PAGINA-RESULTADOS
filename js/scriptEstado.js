@@ -279,19 +279,21 @@ function getEstado() {
             declararCharts(
                 {
                     labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
-                    datasets: [{
-                        data: esteAno(),
-                        label: ano,
-                        borderColor: "#3e95cd",
-                        backgroundColor: "#3e95cd",
-                        fill: false
-                    }, {
-                        data: pasadoAno(),
-                        label: ano - 1,
-                        borderColor: "#cc0d0d",
-                        backgroundColor: "#cc0d0d",
-                        fill: false
-                    }]
+                    datasets: [
+                        {
+                            data: esteAno(),
+                            label: ano - 1,
+                            borderColor: "#cc0d0d",
+                            backgroundColor: "#cc0d0d",
+                            fill: false
+                        }, {
+                            data: pasadoAno(),
+                            label: ano,
+                            borderColor: "#3e95cd",
+                            backgroundColor: "#3e95cd",
+                            fill: false
+                        }
+                    ]
                 },
                 {
                     labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],

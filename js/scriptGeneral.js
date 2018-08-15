@@ -4,21 +4,15 @@ var mes = currentTime.getMonth();
 var ano = currentTime.getFullYear();
 
 $(document).ready(function () {
-    append = "";
+    append = "<option hidden selected disabled>Mes</option>";
 
     for (let i = 0; i < 12; i++) {
-        if(i === mes)
-        {
-            append += "<option selected>" + getStringMes(i) + "</option>"
-        }
-        else {
             append += "<option>" + getStringMes(i) + "</option>"
-        }
     }
 
     $("#inputMes").append(append)
 
-    append = "";
+    append = "<option hidden selected disabled>Año</option>";
 
     for (let i = 0; i < 6; i++) {
         append += "<option> " + (ano - i) + "</option>"
@@ -58,52 +52,51 @@ function getStringMes(i) {
     switch (i) {
         case 0:
             {
-                return "Enero";
-
+                return "ENE";
             }
         case 1:
             {
-                return "Febrero";
+                return "FEB";
             }
         case 2:
             {
-                return "Marzo";
+                return "MAR";
             }
         case 3:
             {
-                return "Abril";
+                return "ABR";
             }
         case 4:
             {
-                return "Mayo";
+                return "MAY";
             }
         case 5:
             {
-                return "Junio";
+                return "JUN";
             }
         case 6:
             {
-                return "Julio";
+                return "JUL";
             }
         case 7:
             {
-                return "Agosto";
+                return "AGO";
             }
         case 8:
             {
-                return "Septiembre";
+                return "SEP";
             }
         case 9:
             {
-                return "Octubre";
+                return "OCT";
             }
         case 10:
             {
-                return "Noviembre";
+                return "NOV";
             }
         case 11:
             {
-                return "Diciembre";
+                return "DIC";
             }
     }
 }
