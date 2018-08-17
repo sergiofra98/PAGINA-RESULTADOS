@@ -4,3 +4,8 @@ canvas{
     margin: 0 auto;
     height: 560px !important;
 }
+
+.cuerpo{
+    width:80%;
+    margin-left: 10%;
+}

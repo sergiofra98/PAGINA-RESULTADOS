@@ -121,10 +121,21 @@ function generarGraficas(data) {
             },
             responsive: true,
             maintainAspectRatio: false,
-            scales: {
+            scales:
+            {
+                xAxes: [{
+                    stacked: true
+                }],
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        callback: function (label) {
+                            return label + '%';
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Porcentaje'
                     }
                 }]
             }

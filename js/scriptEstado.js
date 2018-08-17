@@ -408,8 +408,8 @@ function declararCharts(data1, data2, data3, data4) {
                 yAxes: [
                     {
                         ticks: {
-                            callback: function (label, index, labels) {
-                                return label / 1000 + 'k';
+                            callback: function (label) {
+                                return (label / 1000).toLocaleString() + 'k';
                             }
                         },
                         scaleLabel: {
@@ -448,8 +448,8 @@ function declararCharts(data1, data2, data3, data4) {
                 yAxes: [
                     {
                         ticks: {
-                            callback: function (label, index, labels) {
-                                return label / 1000 + 'k';
+                            callback: function (label) {
+                                return (label / 1000).toLocaleString() + 'k';
                             }
                         },
                         scaleLabel: {
@@ -467,12 +467,21 @@ function declararCharts(data1, data2, data3, data4) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: {
+            scales:
+            {
                 xAxes: [{
                     stacked: true
                 }],
                 yAxes: [{
-                    stacked: true
+                    ticks: {
+                        callback: function (label) {
+                            return label + '%';
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Porcentaje'
+                    }
                 }]
             },
             title: {

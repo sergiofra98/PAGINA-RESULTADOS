@@ -1,9 +1,4 @@
-.tabla .col{
-    overflow-x: scroll;
-}
-
 .table{
-    display: block;
     margin-bottom: 32px !important;
 }
 
@@ -34,13 +29,3 @@ canvas{
     width: 100% !important;
     height: 380px !important;
 }
-
-#tituloTabla{
-    width: 105%;
-}
-
-#selectorFecha{
-    margin-top: 4px;
-    margin-left: 5%;
-}
-

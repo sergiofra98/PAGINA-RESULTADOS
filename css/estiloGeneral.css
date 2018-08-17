@@ -39,7 +39,6 @@ body{
 }
 
 .table{
-    float: left;
     margin-bottom: 0 !important;
     text-align: center;
     font-size: 11px;
@@ -86,13 +85,6 @@ thead{
     display: none;
 }
 
-.container{
-    background-color: white;
-    border: #535353 solid 4px;
-    padding: 24px 18px; 
-
-}
-
 #landing h3, .loader{
     margin:auto;
 }
@@ -117,11 +109,11 @@ thead{
     margin-left: 20px;
 }
 
-.obscuro{
+tbody tr:last-of-type{
     background-color: #e2e2f1;
     font-weight: bold;
+    font-size: 14;
 }
-
 
 .btn-primary{
     height: 55px;
@@ -132,6 +124,7 @@ thead{
 #tituloTabla{
     background-color: #00519D; 
     color: white;
+    font-size: 14;
 }
 
 .row{
@@ -142,10 +135,10 @@ canvas{
     margin: auto;
 }
 
-.numero{
+tbody tr td{
     text-align: right;
 }
 
-.texto{
+tbody tr td:first-of-type{
     text-align: left;
 }

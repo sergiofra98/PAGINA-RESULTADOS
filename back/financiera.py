@@ -255,7 +255,10 @@ def consulta_convenio_cartera():
 			registro['total_mes_vs_maa_pct'] = '0.00%'
 		else:
 			pct_m_maa = 0
-			pct_m_maa = (row[1] * 1.00)/ (row[3] * 1.00) - 1
+			if row[1] == 0:
+				pct_m_maa = 0
+			else:
+				pct_m_maa = (row[3] * 1.00)/ (row[1] * 1.00) - 1
 			pct_m_maa = pct_m_maa * 100.00
 			registro['total_mes_vs_maa_pct'] = '{:0,.2f}%'.format(pct_m_maa)
 
@@ -275,7 +278,7 @@ def consulta_convenio_cartera():
 	registro_totales['total_maa'] = '{:0,.0f}'.format(total_maa)
 
 	registro_totales['total_mes_vs_ma'] = '{:0,.0f}'.format(total_mes-total_ma) 
-	registro_totales['total_mes_vs_maa'] = '{:0,.0f}'.format(total_mes-total_maa)
+	registro_totales['total_mes_vs_maa'] = '{:0,.0f}'.format(total_maa-total_mes)
 
 
 	if total_ma == 0:
@@ -290,8 +293,8 @@ def consulta_convenio_cartera():
 	if total_maa == 0:
 		registro_totales['total_mes_vs_maa_pct'] = '0.00%'
 	else:
-		polaridad = ((total_mes * 1.00)/ (total_maa * 1.00)-1)*100
-		registro_totales['total_mes_vs_maa_pct'] = '{:0,.2f}%'.format(((total_mes * 1.00)/ (total_maa * 1.00)-1)*100)
+		polaridad = ((total_maa * 1.00)/ (total_mes * 1.00)-1)*100
+		registro_totales['total_mes_vs_maa_pct'] = '{:0,.2f}%'.format(((total_maa * 1.00)/ (total_mes * 1.00)-1)*100)
 		if polaridad < 0:
 			registro_totales['colorMAA'] = "rojo"
 		else:
@@ -313,7 +316,7 @@ def consulta_estado_colocacion():
 	else:
 		return 'Division no encontrada'
 	"""
-	meses=['ENE-17','FEB-17','MAR-17','ABR-17','MAY-17','JUN-17','JUL-17','AGO-17','SEP-17','OCT-17','NOV-17','DIC-17','ENE-18','FEB-18','MAR-18','ABR-18']
+	meses=['Ene 17','Feb 17','Mar 17','Abr 17','May 17','Jun 17','Jul 17','Ago 17','Sep 17','Oct 17','Nov 17','Dic 17','Ene 18','Feb 18','Mar 18','Abr 18']
 	#[nombres, meses]
 	lista_estados_todos=[
 				['HIDALGO',38128,15654,180712,381427,399516,381346,423030,404383,490677,308609,245726,175715,876173,1318727,1079677,883818],
@@ -606,7 +609,7 @@ def costos_colocacion():
 	registro_totales['id'] = len(lista_mes) + 1
 	registro_totales['nombre'] = 'TOTAL'
 	registro_totales['valor'] = '{:0,.2f}'.format(total_mes)
-	registro_totales['porcentaje'] = '{:0,.2f}%'.format((total_mes*100.00)/total_acumulado)
+	registro_totales['porcentaje'] = '{:0,.2f}%'.format((total_mes*100.00)/lista_mes[0][1])
 	lista_resultado_mes.append(registro_totales)
 
 	registro_totales = {}
