@@ -3,6 +3,7 @@ var graficaColocacion = 0;
 function getColocacion() {
     $("#tablaColocacion").html("");
     $("#tablaCarteraMesA").html("");
+    $("#tablaCarteraHeader").html("");
     $("#tablaCarteraAnoA").html("");
 
     if (graficaColocacion)
@@ -19,6 +20,8 @@ function getColocacion() {
             mes: $("#inputMes").val(),
         },
         function (dataTablas) {
+            console.log("consulta_convenio_colocacion")
+
             console.log(dataTablas)
 
             append = "";
@@ -61,18 +64,32 @@ function getColocacion() {
             mes: $("#inputMes").val(),
         },
         function (dataTablas) {
+            console.log("consulta_convenio_cartera")
+            console.log(dataTablas);
+            let i = 0;
+            append = '<th><div style = "width: 168px;display:block;"></div ></th >' +
+                '<th colspan="1">' + dataTablas.meses[1] + '</th>' +
+                '<th colspan="1">' + dataTablas.meses[2] + '</th>' +
+                '<th colspan="2" style="border-right:#535353 solid 2px;">VS MA</th>' +
+                '<th colspan="1">' + dataTablas.meses[0] + '</th>' +
+                '<th colspan="1">' + dataTablas.meses[2] + '</th>' +
+                '<th colspan="2">VS MAA</th>';
+
+            $("#tablaCarteraHeader").append(append);
+            
+
             append = "";
-            for (let i = 0; i < dataTablas.length; i++) {
+            for (i = 0; i < dataTablas.cartera.length; i++) {
                 append += '<tr >' +
-                    '<td  class="texto">' + dataTablas[i].nombre + '</td>' +
-                    '<td class="numero"> ' + dataTablas[i].total_ma + '</td>' +
-                    '<td class="colObscuro numero"> ' + dataTablas[i].total_mes + '</td>' +
-                    '<td class="numero"> ' + dataTablas[i].total_mes_vs_ma + '</td>' +
-                    '<td class="colObscuro ' + dataTablas[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas[i].total_mes_vs_ma_pct + '</td>' +
-                    '<td class="numero"> ' + dataTablas[i].total_mes + '</td>' +
-                    '<td class="colObscuro numero"> ' + dataTablas[i].total_maa + '</td>' +
-                    '<td  class="numero"> ' + dataTablas[i].total_mes_vs_maa + '</td>' +
-                    '<td class="colObscuro ' + dataTablas[i].colorMAA + '">' + dataTablas[i].total_mes_vs_maa_pct + '</td>' +
+                    '<td  class="texto">' + dataTablas.cartera[i].nombre + '</td>' +
+                    '<td class="numero"> ' + dataTablas.cartera[i].total_ma + '</td>' +
+                    '<td class="colObscuro numero"> ' + dataTablas.cartera[i].total_mes + '</td>' +
+                    '<td class="numero"> ' + dataTablas.cartera[i].total_mes_vs_ma + '</td>' +
+                    '<td class="colObscuro ' + dataTablas.cartera[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas.cartera[i].total_mes_vs_ma_pct + '</td>' +
+                    '<td class="numero"> ' + dataTablas.cartera[i].total_mes + '</td>' +
+                    '<td class="colObscuro numero"> ' + dataTablas.cartera[i].total_maa + '</td>' +
+                    '<td  class="numero"> ' + dataTablas.cartera[i].total_mes_vs_maa + '</td>' +
+                    '<td class="colObscuro ' + dataTablas.cartera[i].colorMAA + '">' + dataTablas.cartera[i].total_mes_vs_maa_pct + '</td>' +
                     '</tr>';
 
             }
@@ -130,7 +147,7 @@ function generarGraficas(labels, data, colors) {
                 yAxes: [{
                     ticks: {
                         callback: function (label) {
-                                return (label/1000).toLocaleString() + 'k';
+                            return (label / 1000).toLocaleString() + 'k';
                         }
                     },
                     scaleLabel: {

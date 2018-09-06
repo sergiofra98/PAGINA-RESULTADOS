@@ -23,6 +23,7 @@ function getEstado() {
     $("#tablaAsesorBody").html("");
     $("#tablaSupervisorPromBody").html("");
     $("#tablaSupervisorBody").html("");
+    $(".tablaAsesorHead").html("");
 
     if (graficaColocacion)
         graficaColocacion.destroy()
@@ -39,6 +40,7 @@ function getEstado() {
 
     $.getJSON(linkREST + "consulta_estado_colocacion", {},
         function (dataTablas) {
+            console.log(dataTablas)
             var append = '<th></th>'
             for (const prop in dataTablas.meses) {
                 append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';

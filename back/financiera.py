@@ -137,7 +137,6 @@ def consulta_convenio_colocacion():
 		else:
 			comparacion_acum = 0
 		
-		registro['id'] = contador
 		registro['nombre'] = row[0]
 		
 		registro['total_mes'] = '{:0,.0f}'.format(row[1]) 
@@ -165,7 +164,6 @@ def consulta_convenio_colocacion():
 	total_prc_comp = (total_acu_aa - total_acu)/total_acu*100
 
 	registro_totales = {}
-	registro_totales['id'] = contador
 	registro_totales['nombre'] = 'TOTAL'
 	registro_totales['total_mes'] = '{:0,.0f}'.format(total_mes)
 	registro_totales['total_mes_pct'] = '{:0,.2f}%'.format(100) 
@@ -197,7 +195,10 @@ def consulta_convenio_cartera():
 		print('Limita a mes actual')#define consulta para mes actual
 	
 	#se realiza la consulta
-	lista_resultado = []
+	lista_resultado = {}
+	
+
+	mes = ['May 17', 'Abr 18', 'May 18']
 	#[nombres, mes actual, mes anterior, mes año anterior]
 	lista_datos=[['GOBIERNO DE HIDALGO',4800,3500,2500],
 				 ['SNTE 14 FEDERAL GUERRERO',45000,42000,30000],
@@ -213,7 +214,9 @@ def consulta_convenio_cartera():
 				 ['TELECOMM',0,0,0]
 				]
 	
-	
+	lista_resultado['cartera'] = []
+	lista_resultado['meses'] = mes
+
 	#Obtenemos totales
 	total_mes = 0
 	total_ma = 0
@@ -229,7 +232,6 @@ def consulta_convenio_cartera():
 	for i, row in enumerate(lista_datos):
 
 		registro = {}
-		registro['id'] = i+1
 		registro['nombre'] = row[0]
 		
 		registro['total_mes'] = '{:0,.0f}'.format(row[1])
@@ -267,10 +269,9 @@ def consulta_convenio_cartera():
 			else:
 				registro['colorMAA'] = "blanco"
 	
-		lista_resultado.append(registro)
+		lista_resultado['cartera'].append(registro)
 	
 	registro_totales = {}
-	registro_totales['id'] = len(lista_resultado) + 1
 	registro_totales['nombre'] = 'TOTAL'
 
 	registro_totales['total_mes'] = '{:0,.0f}'.format(total_mes)
@@ -300,7 +301,7 @@ def consulta_convenio_cartera():
 		else:
 			registro_totales['colorMAA'] = "blanco"
 	
-	lista_resultado.append(registro_totales)
+	lista_resultado['cartera'].append(registro_totales)
 
 	return json.dumps(lista_resultado)
 	
@@ -389,7 +390,6 @@ def consulta_estado_colocacion():
 	total_asesores['valores'] = {}
 	for i, row in enumerate(lista_asesores_todos, 1):
 		registro = {}
-		registro['id'] = i
 		registro['nombre'] = row[0]
 		registro['valores'] = {}
 		for j, row2 in enumerate(row, 1):
@@ -409,7 +409,6 @@ def consulta_estado_colocacion():
 	total_promedio['valores'] = {}
 	for i, row in enumerate(lista_estados_todos, 1):
 		registro = {}
-		registro['id'] = i
 		registro['nombre'] = row[0]
 		registro['valores'] = []
 		for j, row2 in enumerate(row, 1):
@@ -457,7 +456,6 @@ def consulta_estado_colocacion():
 			temp[0] = '{:0,.0f}'.format(temp[0])
 		total.append(temp)
 
-	total_promedio['id']=len(lista_promedio)+1
 	total_promedio['valores']= total
 	lista_promedio.append(total_promedio)
 
@@ -481,7 +479,6 @@ def calculo_x_estado(lista_todo, lista_actual):
 	suma_anio_total = 0
 	for i, row in enumerate(lista_todo, 1):
 		registro = {}
-		registro['id'] = i
 		registro['nombre'] = row[0]
 		registro['valores'] = {}
 		for j, row2 in enumerate(row, 1):
@@ -523,6 +520,7 @@ def costos_colocacion():
 		print('Limita a mes actual')#define consulta para mes actual
 	
 	#se realiza la consulta
+	nombre_mes = 'Abr 18'
 	lista_resultado_mes = []
 	lista_resultado_acumulado = []
 	lista_resultado_costo = []
@@ -546,18 +544,18 @@ def costos_colocacion():
 						['Rentas', 61527]
 				]
 
-	lista_costo=[	['ENE-18', '32.93%'],
-					['FEB-18', '26.97%'],
-					['MAR-18', '22.00%'],
-					['ABR-18', '24.45%'],
-					['MAY-18', '0.00%'],
-					['JUN-18', '0.00%'],
-					['JUL-18', '0.00%'],
-					['AGO-18', '0.00%'],
-					['SEP-18', '0.00%'],
-					['OCT-18', '0.00%'],
-					['NOV-18', '0.00%'],
-					['DIC-18', '0.00%'],
+	lista_costo=[	['Ene 18', '32.93%'],
+					['Feb 18', '26.97%'],
+					['Mar 18', '22.00%'],
+					['Abr 18', '24.45%'],
+					['May 18', '0.00%'],
+					['Jun 18', '0.00%'],
+					['Jul 18', '0.00%'],
+					['Ago 18', '0.00%'],
+					['Sep 18', '0.00%'],
+					['Oct 18', '0.00%'],
+					['Nov 18', '0.00%'],
+					['Dic 18', '0.00%'],
 					['TOTAL', '26.17%']
 				]
 
@@ -576,7 +574,6 @@ def costos_colocacion():
 
 	for i, row in enumerate(lista_mes):
 		registro = {}
-		registro['id'] = i
 		registro['nombre'] = row[0]
 		registro['valor'] = '{:0,.2f}'.format(row[1])
 		porcentaje = (float(row[1])/ lista_mes[0][1]) * 100.00
@@ -589,7 +586,6 @@ def costos_colocacion():
 
 	for i, row in enumerate(lista_acumulado):
 		registro = {}
-		registro['id'] = i
 		registro['nombre'] = row[0]
 		registro['valor'] = '{:0,.2f}'.format(row[1])
 		if i == 0:
@@ -600,29 +596,27 @@ def costos_colocacion():
 	
 	for i, row in enumerate(lista_costo):
 		registro = {}
-		registro['id'] = i
 		registro['nombre'] = row[0]
 		registro['porcentaje'] = row[1]
 		lista_resultado_costo.append(registro)
 	
 	registro_totales = {}
-	registro_totales['id'] = len(lista_mes) + 1
 	registro_totales['nombre'] = 'TOTAL'
 	registro_totales['valor'] = '{:0,.2f}'.format(total_mes)
-	registro_totales['porcentaje'] = '{:0,.2f}%'.format((total_mes*100.00)/lista_mes[0][1])
+	registro_totales['porcentaje'] = '{:0,.2f}%'.format((total_mes*100.00)/lista_mes[0][1] )
 	lista_resultado_mes.append(registro_totales)
 
 	registro_totales = {}
-	registro_totales['id'] = len(lista_acumulado) + 1
 	registro_totales['nombre'] = 'TOTAL'
 	registro_totales['valor'] = '{:0,.2f}'.format(total_acumulado)
 	registro_totales['porcentaje'] = '{:0,.2f}%'.format((total_acumulado*100.00)/total_acumulado_col)
 	lista_resultado_acumulado.append(registro_totales)
 	
 	lista_resultado = {}
-	lista_resultado['mes'] = lista_resultado_mes
-	lista_resultado['acumulado'] = lista_resultado_acumulado
-	lista_resultado['costo'] = lista_resultado_costo
+	lista_resultado['nombre_mes'] = nombre_mes
+	lista_resultado['resultado_mes'] = lista_resultado_mes
+	lista_resultado['resultado_acumulado'] = lista_resultado_acumulado
+	lista_resultado['resultado_costo'] = lista_resultado_costo
 
 	return json.dumps(lista_resultado)	
 	
