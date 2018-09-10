@@ -16,14 +16,15 @@ function getColocacion() {
 
     $.getJSON(linkREST + "consulta_convenio_colocacion",
         {
-            division: $("#inputDivision").val(),
-            mes: $("#inputMes").val(),
+            mes: $('#inputMes').val() + '-' + $('#inputAno').val(),
+            division: $('#inputDivision').val(),
+            producto: $('#inputProducto').val()
         },
         function (dataTablas) {
-            console.log("consulta_convenio_colocacion")
-
-            console.log(dataTablas)
-
+            if (!dataTablas) {
+                $("#alertaNoResultados").css('display', 'block')
+                return;
+            }
             append = "";
 
             for (let i = 0; i < dataTablas.length; i++) {
@@ -56,6 +57,7 @@ function getColocacion() {
         })
         .fail(function (textStatus) {
             $('#loading').css("display", "none");
+            $("#alertaConsulta").css('display', 'block')
         });
 
     $.getJSON(linkREST + "consulta_convenio_cartera",
@@ -64,8 +66,6 @@ function getColocacion() {
             mes: $("#inputMes").val(),
         },
         function (dataTablas) {
-            console.log("consulta_convenio_cartera")
-            console.log(dataTablas);
             let i = 0;
             append = '<th><div style = "width: 168px;display:block;"></div ></th >' +
                 '<th colspan="1">' + dataTablas.meses[1] + '</th>' +
@@ -76,7 +76,7 @@ function getColocacion() {
                 '<th colspan="2">VS MAA</th>';
 
             $("#tablaCarteraHeader").append(append);
-            
+
 
             append = "";
             for (i = 0; i < dataTablas.cartera.length; i++) {
@@ -102,6 +102,7 @@ function getColocacion() {
         })
         .fail(function (textStatus) {
             $('#loading').css("display", "none");
+            $("#alertaConsulta").css('display', 'block')
         });
 }
 

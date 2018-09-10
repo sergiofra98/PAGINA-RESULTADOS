@@ -12,7 +12,7 @@ $(document).ready(function () {
     }
 });
 
-function getEstado() {
+function getColocacion() {
     $("#tablaColocacionHead").html("");
     $("#tablaBrokersHead").html("");
     $("#tablaColocacionBody").html("");
@@ -38,9 +38,16 @@ function getEstado() {
     $('#landing').css("display", "none");
     $('#loading').css("display", "flex");
 
-    $.getJSON(linkREST + "consulta_estado_colocacion", {},
+    $.getJSON(linkREST + "consulta_estado_colocacion", {
+        mes: $('#inputMes').val() + '-' + $('#inputAno').val(),
+        division: $('#inputDivision').val(),
+        producto: $('#inputProducto').val()
+    },
         function (dataTablas) {
-            console.log(dataTablas)
+            if (!dataTablas) {
+                $("#alertaNoResultados").css('display', 'block')
+                return;
+            }
             var append = '<th></th>'
             for (const prop in dataTablas.meses) {
                 append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
@@ -339,6 +346,7 @@ function getEstado() {
         })
         .fail(function (textStatus) {
             $('#loading').css("display", "none");
+            $("#alertaConsulta").css('display', 'block');
         });
 }
 

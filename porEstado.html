@@ -23,28 +23,28 @@
 </head>
 
 <body>
-    <form onsubmit="getEstado()" class="form-group" id="consulta">
+    <form class="form-group" id="consulta">
         <div class="row" style="border: none; text-align: center;">
             <h3>Resultados por estado</h3>
         </div>
         <div class="row">
-            <div class="col-sm">
+            <div class="col-3">
                 <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
             </div>
-            <div class="col-sm">
+            <div class="col-2">
                 <div>
-                    <label for="mes">Periodo: </label>
+                    <label for="mes">Periodo<span class="rojo">*</span>: </label>
                 </div>
-                <select required name="inputMes" id="inputMes" class="form-control">
+                <select name="inputMes" id="inputMes" class="form-control">
 
                 </select>
-                <select required name="inputAno" id="inputAno" class="form-control">
+                <select name="inputAno" id="inputAno" class="form-control">
 
                 </select>
             </div>
-            <div class="col-sm">
-                <label for="mes">División: </label>
-                <select required name="inputDivision" id="inputDivision" class="form-control">
+            <div class="col-3">
+                <label for="mes">División<span class="rojo">*</span>: </label>
+                <select name="inputDivision" id="inputDivision" class="form-control">
                     <option disabled hidden selected value="">Elija una opción</option>
                     <option value="TODOS">TODOS</option>
                     <option value="CENTRO">CENTRO</option>
@@ -56,16 +56,29 @@
                     <option value="VMCENTRO">VM CENTRO</option>
                 </select>
             </div>
-            <div class="col-sm">
-                <label for="mes">Producto: </label>
-                <select required name="inputCredito" id="inputCredito" class="form-control">
+            <div class="col-3">
+                <label for="mes">Producto<span class="rojo">*</span>: </label>
+                <select name="inputMes" id="inputProducto" class="form-control">
                     <option disabled hidden selected value="">Elija una opción</option>
                     <option value="TODOS">TODOS</option>
-                    <option value="CENTRO">CRÉDITO MAS NOMINA</option>
-                    <option value="SUR">CRÉDITO DOMICILIADO</option>
+                    <option value="MASNOMINA">CRÉDITO MAS NOMINA</option>
+                    <option value="DOMICILIADO">CRÉDITO DOMICILIADO</option>
                 </select>
             </div>
-            <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getEstado()">Consultar</button>
+            <div class="col-1">
+                <div id="alertaConsulta" class="alert alert-danger">
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Hubo un error al realizar la consulta, vea
+                    la consola para ver detalles.
+                </div>
+                <div id="alertaNoResultados" class="alert alert-warning">
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> La consulta no regresó resultados.
+                </div>
+                <div id="alertaValidacion" class="alert alert-warning">
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Debe llenar todos los datos para hacer una
+                    consulta.
+                </div>
+                <button class="btn btn-primary" type="button" onclick="iniciarBusqueda()">Consultar</button>
+            </div>
         </div>
     </form>
 

@@ -3,14 +3,17 @@
 from flask import Flask 
 from flask import request
 from functools import reduce
+from consulta_general import consulta_divisiones
 
 import json
 import datetime
 import locale
 
 locale.setlocale( locale.LC_ALL, '' )
-#locale.currency( row[1], grouping = True ) 
 app = Flask(__name__)
+PORT = 9996
+DEBUG = True
+IP = "10.1.50.149"
 
 @app.after_request
 def after_request(response):
@@ -25,39 +28,26 @@ url_base='/MasNomina/MonitorVentas'
 def hello():
 	return "Monitor Ventas Estatus[OK]"
 
+	
+#combo box de divisiones
+@app.route(url_base+'/consulta_anios',methods=['GET']) 
+def f_consulta_anios():
+	lista_anios = []
+	anio={}
+	anio['id_anio'] = 2018
+	lista_anios.append(anio)
+	anio={}
+	anio['id_anio'] = 2017
+	lista_anios.append(anio)
+	return json.dumps(lista_anios)
+
 #combo box de divisiones
 @app.route(url_base+'/consulta_divisiones',methods=['GET']) 
-def consulta_divisiones():
-	lista_divisiones = []
-	division={}
-	division['id_div'] = 1
-	division['nombre'] = 'CENTRO'
-	lista_divisiones.append(division)
-	division={}
-	division['id_div'] = 2
-	division['nombre'] = 'SUR'
-	lista_divisiones.append(division)
-	division={}
-	division['id_div'] = 3
-	division['nombre'] = 'NORESTE'
-	lista_divisiones.append(division)
-	division={}
-	division['id_div'] = 4
-	division['nombre'] = 'NORTE'
-	lista_divisiones.append(division)
-	division={}
-	division['id_div'] = 5
-	division['nombre'] = 'VM NORTE'
-	lista_divisiones.append(division)
-	division={}
-	division['id_div'] = 6
-	division['nombre'] = 'VM SUR'
-	lista_divisiones.append(division)
-	division={}
-	division['id_div'] = 7
-	division['nombre'] = 'VM CENTRO'
-	lista_divisiones.append(division)
-	return json.dumps(lista_divisiones)
+def f_consulta_divisiones():
+	registros = consulta_divisiones()
+	return json.dumps(registros)
+	
+	
 	
 #combo box de periodos
 @app.route(url_base+'/consulta_periodos',methods=['GET']) 
@@ -656,7 +646,7 @@ def vendedores():
 	
 if __name__ == '__main__':	
 	#si Rest.py
-	app.run(host="127.0.0.1",debug=True, port=9999, threaded=True)
+	app.run(host='127.0.0.1',debug=True, port='9999', threaded=DEBUG)
 
 
 

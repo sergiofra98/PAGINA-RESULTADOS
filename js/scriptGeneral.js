@@ -4,10 +4,12 @@ var mes = currentTime.getMonth();
 var ano = currentTime.getFullYear();
 
 $(document).ready(function () {
+    $('#errorBusqueda').css('display', 'none')
+
     append = "<option hidden selected disabled>Mes</option>";
 
     for (let i = 0; i < 12; i++) {
-            append += "<option>" + getStringMes(i) + "</option>"
+        append += "<option>" + getStringMes(i) + "</option>"
     }
 
     $("#inputMes").append(append)
@@ -98,5 +100,23 @@ function getStringMes(i) {
             {
                 return "DIC";
             }
+    }
+}
+
+function cerrarAlerta(event) {
+    var modi = $(event.currentTarget).parent();
+
+    modi.css('display', 'none');
+}
+
+
+function iniciarBusqueda() {
+    $(".alert").css('display', 'none')
+
+    if (!$('#inputMes').val() || !$('#inputAno').val() || !$('#inputDivision').val() || !$('#inputProducto').val()) {
+        $("#alertaValidacion").css('display', 'block')
+    }
+    else {
+        getColocacion()
     }
 }

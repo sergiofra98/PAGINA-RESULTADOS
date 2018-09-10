@@ -22,6 +22,13 @@
     }
 }
 
+.alert{
+    width: 200%;
+    right: 0px;
+    top: 80px;
+    position: absolute;
+    display: none;
+}
 
 body{
     background-color: white;
@@ -33,7 +40,8 @@ body{
 }
 
 .imgMasNomina{
-    width: 310px;
+    width: 100%;
+    max-width: 310px;
     margin: auto;
     display: block;
 }

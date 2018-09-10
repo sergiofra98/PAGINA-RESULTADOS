@@ -14,11 +14,18 @@ function getColocacion() {
     $('#landing').css("display", "none");
     $('#loading').css("display", "flex");
 
-    $.getJSON(linkREST + "costos_colocacion", {},
+    $.getJSON(linkREST + "costos_colocacion", {
+        mes: $('#inputMes').val() + '-' + $('#inputAno').val(),
+        division: $('#inputDivision').val(),
+        producto: $('#inputProducto').val()
+    },
         function (dataTablas) {
+            if (!dataTablas) {
+                $("#alertaNoResultados").css('display', 'block')
+                return;
+            }
             var i = 0;
             append = getStringMes(mes);
-            console.log(dataTablas);
 
             $("#tablaMesHead").append('<th colspan="3">' + dataTablas.nombre_mes+ "</th>");
 
@@ -100,6 +107,7 @@ function getColocacion() {
         })
         .fail(function (textStatus) {
             $('#loading').css("display", "none");
+            $("#alertaConsulta").css('display', 'block')
         });
 }
 

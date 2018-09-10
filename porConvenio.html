@@ -5,48 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Costo Por Convenio</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="css/estiloGeneral.css">
     <link rel="stylesheet" href="css/estiloConvenio.css">
 
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="js/scriptGeneral.js"></script>
     <script src="js/scriptConvenio.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
-        crossorigin="anonymous">
 </head>
 
 <body>
 
-    <form onsubmit="getColocacion()" class="form-group" id="consulta">
-        <div class="row" style="border: none; text-align: center;">
+    <form class="form-group">
+        <div class="row col" style="border: none; text-align: center;">
             <div class="col">
                 <h3>Colocación por Convenio</h3>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm">
+            <div class="col-3">
                 <img class="imgMasNomina" src="img/logo_mas_nomina.jpg" alt="">
             </div>
-            <div class="col-sm">
+            <div class="col-2">
                 <div>
-                    <label for="mes">Periodo: </label>
+                    <label for="mes">Periodo<span class="rojo">*</span>: </label>
                 </div>
-                <select required name="inputMes" id="inputMes" class="form-control">
+                <select name="inputMes" id="inputMes" class="form-control">
 
                 </select>
-                <select required name="inputAno" id="inputAno" class="form-control">
+                <select name="inputAno" id="inputAno" class="form-control">
 
                 </select>
             </div>
-            <div class="col-sm">
-                <label for="mes">División: </label>
-                <select required name="inputDivision" id="inputDivision" class="form-control">
+            <div class="col-3">
+                <label for="mes">División<span class="rojo">*</span>: </label>
+                <select name="inputDivision" id="inputDivision" class="form-control">
                     <option disabled hidden selected value="">Elija una opción</option>
                     <option value="TODOS">TODOS</option>
                     <option value="CENTRO">CENTRO</option>
@@ -58,16 +61,29 @@
                     <option value="VMCENTRO">VM CENTRO</option>
                 </select>
             </div>
-            <div class="col-sm">
-                <label for="mes">Producto: </label>
-                <select required name="inputMes" id="inputCredito" class="form-control">
+            <div class="col-3">
+                <label for="mes">Producto<span class="rojo">*</span>: </label>
+                <select name="inputMes" id="inputProducto" class="form-control">
                     <option disabled hidden selected value="">Elija una opción</option>
                     <option value="TODOS">TODOS</option>
-                    <option value="CENTRO">CRÉDITO MAS NOMINA</option>
-                    <option value="SUR">CRÉDITO DOMICILIADO</option>
+                    <option value="MASNOMINA">CRÉDITO MAS NOMINA</option>
+                    <option value="DOMICILIADO">CRÉDITO DOMICILIADO</option>
                 </select>
             </div>
-            <button type="button" id="btnBuscar" class="btn btn-primary" onclick="getColocacion()">Consultar</button>
+            <div class="col-1">
+                <div id="alertaConsulta" class="alert alert-danger">
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Hubo un error al realizar la consulta, vea
+                    la consola para ver detalles.
+                </div>
+                <div id="alertaNoResultados" class="alert alert-warning">
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> La consulta no regresó resultados.
+                </div>
+                <div id="alertaValidacion" class="alert alert-warning">
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Debe llenar todos los datos para hacer una
+                    consulta.
+                </div>
+                <button class="btn btn-primary" type="button" onclick="iniciarBusqueda()">Consultar</button>
+            </div>
         </div>
     </form>
 
@@ -127,6 +143,8 @@
             </table>
         </div>
     </div>
+
+    <!--SCRIPTS-->
 
 </body>
 
