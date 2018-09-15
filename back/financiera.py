@@ -3,18 +3,14 @@
 from flask import Flask 
 from flask import request
 from functools import reduce
-from consulta_general import consulta_divisiones
-from big_query_conexion import obtener_datos_ser
 
 import json
 import datetime
 import locale
 
 locale.setlocale( locale.LC_ALL, '' )
+#locale.currency( row[1], grouping = True ) 
 app = Flask(__name__)
-PORT = 9996
-DEBUG = True
-IP = "10.1.50.149"
 
 @app.after_request
 def after_request(response):
@@ -29,26 +25,39 @@ url_base='/MasNomina/MonitorVentas'
 def hello():
 	return "Monitor Ventas Estatus[OK]"
 
-	
-#combo box de divisiones
-@app.route(url_base+'/consulta_anios',methods=['GET']) 
-def f_consulta_anios():
-	lista_anios = []
-	anio={}
-	anio['id_anio'] = 2018
-	lista_anios.append(anio)
-	anio={}
-	anio['id_anio'] = 2017
-	lista_anios.append(anio)
-	return json.dumps(lista_anios)
-
 #combo box de divisiones
 @app.route(url_base+'/consulta_divisiones',methods=['GET']) 
-def f_consulta_divisiones():
-	registros = consulta_divisiones()
-	return json.dumps(registros)
-	
-	
+def consulta_divisiones():
+	lista_divisiones = []
+	division={}
+	division['id_div'] = 1
+	division['nombre'] = 'CENTRO'
+	lista_divisiones.append(division)
+	division={}
+	division['id_div'] = 2
+	division['nombre'] = 'SUR'
+	lista_divisiones.append(division)
+	division={}
+	division['id_div'] = 3
+	division['nombre'] = 'NORESTE'
+	lista_divisiones.append(division)
+	division={}
+	division['id_div'] = 4
+	division['nombre'] = 'NORTE'
+	lista_divisiones.append(division)
+	division={}
+	division['id_div'] = 5
+	division['nombre'] = 'VM NORTE'
+	lista_divisiones.append(division)
+	division={}
+	division['id_div'] = 6
+	division['nombre'] = 'VM SUR'
+	lista_divisiones.append(division)
+	division={}
+	division['id_div'] = 7
+	division['nombre'] = 'VM CENTRO'
+	lista_divisiones.append(division)
+	return json.dumps(lista_divisiones)
 	
 #combo box de periodos
 @app.route(url_base+'/consulta_periodos',methods=['GET']) 
@@ -91,8 +100,6 @@ def consulta_convenio_colocacion():
 		print('Limita a mes actual')#define consulta para mes actual
 	
 	#se realiza la consulta
-	obtener_datos_ser(query, legacy_sql, query_parameters)
-
 	lista_resultado = []
 	lista_datos=[['GOBIERNO DE HIDALGO',967203.15,379404.20,3707870.52, 3707870.52],
 				 ['SNTE 14 FEDERAL GUERRERO',332979,42000,1290814, 370870.52],
@@ -176,12 +183,7 @@ def consulta_convenio_colocacion():
 	
 	return json.dumps(lista_resultado)	
 	
-def juntar_tablas(queries, parametros):
-	temp = []
-	for i in enumerate(queries):
-		temp.append(obtener_datos_ser(i, True, parametros))
-
-
+	
 #tabla x convenio cartera
 @app.route(url_base+'/consulta_convenio_cartera',methods=['GET']) 
 def consulta_convenio_cartera():
@@ -654,7 +656,7 @@ def vendedores():
 	
 if __name__ == '__main__':	
 	#si Rest.py
-	app.run(host='127.0.0.1',debug=True, port='9999', threaded=DEBUG)
+	app.run(host="127.0.0.1",debug=True, port=9999, threaded=True)
 
 
 
