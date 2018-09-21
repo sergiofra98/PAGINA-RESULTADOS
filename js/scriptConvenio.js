@@ -16,7 +16,7 @@ function getColocacion() {
 
     $.getJSON(linkREST + "consulta_convenio_colocacion",
         {
-            mes: $('#inputMes').val() + '-' + $('#inputAno').val(),
+            mes: $('#inputAno').val() + $('#inputMes').val(),
             division: $('#inputDivision').val(),
             producto: $('#inputProducto').val()
         },
@@ -34,8 +34,8 @@ function getColocacion() {
                     '<td class="colObscuro">' + dataTablas[i].total_mes_pct + '</td>' +
                     '<td class="numero"> ' + dataTablas[i].total_mes_aa + '</td>' +
                     '<td class="colObscuro">' + dataTablas[i].total_mes_aa_pct + '</td>' +
-                    '<td class="numero">' + dataTablas[i].total_acu + '</td>' +
                     '<td class="numero">' + dataTablas[i].total_acu_aa + '</td>' +
+                    '<td class="numero">' + dataTablas[i].total_acu + '</td>' +
                     '<td class="colObscuro ' + dataTablas[i].color_acu + '">' + dataTablas[i].total_acu_comp_pct + '</td>' +
                     '</tr>';
             }
@@ -63,7 +63,7 @@ function getColocacion() {
     $.getJSON(linkREST + "consulta_convenio_cartera",
         {
             division: $("#inputDivision").val(),
-            mes: $("#inputMes").val(),
+            mes: $('#inputAno').val() + $('#inputMes').val()
         },
         function (dataTablas) {
             let i = 0;

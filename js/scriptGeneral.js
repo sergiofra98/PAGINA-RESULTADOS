@@ -9,7 +9,10 @@ $(document).ready(function () {
     append = "<option hidden selected disabled>Mes</option>";
 
     for (let i = 0; i < 12; i++) {
-        append += "<option>" + getStringMes(i) + "</option>"
+        if(i < 10)
+            append += '<option value="0' + i + '">' + getStringMes(i) + "</option>"
+        else
+            append += '<option value="' + i + '">' + getStringMes(i) + "</option>"
     }
 
     $("#inputMes").append(append)
