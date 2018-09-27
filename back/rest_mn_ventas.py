@@ -29,6 +29,13 @@ def after_request(response):
 url_base = '/MasNomina/MonitorVentas'
 
 
+def formatear_no_mes(mes):
+    if(mes < 10):
+        return '0' + str(mes)
+    else:
+        return str(mes)
+
+
 @app.route(url_base)
 def hello():
     return "Monitor Ventas Estatus[OK]"
@@ -85,70 +92,150 @@ def consulta_periodos():
     return json.dumps(lista_periodos)
 
 
-def juntar_tablas(q):
-    queries = q
-
-    arregloInicial = []
-
-    for i in queries:
-        arregloInicial.append(obtener_datos(i, v_legacy_sql, query_parameters))
-
-    Universo = []
-
-    for tabla in arregloInicial:
-        for fila in tabla:
-            if [fila[0], fila[1]] not in Universo:
-                Universo.append([fila[0], fila[1]])
-
-    for tabla in arregloInicial:
-        elementos = []
-
-        for fila in tabla:
-            elementos.append([fila[0], fila[1]])
-        for entidad in Universo:
-            if entidad not in elementos:
-                tabla.append((entidad[0], entidad[1], 0))
-
-    for tabla in arregloInicial:
-        tabla.sort()
-
-    Universo.sort()
-
-    retornoTabla = []
-
-    for i, elem in enumerate(Universo):
-        aux = []
-        aux.append(elem[1])
-
-        for tabla in arregloInicial:
-            aux.append(tabla[i][2])
-
-        retornoTabla.append(aux)
-
-    return retornoTabla
-
-# tabla x convenio colocacion
-
-
 @app.route(url_base+'/consulta_convenio_colocacion', methods=['GET'])
 def consulta_convenio_colocacion():
     division = request.args.get('division')
     mes = request.args.get('mes')
+    producto = request.args.get('producto')
     if division == None:
         # define consulta para toda las divisiones
         print('No limita consulta por division')
     if mes == None:
         print('Limita a mes actual')  # define consulta para mes actual
 
+    mes_numero = int(mes[4] + mes[5])
+    anio = int(mes[0] + mes[1] + mes[2] + mes[3])
+
+    ##SE GENERA EL QUERY
+    ##SE GENERA EL QUERY
+    ##SE GENERA EL QUERY
+    query_convenio = """select 
+    case
+        when universo_2.clave_corresponsal is null then aa.clave_corresponsal
+        else universo_2.clave_corresponsal
+    end as clave_corresponsal,
+    case
+        when universo_2.razon_social is null then aa.razon_social
+        else universo_2.razon_social
+    end as razon_social,
+    ifnull(universo_2.monto_dispuesto,0) as monto_dispuesto,
+    ifnull(universo_2.monto_dispuesto_ma,0) as monto_dispuesto_ma, 
+    ifnull(universo_2.monto_dispuesto_acu,0) as monto_dispuesto_acu,
+    ifnull(aa.monto_dispuesto_acu_aa,0) as monto_dispuesto_acu_aa
+    from (
+    select 
+        case 
+            when universo_1.clave_corresponsal is null then mes_acumulado.clave_corresponsal
+            else universo_1.clave_corresponsal
+        end as clave_corresponsal,
+        case 
+            when universo_1.razon_social is null then  mes_acumulado.razon_social
+            else universo_1.razon_social
+        end as razon_social,
+        ifnull(universo_1.monto_dispuesto,0) as monto_dispuesto,
+        ifnull(universo_1.monto_dispuesto_ma,0)  as monto_dispuesto_ma,
+        ifnull(mes_acumulado.monto_dispuesto_acu,0) as monto_dispuesto_acu
+    from (
+            select case 
+                    when mes_actual.clave_corresponsal is null then mes_anterior.clave_corresponsal
+                    else mes_actual.clave_corresponsal
+                end as clave_corresponsal,
+                case
+                    when mes_actual.razon_social is null then mes_anterior.razon_social
+                    else  mes_actual.razon_social
+                end as razon_social,
+                ifnull(mes_actual.monto_dispuesto,0) as monto_dispuesto, 
+                ifnull(mes_anterior.monto_dispuesto,0) as monto_dispuesto_ma
+            from (
+            select clave_corresponsal, razon_social, sum(monto_dispuesto) as monto_dispuesto
+            from BUO_Masnomina.contratos_hist """
+    if(mes_numero == 12):
+        query_convenio += "where fecha_disposicion >= '" + \
+            str(anio) + "-" + formatear_no_mes(mes_numero) + \
+            "-01' and fecha_disposicion < '" + str(anio + 1) + "-01-01' "
+    else:
+        query_convenio += "where fecha_disposicion >= '" + str(anio) + "-" + formatear_no_mes(
+            mes_numero) + "-01' and fecha_disposicion < '" + str(anio) + "-" + formatear_no_mes(mes_numero + 1) + "-01' "
+    query_convenio += "and mes = " + mes + " "
+    if(int(division)):
+        query_convenio += "and division = " + division + " "
+    if(producto == "0"):
+        query_convenio += "/*and producto = '" + producto + "'*/ "
+    query_convenio += """ group by clave_corresponsal, razon_social
+        ) mes_actual
+        full join (
+          select clave_corresponsal, razon_social, sum(monto_dispuesto) as monto_dispuesto
+          from BUO_Masnomina.contratos_hist """
+    if(mes_numero == 12):
+        query_convenio += "where fecha_disposicion >= '" + \
+            str(anio - 1) + "-" + formatear_no_mes(mes_numero) + \
+            "-01' and fecha_disposicion < '" + str(anio) + "-01-01' "
+    else:
+        query_convenio += "where fecha_disposicion >= '" + str(anio - 1) + "-" + formatear_no_mes(
+            mes_numero) + "-01' and fecha_disposicion < '" + str(anio - 1) + "-" + formatear_no_mes(mes_numero+1) + "-01' "
+    query_convenio += "and mes = " + \
+        str(anio - 1) + formatear_no_mes(mes_numero) + " "
+    if(int(division)):
+        query_convenio += "and division = " + division + " "
+    if(producto == "0"):
+        query_convenio += "/*and producto = '" + producto + "'*/ "
+    query_convenio += """ group by clave_corresponsal, razon_social
+            ) mes_anterior on mes_anterior.clave_corresponsal = mes_actual.clave_corresponsal
+    ) universo_1
+    full join (  
+            select contratos.clave_corresponsal, contratos.razon_social, sum(contratos.monto_dispuesto) as monto_dispuesto_acu
+            from (
+            select distinct clave_corresponsal, razon_social, contrato, monto_dispuesto
+            from BUO_Masnomina.contratos_hist """
+    if(mes_numero == 12):
+        query_convenio += "where fecha_disposicion >= '" + \
+            str(anio) + "-01-01' and fecha_disposicion < '" + \
+            str(anio) + "-01-01' "
+    else:
+        query_convenio += "where fecha_disposicion >= '" + \
+            str(anio) + "-01-01' and fecha_disposicion < '" + \
+            str(anio + 1) + "-" + formatear_no_mes(mes_numero + 1) + "-01' "
+    query_convenio += "and mes >= " + \
+        str(anio) + "01 and mes <= " + mes + " "
+    if(int(division)):
+        query_convenio += "and division = " + division + " "
+    if(producto == "0"):
+        query_convenio += "/*and producto = '" + producto + "'*/ "
+    query_convenio += """ ) contratos
+            group by contratos.clave_corresponsal, contratos.razon_social
+    ) mes_acumulado on mes_acumulado.clave_corresponsal = universo_1.clave_corresponsal       
+    ) universo_2
+    full join (  
+        select contratos.clave_corresponsal, contratos.razon_social, sum(contratos.monto_dispuesto) as monto_dispuesto_acu_aa
+        from (
+            select distinct clave_corresponsal, razon_social, contrato, monto_dispuesto
+            from BUO_Masnomina.contratos_hist """
+    if(mes_numero == 12):
+        query_convenio += "where fecha_disposicion >= '" + \
+            str(anio - 1) + "-01-01' and fecha_disposicion < '" + \
+            str(anio) + "-01-01' "
+    else:
+        query_convenio += "where fecha_disposicion >= '" + \
+            str(anio - 1) + "-01-01' and fecha_disposicion < '" + \
+            str(anio - 1) + "-" + formatear_no_mes(mes_numero + 1) + "-01' "
+    query_convenio += "and mes >= " + \
+        str(anio - 1) + "01 and mes <= " + str(anio - 1) + \
+        formatear_no_mes(mes_numero) + " "
+    if(int(division)):
+        query_convenio += "and division = " + division + " "
+    if(producto == "0"):
+        query_convenio += "/*and producto = '" + producto + "'*/ "
+    query_convenio += """ ) contratos 
+        group by contratos.clave_corresponsal, contratos.razon_social
+    ) aa on aa.clave_corresponsal = universo_2.clave_corresponsal
+    order by 3 desc """
+    
     # se realiza la consulta
+
     lista_datos = []
     lista_resultado = []
-    lista_datos = juntar_tablas([
-        """select clave_corresponsal, razon_social, sum(monto_dispuesto) from BUO_Masnomina.contratos_hist where fecha_disposicion >= '2018-06-01' and fecha_disposicion < '2018-07-01' and mes = 201806 and division = 1 group by clave_corresponsal, razon_social order by 3""",
-        """select clave_corresponsal, razon_social, sum(monto_dispuesto) from BUO_Masnomina.contratos_hist where fecha_disposicion >= '2017-06-01' and fecha_disposicion < '2017-07-01' and mes = 201706 and division = 1 group by clave_corresponsal, razon_social order by 3""",
-        """select contratos.clave_corresponsal, contratos.razon_social, sum(contratos.monto_dispuesto) from ( select distinct clave_corresponsal, razon_social, contrato, monto_dispuesto from BUO_Masnomina.contratos_hist where fecha_disposicion >= '2017-01-01' and fecha_disposicion < '2017-07-01' and mes >= 201701 and mes <= 201706 and division = 1 ) contratos group by contratos.clave_corresponsal, contratos.razon_social order by 3""",
-        """select contratos.clave_corresponsal, contratos.razon_social, sum(contratos.monto_dispuesto) from ( select distinct clave_corresponsal, razon_social, contrato, monto_dispuesto from BUO_Masnomina.contratos_hist where fecha_disposicion >= '2018-01-01' and fecha_disposicion < '2018-07-01' and mes >= 201801 and mes <= 201806 and division = 1 ) contratos group by contratos.clave_corresponsal, contratos.razon_social order by 3"""
-    ])
+    #lista_datos = obtener_datos(query_convenio, False, ())
+
     # Obtenemos totales
     total_mes = 0
     total_mes_aa = 0
@@ -156,64 +243,66 @@ def consulta_convenio_colocacion():
     total_acu_aa = 0
     total_prc_comp = 0
 
-    for row in lista_datos:
-        total_mes = total_mes + row[1]
-        total_mes_aa = total_mes_aa + row[2]
-        total_acu = total_acu + row[3]
-        total_acu_aa = total_acu_aa + row[4]
+    if(enumerate(lista_datos)):
+        for row in lista_datos:
+            total_mes = total_mes + row[1]
+            total_mes_aa = total_mes_aa + row[2]
+            total_acu = total_acu + row[3]
+            total_acu_aa = total_acu_aa + row[4]
 
-    contador = 1
-    for row in lista_datos:
-        registro = {}
+        contador = 1
+        for row in lista_datos:
+            registro = {}
 
-        if(row[3]):
-            comparacion_acum = ((row[4] * 1.00) / (row[3] * 1.00) - 1)*100
+            if(row[3]):
+                comparacion_acum = ((row[4] * 1.00) / (row[3] * 1.00) - 1)*100
+            else:
+                comparacion_acum = 0
+
+            registro['nombre'] = row[0]
+
+            registro['total_mes'] = '{:0,.0f}'.format(row[1])
+            total_mes_pct = (row[1] / total_mes) * 100.00
+            registro['total_mes_pct'] = '{:0,.2f}%'.format(total_mes_pct)
+
+            registro['total_mes_aa'] = '{:0,.0f}'.format(row[2])
+            total_mes_aa_pct = (row[2] / total_mes_aa) * 100.00
+            registro['total_mes_aa_pct'] = '{:0,.2f}%'.format(total_mes_aa_pct)
+
+            registro['total_acu'] = '{:0,.0f}'.format(row[3])
+            registro['total_acu_aa'] = '{:0,.0f}'.format(row[4])
+            total_acu_pct = (row[3] / total_acu) * 100.00
+            registro['total_acu_pct'] = '{:0,.2f}%'.format(total_acu_pct)
+            registro['total_acu_comp_pct'] = '{:0,.2f}%'.format(
+                comparacion_acum)
+
+            if(comparacion_acum < 0):
+                registro['color_acu'] = 'rojo'
+            else:
+                registro['color_acu'] = ''
+
+            contador = contador + 1
+            lista_resultado.append(registro)
+
+        total_prc_comp = (total_acu_aa - total_acu)/total_acu*100
+
+        registro_totales = {}
+        registro_totales['nombre'] = 'TOTAL'
+        registro_totales['total_mes'] = '{:0,.0f}'.format(total_mes)
+        registro_totales['total_mes_pct'] = '{:0,.2f}%'.format(100)
+        registro_totales['total_mes_aa'] = '{:0,.0f}'.format(total_mes_aa)
+        registro_totales['total_mes_aa_pct'] = '{:0,.2f}%'.format(100)
+        registro_totales['total_acu'] = '{:0,.0f}'.format(total_acu)
+        registro_totales['total_acu_aa'] = '{:0,.0f}'.format(total_acu_aa)
+        registro_totales['total_acu_pct'] = '{:0,.2f}%'.format(100)
+        registro_totales['total_acu_comp_pct'] = '{:0,.2f}%'.format(
+            total_prc_comp)
+        if(total_prc_comp < 0):
+            registro_totales['color_acu'] = 'rojo'
         else:
-            comparacion_acum = 0
+            registro_totales['color_acu'] = ''
 
-        registro['nombre'] = row[0]
-
-        registro['total_mes'] = '{:0,.0f}'.format(row[1])
-        total_mes_pct = (row[1] / total_mes) * 100.00
-        registro['total_mes_pct'] = '{:0,.2f}%'.format(total_mes_pct)
-
-        registro['total_mes_aa'] = '{:0,.0f}'.format(row[2])
-        total_mes_aa_pct = (row[2] / total_mes_aa) * 100.00
-        registro['total_mes_aa_pct'] = '{:0,.2f}%'.format(total_mes_aa_pct)
-
-        registro['total_acu'] = '{:0,.0f}'.format(row[3])
-        registro['total_acu_aa'] = '{:0,.0f}'.format(row[4])
-        total_acu_pct = (row[3] / total_acu) * 100.00
-        registro['total_acu_pct'] = '{:0,.2f}%'.format(total_acu_pct)
-        registro['total_acu_comp_pct'] = '{:0,.2f}%'.format(comparacion_acum)
-
-        if(comparacion_acum < 0):
-            registro['color_acu'] = 'rojo'
-        else:
-            registro['color_acu'] = ''
-
-        contador = contador + 1
-        lista_resultado.append(registro)
-
-    total_prc_comp = (total_acu_aa - total_acu)/total_acu*100
-
-    registro_totales = {}
-    registro_totales['nombre'] = 'TOTAL'
-    registro_totales['total_mes'] = '{:0,.0f}'.format(total_mes)
-    registro_totales['total_mes_pct'] = '{:0,.2f}%'.format(100)
-    registro_totales['total_mes_aa'] = '{:0,.0f}'.format(total_mes_aa)
-    registro_totales['total_mes_aa_pct'] = '{:0,.2f}%'.format(100)
-    registro_totales['total_acu'] = '{:0,.0f}'.format(total_acu)
-    registro_totales['total_acu_aa'] = '{:0,.0f}'.format(total_acu_aa)
-    registro_totales['total_acu_pct'] = '{:0,.2f}%'.format(100)
-    registro_totales['total_acu_comp_pct'] = '{:0,.2f}%'.format(total_prc_comp)
-    if(total_prc_comp < 0):
-        registro_totales['color_acu'] = 'rojo'
-    else:
-        registro_totales['color_acu'] = ''
-
-    lista_resultado.append(registro_totales)
-
+        lista_resultado.append(registro_totales)
     return json.dumps(lista_resultado)
 
 # tabla x convenio cartera
@@ -223,28 +312,102 @@ def consulta_convenio_colocacion():
 def consulta_convenio_cartera():
     division = request.args.get('division')
     mes = request.args.get('mes')
+    producto = request.args.get('producto')
     if division == None:
         # define consulta para toda las divisiones
         print('No limita consulta por division')
     if mes == None:
         print('Limita a mes actual')  # define consulta para mes actual
 
+    mes_numero = int(mes[4] + mes[5])
+    anio = int(mes[0] + mes[1] + mes[2] + mes[3])
+
     # se realiza la consulta
     lista_resultado = {}
 
     lista_mes = ['May 17', 'Abr 18', 'May 18']
-    # [nombres, mes actual, mes anterior, mes año anterior]
-    lista_datos = juntar_tablas([
-        '''select clave_corresponsal, razon_social, sum(saldo_contable) from BUO_Masnomina.contratos_hist where 1 = 1 and mes = ''' +
-        mes +
-        ''' and division = 1 and estatus_contable in ('VIG','VEN') group by clave_corresponsal, razon_social order by 3 ''',
-        '''select clave_corresponsal, razon_social, sum(saldo_contable) from BUO_Masnomina.contratos_hist where 1 = 1 and mes = ''' +
-        mes +
-        ''' and division = 1 and estatus_contable in ('VIG','VEN') group by clave_corresponsal, razon_social order by 3''',
-        '''select clave_corresponsal, razon_social, sum(saldo_contable) from BUO_Masnomina.contratos_hist where 1 = 1 and mes = ''' +
-        mes +
-        ''' and division = 1 and estatus_contable in ('VIG','VEN') group by clave_corresponsal, razon_social order by 3'''
-    ])
+    # [mes actual, mes anterior, mes año anterior]
+
+    query_convenio_cartera = """select 
+        case 
+            when universo_1.clave_corresponsal is null then mact_aa.clave_corresponsal
+            else universo_1.clave_corresponsal
+        end as clave_corresponsal,
+        case
+            when universo_1.razon_social is null then mact_aa.razon_social
+            else universo_1.razon_social
+        end as razon_social,     
+        ifnull(universo_1.saldo_contable_mact,0) as saldo_contable_mact,
+        ifnull(universo_1.saldo_contable_mant,0) as saldo_contable_mant,
+        ifnull(mact_aa.saldo_contable_mact_aa,0) as saldo_contable_mact_aa
+    from (
+        select 
+        case 
+            when mact.clave_corresponsal is null then mant.clave_corresponsal
+            else mact.clave_corresponsal
+        end as clave_corresponsal,
+        case 
+            when mact.razon_social is null then  mant.razon_social
+            else mact.razon_social
+        end as razon_social,
+        ifnull(mact.saldo_contable_mact,0) as saldo_contable_mact,
+        ifnull(mant.saldo_contable_mant,0) as saldo_contable_mant
+        from (
+            select 
+            clave_corresponsal, razon_social, sum(saldo_contable) as saldo_contable_mact
+            from BUO_Masnomina.contratos_hist 
+            where 1 = 1 """
+    query_convenio_cartera += "and mes = " + mes + " "
+    if(int(division)):
+        query_convenio_cartera += "and division = " + division + " "
+    query_convenio_cartera += "and estatus_contable in ('VIG','VEN') "
+    if(producto == "0"):
+        query_convenio_cartera += "/*and producto = '" + producto + "'*/ "
+    query_convenio_cartera += """group by clave_corresponsal, razon_social
+        ) mact
+    full join
+      (
+        select clave_corresponsal, razon_social, sum(saldo_contable) as saldo_contable_mant
+        from BUO_Masnomina.contratos_hist 
+        where 1 = 1 """
+    if(mes_numero == 1):
+        query_convenio_cartera += "and mes = " + str(anio-1) + "12 "
+    else:
+        query_convenio_cartera += "and mes = " + str(anio) + formatear_no_mes(mes_numero - 1 ) +" "        
+    if(int(division)):
+        query_convenio_cartera += "and division = " + division + " "
+    query_convenio_cartera += "and estatus_contable in ('VIG','VEN') "
+    if(producto == "0"):
+        query_convenio_cartera += "/*and producto = '" + producto + "'*/ "
+    query_convenio_cartera += """group by clave_corresponsal, razon_social
+            ) mant on mant.clave_corresponsal = mact.clave_corresponsal
+    ) universo_1
+    full join (
+        select clave_corresponsal, razon_social, sum(saldo_contable) as saldo_contable_mact_aa
+        from BUO_Masnomina.contratos_hist 
+        where 1 = 1 """
+    query_convenio_cartera += "and mes = " + str(anio-1) + formatear_no_mes(mes_numero) + " "
+    if(int(division)):
+        query_convenio_cartera += "and division = " + division + " "
+    query_convenio_cartera += "and estatus_contable in ('VIG','VEN') "
+    if(producto == "0"):
+        query_convenio_cartera += "/*and producto = '" + producto + "'*/ "
+    query_convenio_cartera += """group by clave_corresponsal, razon_social
+    ) mact_aa on mact_aa.clave_corresponsal = universo_1.clave_corresponsal
+    order by 3 desc"""
+    print("----------------------")
+    print("----------------------")
+    print("----------------------")
+    print("----------------------")
+
+    print(query_convenio_cartera)
+    print("----------------------")
+    print("----------------------")
+    print("----------------------")
+    print("----------------------")
+
+    #lista_datos=obtener_datos(query01, False, ())
+    lista_datos = []
 
     lista_resultado['cartera'] = []
     lista_resultado['meses'] = lista_mes
@@ -261,7 +424,7 @@ def consulta_convenio_cartera():
         total_ma += row[2]
         total_maa += row[3]
 
-    for i, row in enumerate(lista_datos):
+    for row in enumerate(lista_datos):
 
         registro = {}
         registro['nombre'] = row[0]
@@ -569,181 +732,208 @@ def calculo_x_estado(lista_todo, lista_actual):
 
 
 # tabla costos x colocacion
+
+
 @app.route(url_base+'/costos_colocacion', methods=['GET'])
 def costos_colocacion():
     division = request.args.get('division')
     mes = request.args.get('mes')
+    producto = request.args.get('producto')
     if division == None:
         # define consulta para toda las divisiones
         print('No limita consulta por division')
     if mes == None:
         print('Limita a mes actual')  # define consulta para mes actual
 
-    # se realiza la consulta
-    no_mes = int(mes[4] + mes[3])
-    anio = mes[0] + mes[1] + mes[2] + mes[3]
-    print(no_mes)
-    queries = []
-    queries.append(
-        """SELECT
-        colmen.colocacion,
-        col.comisiones,
-        col.sueldo_fijo,
-        col.carga_social_aguinaldo,
-        col.viaticos,
-        col.gasolina,
-        col.costos_autos,
-        col.rentas,
-        (col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) AS total,
-        ROUND((col.comisiones / colmen.colocacion) * 100,2) AS pct_comisiones,
-        ROUND((col.sueldo_fijo / colmen.colocacion) * 100,2) AS pct_sueldo_fijo,
-        ROUND((col.carga_social_aguinaldo / colmen.colocacion) * 100,2) AS pct_carga_social_aguinaldo,
-        ROUND((col.viaticos / colmen.colocacion) * 100,2) AS pct_viaticos,
-        ROUND((col.gasolina / colmen.colocacion) * 100,2) AS pct_gasolina,
-        ROUND((col.costos_autos / colmen.colocacion) * 100,2) AS pct_costos_autos,
-        ROUND((col.rentas / colmen.colocacion) * 100,2) AS pct_rentas,
-        ROUND(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) AS pct_total
-    FROM
-    BUO_Masnomina.costo_colocacion_hist col,
-    (
-       SELECT
-        SUM(monto_dispuesto) AS colocacion
-    FROM
-        BUO_Masnomina.contratos_hist
-    WHERE
-        1 = 1 /* aqui va el rango del mes seleccionado */
-        AND fecha_disposicion >= '2018-06-01'
-        AND fecha_disposicion < '2018-07-01' /* mes seleccionado */
-        AND mes = 201806 /* aqui van los if de los combos */
-        AND division = 1
-        AND producto = 'MAS NOMINA' /* o DOMICILIADO*/ ) colmen
-    WHERE
-    1 = 1 /* mes seleccionado */
-    AND col.mes = 201806 /* aqui van los if de los combos */
-    AND col.division = 1""")
+    # SE SEPARA LA FECHA EN SUS RESPECTIVAS PARTES
+    mes_numero = int(mes[4] + mes[5])
+    anio = int(mes[0] + mes[1] + mes[2] + mes[3])
 
-    queries.append("""select col_acum.colocacion, 
-        acum.comisiones, acum.sueldo_fijo, acum.carga_social_aguinaldo, acum.viaticos, acum.gasolina, acum.costos_autos, acum.rentas,
-        acum.total,
-        round((acum.comisiones / col_acum.colocacion) * 100,2) as pct_comisiones,
-        round((acum.sueldo_fijo / col_acum.colocacion) * 100,2) as pct_sueldo_fijo,
-        round((acum.carga_social_aguinaldo / col_acum.colocacion) * 100,2) as pct_carga_social_aguinaldo,
-        round((acum.viaticos / col_acum.colocacion) * 100,2) as pct_viaticos,
-        round((acum.gasolina / col_acum.colocacion) * 100,2) as pct_gasolina,
-        round((acum.costos_autos / col_acum.colocacion) * 100,2) as pct_costos_autos,
-        round((acum.rentas / col_acum.colocacion) * 100,2) as pct_rentas,
-        round(((acum.total) / col_acum.colocacion) * 100,2) as pct_total
+    # SE GENERA EL PRIMER QUERYYY
+    query01 = """select colmen.colocacion, 
+    col.comisiones, col.sueldo_fijo, col.carga_social_aguinaldo, col.viaticos, col.gasolina, col.costos_autos, col.rentas,
+    (col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) as total,
+    round((col.comisiones / colmen.colocacion) * 100,2) as pct_comisiones,
+    round((col.sueldo_fijo / colmen.colocacion) * 100,2) as pct_sueldo_fijo,
+    round((col.carga_social_aguinaldo / colmen.colocacion) * 100,2) as pct_carga_social_aguinaldo,
+    round((col.viaticos / colmen.colocacion) * 100,2) as pct_viaticos,
+    round((col.gasolina / colmen.colocacion) * 100,2) as pct_gasolina,
+    round((col.costos_autos / colmen.colocacion) * 100,2) as pct_costos_autos,
+    round((col.rentas / colmen.colocacion) * 100,2) as pct_rentas,
+    round(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) as pct_total
+    from BUO_Masnomina.costo_colocacion_hist col,
+    (
+    select  sum(monto_dispuesto) as colocacion
+    from BUO_Masnomina.contratos_hist   
+    where 1 = 1 
+    /* aqui va el rango del mes seleccionado */ """
+    query01 += "and fecha_disposicion >= '" + \
+        str(anio) + "-" + formatear_no_mes(mes_numero) + "-01' "
+    if(mes_numero == 12):
+        query01 += "and fecha_disposicion < '" + str(anio + 1) + "-01-01' "
+    else:
+        query01 += "and fecha_disposicion < '" + \
+            str(anio) + "-" + formatear_no_mes(mes_numero+1) + "-01' "
+
+    query01 += "and mes = " + mes + " "
+    if(int(division)):
+        query01 += "and division = " + division + " "
+    if(producto != "0"):
+        query01 += "and producto = '" + producto + "' "
+    query01 += """ ) colmen
+    where 1 = 1
+    /* mes seleccionado */"""
+    query01 += " and col.mes = " + mes + "  "
+    if(int(division)):
+        query01 += " and col.division = " + division
+
+    # SE ESCRIBE EL SEGUndO QUERY
+
+    query02 = """select col_acum.colocacion, 
+    acum.comisiones, acum.sueldo_fijo, acum.carga_social_aguinaldo, acum.viaticos, acum.gasolina, acum.costos_autos, acum.rentas,
+    acum.total,
+    round((acum.comisiones / col_acum.colocacion) * 100,2) as pct_comisiones,
+    round((acum.sueldo_fijo / col_acum.colocacion) * 100,2) as pct_sueldo_fijo,
+    round((acum.carga_social_aguinaldo / col_acum.colocacion) * 100,2) as pct_carga_social_aguinaldo,
+    round((acum.viaticos / col_acum.colocacion) * 100,2) as pct_viaticos,
+    round((acum.gasolina / col_acum.colocacion) * 100,2) as pct_gasolina,
+    round((acum.costos_autos / col_acum.colocacion) * 100,2) as pct_costos_autos,
+    round((acum.rentas / col_acum.colocacion) * 100,2) as pct_rentas,
+    round(((acum.total) / col_acum.colocacion) * 100,2) as pct_total
     from
     (
-        select  sum(col.comisiones) as comisiones , sum(col.sueldo_fijo) as sueldo_fijo, sum(col.carga_social_aguinaldo) as carga_social_aguinaldo, 
+    select  sum(col.comisiones) as comisiones , sum(col.sueldo_fijo) as sueldo_fijo, sum(col.carga_social_aguinaldo) as carga_social_aguinaldo, 
             sum(col.viaticos) as viaticos, sum(col.gasolina) as gasolina, sum(col.costos_autos) as costos_autos, sum(col.rentas) as rentas, 
             sum(col.comisiones) + sum(col.sueldo_fijo) + sum(col.carga_social_aguinaldo) + 
             sum(col.viaticos) + sum(col.gasolina) + sum(col.costos_autos) + sum(col.rentas) as total        
-        from BUO_Masnomina.costo_colocacion_hist col
-        where 1 = 1
-        /* aqui va el rango de enero al mes seleccionado */
-        and col.mes >= 201801 and col.mes < 201807  
-        /* aqui van los if de los combos */
-        and col.division = 1
-        ) acum,
-        (
-        select sum(contratos.monto_dispuesto) as colocacion
+    from BUO_Masnomina.costo_colocacion_hist col
+    where 1 = 1 """
+    query02 += "and col.mes >= " + str(anio) + "01 and col.mes < " + mes + "  "
+    if(int(division)):
+        query02 += "and col.division = " + division + " "
+    query02 += """) acum,
+    (
+    select sum(contratos.monto_dispuesto) as colocacion
     from (
         select distinct contrato, monto_dispuesto
         from BUO_Masnomina.contratos_hist 
-        /* aqui va el rango de enero al mes seleccionado */
-        where fecha_disposicion >= '2018-01-01' and fecha_disposicion < '2018-07-01'
-        and mes >= 201801 and mes < 201807
-        /* aqui van los if de los combos */
-        and division = 1
-        and producto = 'MAS NOMINA'  /* o DOMICILIADO*/    
-    ) contratos
-    ) col_acum""")
+        /* aqui va el rango de enero al mes seleccionado */ """
+    if(mes_numero == 12):
+        query02 += "where fecha_disposicion >= '" + \
+            str(anio) + "-01-01' and fecha_disposicion < '" + \
+            str(anio + 1) + "-01-01' "
+    else:
+        query02 += "where fecha_disposicion >= '" + \
+            str(anio) + "-01-01' and fecha_disposicion < '" + str(anio) + \
+            "-" + formatear_no_mes(mes_numero + 1) + "-01' "
 
-    lista_mes = obtener_datos(queries[0], False, ())
-    lista_acumulado = obtener_datos(queries[1], False, ())
+    query02 += "and mes >= " + str(anio) + "01 and mes < " + mes + " "
 
-    lista_mes = [	['Colocación',  '$ {:0,.2f}'.format(lista_mes[0][0]), '%'],
-                  ['Comisiones',  '$ {:0,.2f}'.format(
-                      lista_mes[0][1]), '{:0,.2f}%'.format(lista_mes[0][9])],
-                  ['Sueldos fijo',  '$ {:0,.2f}%'.format(
-                      lista_mes[0][2]), '{:0,.2f}%'.format(lista_mes[0][10])],
-                  ['Carga social + aguinaldo',  '$ {:0,.2f}'.format(
-                      lista_mes[0][3]), '{:0,.2f}%'.format(lista_mes[0][11])],
-                  ['Viáticos',  '$ {:0,.2f}'.format(
-                      lista_mes[0][4]), '{:0,.2f}%'.format(lista_mes[0][12])],
-                  ['Gasolina',  '$ {:0,.2f}'.format(
-                      lista_mes[0][5]), '{:0,.2f}%'.format(lista_mes[0][13])],
-                  ['Costo autos',  '$ {:0,.2f}'.format(
-                      lista_mes[0][6]), '{:0,.2f}%'.format(lista_mes[0][14])],
-                  ['Rentas',  '$ {:0,.2f}'.format(
-                      lista_mes[0][7]), '{:0,.2f}%'.format(lista_mes[0][15])],
-                  ['TOTAL',  '$ {:0,.2f}'.format(
-                      lista_mes[0][8]), '{:0,.2f}%'.format(lista_mes[0][16])]
-                  ]
+    if(int(division)):
+        query02 += "and division = " + division + " "
+    if(producto != "0"):
+        query02 += "and producto = '" + producto + "' "
+    query02 += """ ) contratos
+    ) col_acum """
 
-    lista_acumulado = [	['Colocación',  '$ {:0,.2f}'.format(lista_acumulado[0][0]), '%'],
-                        ['Comisiones',  '$ {:0,.2f}'.format(
-                            lista_acumulado[0][1]), '{:0,.2f}%'.format(lista_acumulado[0][9])],
-                        ['Sueldos fijo',  '$ {:0,.2f}%'.format(
-                            lista_acumulado[0][2]), '{:0,.2f}%'.format(lista_acumulado[0][10])],
-                        ['Carga social + aguinaldo',  '$ {:0,.2f}'.format(
-                            lista_acumulado[0][3]), '{:0,.2f}%'.format(lista_acumulado[0][11])],
-                        ['Viáticos',  '$ {:0,.2f}'.format(
-                            lista_acumulado[0][4]), '{:0,.2f}%'.format(lista_acumulado[0][12])],
-                        ['Gasolina',  '$ {:0,.2f}'.format(
-                            lista_acumulado[0][5]), '{:0,.2f}%'.format(lista_acumulado[0][13])],
-                        ['Costo autos',  '$ {:0,.2f}'.format(
-                            lista_acumulado[0][6]), '{:0,.2f}%'.format(lista_acumulado[0][14])],
-                        ['Rentas',  '$ {:0,.2f}'.format(
-                            lista_acumulado[0][7]), '{:0,.2f}%'.format(lista_acumulado[0][15])],
-                        ['TOTAL',  '$ {:0,.2f}'.format(
-                            lista_acumulado[0][8]), '{:0,.2f}%'.format(lista_acumulado[0][16])]
-                        ]
+    lista_mes = obtener_datos(query01, False, ())
+
+    lista_acumulado = obtener_datos(query02, False, ())
+
+    if(lista_mes):
+        lista_mes = [	['Colocación',  '$ {:0,.2f}'.format(lista_mes[0][0]), '%'],
+                      ['Comisiones',  '$ {:0,.2f}'.format(
+                          lista_mes[0][1]), '{:0,.2f}%'.format(lista_mes[0][9])],
+                      ['Sueldos fijo',  '$ {:0,.2f}%'.format(
+                          lista_mes[0][2]), '{:0,.2f}%'.format(lista_mes[0][10])],
+                      ['Carga social + aguinaldo',  '$ {:0,.2f}'.format(
+                          lista_mes[0][3]), '{:0,.2f}%'.format(lista_mes[0][11])],
+                      ['Viáticos',  '$ {:0,.2f}'.format(
+                          lista_mes[0][4]), '{:0,.2f}%'.format(lista_mes[0][12])],
+                      ['Gasolina',  '$ {:0,.2f}'.format(
+                          lista_mes[0][5]), '{:0,.2f}%'.format(lista_mes[0][13])],
+                      ['Costo autos',  '$ {:0,.2f}'.format(
+                          lista_mes[0][6]), '{:0,.2f}%'.format(lista_mes[0][14])],
+                      ['Rentas',  '$ {:0,.2f}'.format(
+                          lista_mes[0][7]), '{:0,.2f}%'.format(lista_mes[0][15])],
+                      ['TOTAL',  '$ {:0,.2f}'.format(
+                          lista_mes[0][8]), '{:0,.2f}%'.format(lista_mes[0][16])]
+                      ]
+
+    if(lista_acumulado):
+        lista_acumulado = [	['Colocación',  '$ {:0,.2f}'.format(lista_acumulado[0][0]), '%'],
+                            ['Comisiones',  '$ {:0,.2f}'.format(
+                                lista_acumulado[0][1]), '{:0,.2f}%'.format(lista_acumulado[0][9])],
+                            ['Sueldos fijo',  '$ {:0,.2f}%'.format(
+                                lista_acumulado[0][2]), '{:0,.2f}%'.format(lista_acumulado[0][10])],
+                            ['Carga social + aguinaldo',  '$ {:0,.2f}'.format(
+                                lista_acumulado[0][3]), '{:0,.2f}%'.format(lista_acumulado[0][11])],
+                            ['Viáticos',  '$ {:0,.2f}'.format(
+                                lista_acumulado[0][4]), '{:0,.2f}%'.format(lista_acumulado[0][12])],
+                            ['Gasolina',  '$ {:0,.2f}'.format(
+                                lista_acumulado[0][5]), '{:0,.2f}%'.format(lista_acumulado[0][13])],
+                            ['Costo autos',  '$ {:0,.2f}'.format(
+                                lista_acumulado[0][6]), '{:0,.2f}%'.format(lista_acumulado[0][14])],
+                            ['Rentas',  '$ {:0,.2f}'.format(
+                                lista_acumulado[0][7]), '{:0,.2f}%'.format(lista_acumulado[0][15])],
+                            ['TOTAL',  '$ {:0,.2f}'.format(
+                                lista_acumulado[0][8]), '{:0,.2f}%'.format(lista_acumulado[0][16])]
+                            ]
 
     lista_meses = [	'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul',
                     'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 
     lista_costo = []
 
-    for i in range(no_mes):
-        query = """SELECT
-        ROUND(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) AS pct_total
-        FROM
-        BUO_Masnomina.costo_colocacion_hist col,
+    for i in range(mes_numero):
+        i += 1
+
+        query03 = """select
+        round(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) as pct_total
+        from BUO_Masnomina.costo_colocacion_hist col,
         (
-        SELECT
-            SUM(monto_dispuesto) AS colocacion
-        FROM
-            BUO_Masnomina.contratos_hist
-        WHERE
-            1 = 1 /* aqui va el rango del mes for 201806 */
-        AND fecha_disposicion >= '""" + str(anio) + "-" + str(no_mes) + """-01
-        AND fecha_disposicion < '""" + str(anio) + "-" + str(no_mes) + """-01' /* mes del for */
-        AND mes = """ + mes + """/* aqui van los if de los combos */"""
-        if(division):
-            query += """AND division = """ + str(division)
-        
-        query += """AND producto = 'MAS NOMINA' /* o DOMICILIADO*/ ) colmen
-        WHERE
-            1 = 1 /* mes del for */
-        AND col.mes = 2018""" + str(i+1) + """ /* aqui van los if de los combos */"""
+        select  sum(monto_dispuesto) as colocacion
+        from BUO_Masnomina.contratos_hist 
+        where 1 = 1 """
+        if(i == 12):
+            query03 += "and fecha_disposicion >= '" + \
+                str(anio) + "-12-01' and fecha_disposicion < '" + \
+                str(anio + 1) + "-01-01' "
+        else:
+            query03 += "and fecha_disposicion >= '" + str(anio) + "-" + formatear_no_mes(
+                i) + "-01' and fecha_disposicion < '" + str(anio) + "-" + formatear_no_mes(i + 1) + "-01' "
 
-        if(division):
-            query += """AND col.division = """ + str(division)
+        # /* mes del for */
+        query03 += "and mes = " + str(anio) + formatear_no_mes(i) + " "
 
-        lista_costo.append([lista_meses[i] + ' ' + mes[0] + mes[1] +
-                            mes[2] + mes[3], obtener_datos(query, False, ())])
+        if(int(division)):
+            query03 += "and division = " + division + " "
+        if(producto != "0"):
+            query03 += "and producto = '" + producto + "' "
+        query03 += ") colmen where 1 = 1"
 
-    for i in range(12 - no_mes):
-        lista_costo.append([lista_meses[i + no_mes] + ' ' + mes[0] + mes[1] +
-                            mes[2] + mes[3], [0.0]])
-    lista_resultado = {}
-    lista_resultado['nombre_mes'] = lista_meses[no_mes] + \
-        ' ' + mes[0] + mes[1] + mes[2] + mes[3]
-    lista_resultado['resultado_mes'] = lista_mes
-    lista_resultado['resultado_acumulado'] = lista_acumulado
-    lista_resultado['resultado_costo'] = lista_costo
+        query03 += "and col.mes = " + str(anio) + formatear_no_mes(i) + " "
+
+        if(int(division)):
+            query03 += "and col.division = " + division
+
+        # lista_costo.append([lista_meses[i] + ' ' + mes[0] + mes[1] +
+        #                    mes[2] + mes[3], obtener_datos(query03, False, ())])
+
+    if(lista_costo):
+        for i in range(12 - mes_numero):
+            lista_costo.append([lista_meses[i + mes_numero] + ' ' + mes[0] + mes[1] +
+                                mes[2] + mes[3], [0.0]])
+
+    if(lista_costo and lista_mes and lista_acumulado):
+        lista_resultado = {}
+        lista_resultado['nombre_mes'] = lista_meses[mes_numero] + \
+            ' ' + mes[0] + mes[1] + mes[2] + mes[3]
+        lista_resultado['resultado_mes'] = lista_mes
+        lista_resultado['resultado_acumulado'] = lista_acumulado
+        lista_resultado['resultado_costo'] = lista_costo
+    else:
+        lista_resultado = {}
 
     return json.dumps(lista_resultado)
 
