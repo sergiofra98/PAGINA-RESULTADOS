@@ -106,9 +106,9 @@ def consulta_convenio_colocacion():
     mes_numero = int(mes[4] + mes[5])
     anio = int(mes[0] + mes[1] + mes[2] + mes[3])
 
-    ##SE GENERA EL QUERY
-    ##SE GENERA EL QUERY
-    ##SE GENERA EL QUERY
+    # SE GENERA EL QUERY
+    # SE GENERA EL QUERY
+    # SE GENERA EL QUERY
     query_convenio = """select 
     case
         when universo_2.clave_corresponsal is null then aa.clave_corresponsal
@@ -229,7 +229,7 @@ def consulta_convenio_colocacion():
         group by contratos.clave_corresponsal, contratos.razon_social
     ) aa on aa.clave_corresponsal = universo_2.clave_corresponsal
     order by 3 desc """
-    
+
     # se realiza la consulta
 
     lista_datos = []
@@ -373,7 +373,8 @@ def consulta_convenio_cartera():
     if(mes_numero == 1):
         query_convenio_cartera += "and mes = " + str(anio-1) + "12 "
     else:
-        query_convenio_cartera += "and mes = " + str(anio) + formatear_no_mes(mes_numero - 1 ) +" "        
+        query_convenio_cartera += "and mes = " + \
+            str(anio) + formatear_no_mes(mes_numero - 1) + " "
     if(int(division)):
         query_convenio_cartera += "and division = " + division + " "
     query_convenio_cartera += "and estatus_contable in ('VIG','VEN') "
@@ -386,7 +387,8 @@ def consulta_convenio_cartera():
         select clave_corresponsal, razon_social, sum(saldo_contable) as saldo_contable_mact_aa
         from BUO_Masnomina.contratos_hist 
         where 1 = 1 """
-    query_convenio_cartera += "and mes = " + str(anio-1) + formatear_no_mes(mes_numero) + " "
+    query_convenio_cartera += "and mes = " + \
+        str(anio-1) + formatear_no_mes(mes_numero) + " "
     if(int(division)):
         query_convenio_cartera += "and division = " + division + " "
     query_convenio_cartera += "and estatus_contable in ('VIG','VEN') "
@@ -395,16 +397,6 @@ def consulta_convenio_cartera():
     query_convenio_cartera += """group by clave_corresponsal, razon_social
     ) mact_aa on mact_aa.clave_corresponsal = universo_1.clave_corresponsal
     order by 3 desc"""
-    print("----------------------")
-    print("----------------------")
-    print("----------------------")
-    print("----------------------")
-
-    print(query_convenio_cartera)
-    print("----------------------")
-    print("----------------------")
-    print("----------------------")
-    print("----------------------")
 
     #lista_datos=obtener_datos(query01, False, ())
     lista_datos = []
@@ -507,28 +499,73 @@ def consulta_convenio_cartera():
 @app.route(url_base+'/consulta_estado_colocacion', methods=['GET'])
 def consulta_estado_colocacion():
     division = request.args.get('division')
-    """
-	divs=['centro','sur','norte','noreste','vm_norte','vm_sur','vm_centro']
-	if div in divs:
-		print (div)#consulta por la division
-	else:
-		return 'Division no encontrada'
-	"""
-    meses = ['Ene 17', 'Feb 17', 'Mar 17', 'Abr 17', 'May 17', 'Jun 17', 'Jul 17', 'Ago 17',
-             'Sep 17', 'Oct 17', 'Nov 17', 'Dic 17', 'Ene 18', 'Feb 18', 'Mar 18', 'Abr 18']
-    # [nombres, meses]
-    lista_estados_todos = [
-        ['HIDALGO', 38128, 15654, 180712, 381427, 399516, 381346, 423030, 404383,
-            490677, 308609, 245726, 175715, 876173, 1318727, 1079677, 883818],
-        ['PUEBLA', 121297, 31021, 55242, 221927, 227049, 69000, 173043, 313290,
-         115000, 229127, 292404, 124423, 289156, 447978, 557991, 371353],
-        ['GUERRERO', 0, 25000, 305000, 177000, 234734, 456867, 435856, 299568,
-         557175, 504930, 309023, 142262, 338514, 315634, 407835, 372686],
-        ['GUANAJUATO', 163649, 33302, 160201, 109121, 114192, 168942, 70432,
-         87027, 210791, 164855, 111408, 213427, 279147, 110599, 389762, 183667],
-        ['QUERETARO', 239233, 195000, 480982, 156419, 184994,
-         87373, 143277, 20000, 0, 0, 0, 0, 0, 14110, 3000, 21000]
-    ]
+    mes = request.args.get('mes')
+    producto = request.args.get('producto')
+    if division == None:
+        # define consulta para toda las divisiones
+        print('No limita consulta por division')
+    if mes == None:
+        print('Limita a mes actual')  # define consulta para mes actual
+
+    mes_numero = int(mes[4] + mes[5])
+    anio = int(mes[0] + mes[1] + mes[2] + mes[3])
+
+    lista_estados_todos = []
+
+    for i in range(13):
+        no_mes = mes_numero - i
+        sobreflujo = False
+
+        if(no_mes < 1):
+            sobreflujo = True
+
+        ##SE HACE EL QUERY DE PUESTO
+        query_puesto = """select p.puesto, s.estado, count(*)
+        from BUO_Masnomina.masnomina_plantilla p
+        left join BUO_Masnomina.masnomina_sucursales s on s.sucursal = p.sucursal
+        where 1 = 1 """
+        if(sobreflujo):
+            query_puesto += "and p.mes = " + str(anio - 1) + formatear_no_mes(12 + no_mes) + " "
+        else:
+            query_puesto += "and p.mes = " + str(anio) + formatear_no_mes(no_mes) + " " 
+        if(int(division)):
+            query_puesto += "and s.division = " + division +" "
+        query_puesto += "group by p.puesto, s.estado"
+
+        ##SE HACE EL QUERY DE ESTADO
+        query_estado = """select s.estado, sum(c.monto_dispuesto) as monto
+        from BUO_Masnomina.contratos_hist c 
+        left join BUO_Masnomina.masnomina_sucursales s on s.sucursal = c.sucursal
+        where 1 = 1 """
+        if(sobreflujo):
+            if(no_mes == 12):
+                query_estado += "and c.fecha_disposicion >= '" + \
+                    str(anio - 1)+"-12-01' and c.fecha_disposicion < '" + \
+                    str(anio)+"-01-01' "
+            else:
+                query_estado += "and c.fecha_disposicion >= '" + str(anio - 1)+"-" + formatear_no_mes(
+                    12 + no_mes) + "-01' and c.fecha_disposicion < '" + str(anio - 1)+"-" + formatear_no_mes(13 +no_mes) + "-01' "
+            query_estado += "and c.mes = " + \
+                str(anio - 1) + formatear_no_mes(12 + no_mes) + " "
+        else:
+            if(no_mes == 12):
+                query_estado += "and c.fecha_disposicion >= '" + \
+                    str(anio)+"-12-01' and c.fecha_disposicion < '" + \
+                    str(anio+1)+"-01-01' "
+            else:
+                query_estado += "and c.fecha_disposicion >= '" + str(anio)+"-" + formatear_no_mes(
+                    no_mes) + "-01' and c.fecha_disposicion < '" + str(anio)+"-" + formatear_no_mes(no_mes+1) + "-01' "
+            query_estado += "and c.mes = " + \
+                str(anio) + formatear_no_mes(no_mes) + " "
+        if(int(division)):
+            query_estado += "and c.division = " + division +" "
+        query_estado += "group by s.estado order by 1"
+
+        lista_estados_todos.append(obtener_datos(query_estado, False, ()))
+        
+        print(query_puesto)
+
+    print(lista_estados_todos)
     lista_estados_anio_actual = [
         ['HIDALGO', 876173, 1318727, 1079677, 883818],
         ['PUEBLA', 289156, 447978, 557991, 371353],
@@ -574,7 +611,7 @@ def consulta_estado_colocacion():
     # ya que si es mucha informacion la que se va a sacar entonces esta iteracion lo hara
     # más lento
 
-    # calculos para sacar info estados
+    """ # calculos para sacar info estados
     lista_estados = calculo_x_estado(
         lista_estados_todos, lista_estados_anio_actual)
     # calculos para sacar info brokers
@@ -688,7 +725,8 @@ def consulta_estado_colocacion():
     retorno['total_general'] = total_general
     retorno['meses'] = meses
 
-    return json.dumps(retorno)
+    return json.dumps(retorno) """
+    return json.dumps({})
 
 
 def calculo_x_estado(lista_todo, lista_actual):

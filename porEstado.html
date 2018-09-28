@@ -23,9 +23,11 @@
 </head>
 
 <body>
-    <form class="form-group" id="consulta">
+    <form onsubmit="getColocacion()" class="form-group" id="consulta">
         <div class="row" style="border: none; text-align: center;">
-            <h3>Resultados por estado</h3>
+            <div class="col">
+                <h3>Costo por Colocación</h3>
+            </div>
         </div>
         <div class="row">
             <div class="col-3">
@@ -46,21 +48,21 @@
                 <label for="mes">División<span class="rojo">*</span>: </label>
                 <select name="inputDivision" id="inputDivision" class="form-control">
                     <option disabled hidden selected value="">Elija una opción</option>
-                    <option value="TODOS">TODOS</option>
-                    <option value="CENTRO">CENTRO</option>
-                    <option value="SUR">SUR</option>
-                    <option value="NORESTE">NORESTE</option>
-                    <option value="NORTE">NORTE</option>
-                    <option value="VMNORTE">VM NORTE</option>
-                    <option value="VMSUR">VM SUR</option>
-                    <option value="VMCENTRO">VM CENTRO</option>
+                    <option value="0">TODOS</option>
+                    <option value="1">CENTRO</option>
+                    <option value="2">SUR</option>
+                    <option value="3">NORESTE</option>
+                    <option value="4">NORTE</option>
+                    <option value="5">VM NORTE</option>
+                    <option value="6">VM SUR</option>
+                    <option value="7">VM CENTRO</option>
                 </select>
             </div>
             <div class="col-3">
                 <label for="mes">Producto<span class="rojo">*</span>: </label>
                 <select name="inputMes" id="inputProducto" class="form-control">
                     <option disabled hidden selected value="">Elija una opción</option>
-                    <option value="TODOS">TODOS</option>
+                    <option value="0">TODOS</option>
                     <option value="MASNOMINA">CRÉDITO MAS NOMINA</option>
                     <option value="DOMICILIADO">CRÉDITO DOMICILIADO</option>
                 </select>

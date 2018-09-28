@@ -39,7 +39,7 @@ function getColocacion() {
     $('#loading').css("display", "flex");
 
     $.getJSON(linkREST + "consulta_estado_colocacion", {
-        mes: $('#inputMes').val() + '-' + $('#inputAno').val(),
+        mes: $('#inputAno').val() + $('#inputMes').val(),
         division: $('#inputDivision').val(),
         producto: $('#inputProducto').val()
     },

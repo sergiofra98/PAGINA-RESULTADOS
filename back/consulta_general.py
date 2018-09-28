@@ -20,10 +20,10 @@ v_legacy_sql = False
 def consulta_divisiones():
 	data = {} 
 	sql	= " select division, nombre from BUO_Masnomina.masnomina_divisiones order by nombre "
-	print(sql)
+	print sql
 	query_parameters =()
 	rows = obtener_datos(sql, v_legacy_sql, query_parameters)
-	print(rows)
+	print rows
 	lista_divisiones = []
 	if rows != None:
 		for row in rows:
