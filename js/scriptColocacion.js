@@ -31,6 +31,7 @@ function getColocacion() {
                 return;
             }
             else {
+                console.log(dataTablas)
                 var i = 0;
                 var j = 0;
                 append = getStringMes(mes);
@@ -72,7 +73,12 @@ function getColocacion() {
                 for (i = 0; i < 12; i++) {
                     append += "<tr>"
                     for (j = 0; j < 2; j++) {
-                        append += '<td>' + dataTablas.resultado_costo[i][j] + "</td>";
+                        if (j == 1) {
+                            append += '<td>' + dataTablas.resultado_costo[i][j] + "%</td>";
+                        }
+                        else {
+                            append += '<td>' + dataTablas.resultado_costo[i][j] + "</td>";
+                        }
                     }
                     append += "</tr>"
                 }
@@ -104,9 +110,10 @@ function getColocacion() {
                         }]
                     }
                 )
+
+                $('#body, #titulo').css("display", "flex");
+                $('.cuerpo').css("display", "flex");
             }
-            $('#body, #titulo').css("display", "flex");
-            $('.cuerpo').css("display", "flex");
         })
         .done(function () {
             $('#loading').css("display", "none");

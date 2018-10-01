@@ -875,10 +875,10 @@ def costos_colocacion():
     ) col_acum """
 
     lista_mes = obtener_datos(query01, False, ())
-
     lista_acumulado = obtener_datos(query02, False, ())
 
-    if(lista_mes):
+
+    if len(lista_mes):
         lista_mes = [	['Colocación',  '$ {:0,.2f}'.format(lista_mes[0][0]), '%'],
                       ['Comisiones',  '$ {:0,.2f}'.format(
                           lista_mes[0][1]), '{:0,.2f}%'.format(lista_mes[0][9])],
@@ -897,8 +897,7 @@ def costos_colocacion():
                       ['TOTAL',  '$ {:0,.2f}'.format(
                           lista_mes[0][8]), '{:0,.2f}%'.format(lista_mes[0][16])]
                       ]
-
-    if(lista_acumulado):
+    if lista_acumulado[0][0] != None:
         lista_acumulado = [	['Colocación',  '$ {:0,.2f}'.format(lista_acumulado[0][0]), '%'],
                             ['Comisiones',  '$ {:0,.2f}'.format(
                                 lista_acumulado[0][1]), '{:0,.2f}%'.format(lista_acumulado[0][9])],
@@ -924,54 +923,40 @@ def costos_colocacion():
     lista_costo = []
 
     for i in range(mes_numero):
-        i += 1
-
-        query03 = """select
+        query_meses = """select
         round(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) as pct_total
         from BUO_Masnomina.costo_colocacion_hist col,
         (
         select  sum(monto_dispuesto) as colocacion
         from BUO_Masnomina.contratos_hist 
         where 1 = 1 """
-        if(i == 12):
-            query03 += "and fecha_disposicion >= '" + \
-                str(anio) + "-12-01' and fecha_disposicion < '" + \
-                str(anio + 1) + "-01-01' "
+        if(i == 11):
+            query_meses += "and fecha_disposicion >= '"+ str(anio) +"-12-01' and fecha_disposicion < '"+ str(anio+1) +"-01-01' "
         else:
-            query03 += "and fecha_disposicion >= '" + str(anio) + "-" + formatear_no_mes(
-                i) + "-01' and fecha_disposicion < '" + str(anio) + "-" + formatear_no_mes(i + 1) + "-01' "
-
-        # /* mes del for */
-        query03 += "and mes = " + str(anio) + formatear_no_mes(i) + " "
-
+            query_meses += "and fecha_disposicion >= '"+ str(anio) +"-"+ formatear_no_mes(i+1) +"-01' and fecha_disposicion < '"+ str(anio) +"-"+ formatear_no_mes(i+2) +"-01' "
+        query_meses += "and mes = " + str(anio) + formatear_no_mes(i+1) + " "
         if(int(division)):
-            query03 += "and division = " + division + " "
+            query_meses += "and division = "+ division +" "
         if(producto != "0"):
-            query03 += "and producto = '" + producto + "' "
-        query03 += ") colmen where 1 = 1"
-
-        query03 += "and col.mes = " + str(anio) + formatear_no_mes(i) + " "
-
+            query_meses += "and producto = '" + producto + "' "
+        query_meses += ") colmen where 1 = 1 "
+        query_meses += "and col.mes = " + str(anio) + formatear_no_mes(i+1) + " "
         if(int(division)):
-            query03 += "and col.division = " + division
+            query_meses += "and col.division = "+ division +" "
 
-        # lista_costo.append([lista_meses[i] + ' ' + mes[0] + mes[1] +
-        #                    mes[2] + mes[3], obtener_datos(query03, False, ())])
+        lista_costo.append([lista_meses[i] + ' ' + str(anio), obtener_datos(query_meses, False, ())])
 
-    if(lista_costo):
-        for i in range(12 - mes_numero):
-            lista_costo.append([lista_meses[i + mes_numero] + ' ' + mes[0] + mes[1] +
-                                mes[2] + mes[3], [0.0]])
+    for i in range(12 - mes_numero):
+        lista_costo.append([lista_meses[i + mes_numero] + ' ' + str(anio), ["0.0"]])
 
-    if(lista_costo and lista_mes and lista_acumulado):
-        lista_resultado = {}
+    lista_resultado = {}
+
+    if len(lista_mes) and lista_acumulado[0][0] != None:
         lista_resultado['nombre_mes'] = lista_meses[mes_numero] + \
-            ' ' + mes[0] + mes[1] + mes[2] + mes[3]
+                ' ' + mes[0] + mes[1] + mes[2] + mes[3]
         lista_resultado['resultado_mes'] = lista_mes
         lista_resultado['resultado_acumulado'] = lista_acumulado
         lista_resultado['resultado_costo'] = lista_costo
-    else:
-        lista_resultado = {}
 
     return json.dumps(lista_resultado)
 
@@ -1011,4 +996,4 @@ def vendedores():
 
 if __name__ == '__main__':
     # si Rest.py
-    app.run(host='127.0.0.1', debug=True, port='9999', threaded=DEBUG)
+    app.run(host='127.0.0.1', debug=True, port=9999, threaded=DEBUG)
