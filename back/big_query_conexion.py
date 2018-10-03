@@ -16,7 +16,7 @@ def obtener_datos(query, legacy_sql, query_parameters):
 		credentialsBG = os.getcwd() + "\service-mn@desarrollo-ci.iam.gserviceaccount-c04f8c.json" #se establece la ruta de las credenciales
 		os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentialsBG #asignamos la ruta de las credenciales a entorno de Google pra python
 		
-		cliente = bigquery.Client.from_service_account_json(variables.bq_json);
+		cliente = bigquery.Client.from_service_account_json(variables.bq_json)
 		job_name = str(uuid.uuid4())
 		query_job = cliente.run_async_query(job_name, query, query_parameters)
 		query_job.use_legacy_sql = legacy_sql

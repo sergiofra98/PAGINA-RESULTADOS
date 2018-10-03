@@ -10,7 +10,7 @@ function getColocacion() {
     if (graficaEstado)
         graficaEstado.destroy()
 
-    $('#body, #titulo').hide();
+    $('#titulo').hide();
     $('.cuerpo').css("display", "none");
 
     $('#landing').css("display", "none");
@@ -22,10 +22,11 @@ function getColocacion() {
         producto: $('#inputProducto').val()
     },
         function (dataTablas) {
+            console.log(dataTablas)
             if (jQuery.isEmptyObject(dataTablas)) {
                 $("#alertaNoResultados").css('display', 'block')
                 $('#loading').css("display", "none");
-                $('#landing').css("display", "flex");
+                $('#landing').css("display", "block");
 
                 $('.cuerpo, #titulo').css("display", "none");
                 return;
@@ -93,9 +94,6 @@ function getColocacion() {
                             temp.push(element[1]);
                         }
                     });
-
-                    temp.pop();
-
                     return temp;
                 }
 
@@ -111,8 +109,8 @@ function getColocacion() {
                     }
                 )
 
-                $('#body, #titulo').css("display", "flex");
-                $('.cuerpo').css("display", "flex");
+                $('#titulo').css("display", "block");
+                $('.cuerpo').css("display", "block");
             }
         })
         .done(function () {

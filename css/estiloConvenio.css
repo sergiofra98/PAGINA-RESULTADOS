@@ -5,7 +5,7 @@
 canvas{
     display: block !important;
     width: 100% !important;
-    height: 620px !important;
+    height: 100% !important;
 } 
 
 #colocacion{
@@ -19,6 +19,5 @@ canvas{
 }
 
 #tablaCartera{
-    table-layout: fixed;
     width: 75%; margin-left:12.5%;
 }

@@ -6,13 +6,16 @@ function getColocacion() {
     $("#tablaCarteraHeader").html("");
     $("#tablaCarteraAnoA").html("");
 
+    $('#loading').css("display", "flex");
+    $(".alert ").css('display', 'none')
+    $('#landing').css("display", "none");
+    $('#tablaConvenioRow').css("display", "none");
+    $('#tablaCarteraRow').css("display", "none");
+
+
     if (graficaColocacion)
         graficaColocacion.destroy();
 
-
-    $('#body, #titulo, #cartera').hide();
-    $('#landing').css("display", "none");
-    $('#loading').css("display", "flex");
 
     $.getJSON(linkREST + "consulta_convenio_colocacion",
         {
@@ -21,22 +24,26 @@ function getColocacion() {
             producto: $('#inputProducto').val()
         },
         function (dataTablas) {
-            if (!dataTablas) {
+            if (jQuery.isEmptyObject(dataTablas)) {
                 $("#alertaNoResultados").css('display', 'block')
+                $('#loading').css("display", "none");
+                $('#landing').css("display", "flex");
+                $('.cuerpo, #titulo').css("display", "none");
                 return;
             }
             append = "";
+
 
             for (let i = 0; i < dataTablas.length; i++) {
                 append += '<tr>' +
                     '<td  class="texto">' + dataTablas[i].nombre + '</td>' +
                     '<td class="numero"> ' + dataTablas[i].total_mes + '</td>' +
-                    '<td class="colObscuro">' + dataTablas[i].total_mes_pct + '</td>' +
+                    '<td class="colObscuro">' + dataTablas[i].total_mes_pct + '%</td>' +
                     '<td class="numero"> ' + dataTablas[i].total_mes_aa + '</td>' +
-                    '<td class="colObscuro">' + dataTablas[i].total_mes_aa_pct + '</td>' +
+                    '<td class="colObscuro">' + dataTablas[i].total_mes_aa_pct + '%</td>' +
                     '<td class="numero">' + dataTablas[i].total_acu_aa + '</td>' +
                     '<td class="numero">' + dataTablas[i].total_acu + '</td>' +
-                    '<td class="colObscuro ' + dataTablas[i].color_acu + '">' + dataTablas[i].total_acu_comp_pct + '</td>' +
+                    '<td class="colObscuro ' + dataTablas[i].color_acu + '">' + dataTablas[i].total_acu_comp_pct + '%</td>' +
                     '</tr>';
             }
 
@@ -49,15 +56,17 @@ function getColocacion() {
                 dataTablas.map(a => parseInt(a.total_mes.replace(/,/g, ''))),
                 generadorColores(dataTablas.length)
             )
+
+            $('#tablaConvenioRow').css("display", "flex");
         }
     )
         .done(function () {
-            $('#body, #titulo, #cartera').css("display", "flex");
             $('#loading').css("display", "none");
         })
         .fail(function (textStatus) {
+            $('#alertaConsulta').css("display", "block");
             $('#loading').css("display", "none");
-            $("#alertaConsulta").css('display', 'block')
+            $('#landing').css("display", "flex");
         });
 
     $.getJSON(linkREST + "consulta_convenio_cartera",
@@ -66,6 +75,15 @@ function getColocacion() {
             mes: $('#inputAno').val() + $('#inputMes').val()
         },
         function (dataTablas) {
+
+            if (jQuery.isEmptyObject(dataTablas)) {
+                $("#alertaNoResultados").css('display', 'block')
+                $('#loading').css("display", "none");
+                $('#landing').css("display", "block");
+                $('.cuerpo, #titulo').css("display", "none");
+                return;
+            }
+
             let i = 0;
             append = '<th><div style = "width: 168px;display:block;"></div ></th >' +
                 '<th colspan="1">' + dataTablas.meses[1] + '</th>' +
@@ -95,14 +113,15 @@ function getColocacion() {
             }
 
             $("#tablaCarteraMesA").append(append);
+            $('#tablaCarteraRow').css("display", "flex");
         })
         .done(function () {
-            $('#body, #titulo, #cartera').css("display", "flex");
             $('#loading').css("display", "none");
         })
         .fail(function (textStatus) {
+            $('#alertaConsulta').css("display", "block");
             $('#loading').css("display", "none");
-            $("#alertaConsulta").css('display', 'block')
+            $('#landing').css("display", "flex");
         });
 }
 

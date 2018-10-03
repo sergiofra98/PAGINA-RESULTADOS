@@ -109,7 +109,7 @@ def consulta_convenio_colocacion():
     # SE GENERA EL QUERY
     # SE GENERA EL QUERY
     # SE GENERA EL QUERY
-    query_convenio = """select 
+    query_convenio = """select
     case
         when universo_2.clave_corresponsal is null then aa.clave_corresponsal
         else universo_2.clave_corresponsal
@@ -119,16 +119,16 @@ def consulta_convenio_colocacion():
         else universo_2.razon_social
     end as razon_social,
     ifnull(universo_2.monto_dispuesto,0) as monto_dispuesto,
-    ifnull(universo_2.monto_dispuesto_ma,0) as monto_dispuesto_ma, 
+    ifnull(universo_2.monto_dispuesto_ma,0) as monto_dispuesto_ma,
     ifnull(universo_2.monto_dispuesto_acu,0) as monto_dispuesto_acu,
     ifnull(aa.monto_dispuesto_acu_aa,0) as monto_dispuesto_acu_aa
     from (
-    select 
-        case 
+    select
+        case
             when universo_1.clave_corresponsal is null then mes_acumulado.clave_corresponsal
             else universo_1.clave_corresponsal
         end as clave_corresponsal,
-        case 
+        case
             when universo_1.razon_social is null then  mes_acumulado.razon_social
             else universo_1.razon_social
         end as razon_social,
@@ -136,7 +136,7 @@ def consulta_convenio_colocacion():
         ifnull(universo_1.monto_dispuesto_ma,0)  as monto_dispuesto_ma,
         ifnull(mes_acumulado.monto_dispuesto_acu,0) as monto_dispuesto_acu
     from (
-            select case 
+            select case
                     when mes_actual.clave_corresponsal is null then mes_anterior.clave_corresponsal
                     else mes_actual.clave_corresponsal
                 end as clave_corresponsal,
@@ -144,7 +144,7 @@ def consulta_convenio_colocacion():
                     when mes_actual.razon_social is null then mes_anterior.razon_social
                     else  mes_actual.razon_social
                 end as razon_social,
-                ifnull(mes_actual.monto_dispuesto,0) as monto_dispuesto, 
+                ifnull(mes_actual.monto_dispuesto,0) as monto_dispuesto,
                 ifnull(mes_anterior.monto_dispuesto,0) as monto_dispuesto_ma
             from (
             select clave_corresponsal, razon_social, sum(monto_dispuesto) as monto_dispuesto
@@ -182,7 +182,7 @@ def consulta_convenio_colocacion():
     query_convenio += """ group by clave_corresponsal, razon_social
             ) mes_anterior on mes_anterior.clave_corresponsal = mes_actual.clave_corresponsal
     ) universo_1
-    full join (  
+    full join (
             select contratos.clave_corresponsal, contratos.razon_social, sum(contratos.monto_dispuesto) as monto_dispuesto_acu
             from (
             select distinct clave_corresponsal, razon_social, contrato, monto_dispuesto
@@ -203,9 +203,9 @@ def consulta_convenio_colocacion():
         query_convenio += "/*and producto = '" + producto + "'*/ "
     query_convenio += """ ) contratos
             group by contratos.clave_corresponsal, contratos.razon_social
-    ) mes_acumulado on mes_acumulado.clave_corresponsal = universo_1.clave_corresponsal       
+    ) mes_acumulado on mes_acumulado.clave_corresponsal = universo_1.clave_corresponsal
     ) universo_2
-    full join (  
+    full join (
         select contratos.clave_corresponsal, contratos.razon_social, sum(contratos.monto_dispuesto) as monto_dispuesto_acu_aa
         from (
             select distinct clave_corresponsal, razon_social, contrato, monto_dispuesto
@@ -225,7 +225,7 @@ def consulta_convenio_colocacion():
         query_convenio += "and division = " + division + " "
     if(producto == "0"):
         query_convenio += "/*and producto = '" + producto + "'*/ "
-    query_convenio += """ ) contratos 
+    query_convenio += """ ) contratos
         group by contratos.clave_corresponsal, contratos.razon_social
     ) aa on aa.clave_corresponsal = universo_2.clave_corresponsal
     order by 3 desc """
@@ -233,76 +233,79 @@ def consulta_convenio_colocacion():
     # se realiza la consulta
 
     lista_datos = []
+
+    lista_datos = obtener_datos(query_convenio, False, ())
+
+    if(not len(lista_datos)):
+        return json.dumps({})
+
+    tempTotal = {}
+    tempTotal['nombre'] = 'TOTAL'
+    tempTotal['total_mes'] = 0
+    tempTotal['total_mes_aa'] = 0
+    tempTotal['total_acu'] = 0
+    tempTotal['total_acu_aa'] = 0
+    tempTotal['total_mes_aa_pct'] = '100%'
+    tempTotal['total_mes_pct'] = '100'
+
+    for row in lista_datos:
+        tempTotal['total_mes'] += row[2]
+        tempTotal['total_mes_aa'] += row[3]
+        tempTotal['total_acu'] += row[4]
+        tempTotal['total_acu_aa'] += row[5]
+
+    if(tempTotal['total_acu_aa'] != 0):
+        tempTotal['total_acu_comp_pct'] = '{:0,.1f}'.format(
+            ((tempTotal['total_acu'] - tempTotal['total_acu_aa']) / tempTotal['total_acu_aa']) * 100.00)
+    else:
+        tempTotal['total_acu_comp_pct'] = '∞'
+
+    if(tempTotal['total_acu_comp_pct'] == '-100.0'):
+        tempTotal['total_acu_comp_pct'] = '-∞'
+
+    if(tempTotal['total_acu_comp_pct'][0] == '-'):
+        tempTotal['color_acu'] = 'rojo'
+    else:
+        tempTotal['color_acu'] = ''
+
     lista_resultado = []
-    #lista_datos = obtener_datos(query_convenio, False, ())
 
-    # Obtenemos totales
-    total_mes = 0
-    total_mes_aa = 0
-    total_acu = 0
-    total_acu_aa = 0
-    total_prc_comp = 0
+    for row in lista_datos:
+        temp = {}
+        temp['nombre'] = row[1]
+        temp['total_mes'] = '{:0,.2f}'.format(row[2])
+        temp['total_mes_aa'] = '{:0,.2f}'.format(row[3])
+        temp['total_acu'] = '{:0,.2f}'.format(row[4])
+        temp['total_acu_aa'] = '{:0,.2f}'.format(row[5])
 
-    if(enumerate(lista_datos)):
-        for row in lista_datos:
-            total_mes = total_mes + row[1]
-            total_mes_aa = total_mes_aa + row[2]
-            total_acu = total_acu + row[3]
-            total_acu_aa = total_acu_aa + row[4]
+        temp['total_mes_pct'] = '{:0,.1f}'.format(
+            (row[2]/tempTotal['total_mes'])*100)
+        temp['total_mes_aa_pct'] = '{:0,.1f}'.format(
+            (row[3]/tempTotal['total_mes_aa'])*100)
 
-        contador = 1
-        for row in lista_datos:
-            registro = {}
-
-            if(row[3]):
-                comparacion_acum = ((row[4] * 1.00) / (row[3] * 1.00) - 1)*100
-            else:
-                comparacion_acum = 0
-
-            registro['nombre'] = row[0]
-
-            registro['total_mes'] = '{:0,.0f}'.format(row[1])
-            total_mes_pct = (row[1] / total_mes) * 100.00
-            registro['total_mes_pct'] = '{:0,.2f}%'.format(total_mes_pct)
-
-            registro['total_mes_aa'] = '{:0,.0f}'.format(row[2])
-            total_mes_aa_pct = (row[2] / total_mes_aa) * 100.00
-            registro['total_mes_aa_pct'] = '{:0,.2f}%'.format(total_mes_aa_pct)
-
-            registro['total_acu'] = '{:0,.0f}'.format(row[3])
-            registro['total_acu_aa'] = '{:0,.0f}'.format(row[4])
-            total_acu_pct = (row[3] / total_acu) * 100.00
-            registro['total_acu_pct'] = '{:0,.2f}%'.format(total_acu_pct)
-            registro['total_acu_comp_pct'] = '{:0,.2f}%'.format(
-                comparacion_acum)
-
-            if(comparacion_acum < 0):
-                registro['color_acu'] = 'rojo'
-            else:
-                registro['color_acu'] = ''
-
-            contador = contador + 1
-            lista_resultado.append(registro)
-
-        total_prc_comp = (total_acu_aa - total_acu)/total_acu*100
-
-        registro_totales = {}
-        registro_totales['nombre'] = 'TOTAL'
-        registro_totales['total_mes'] = '{:0,.0f}'.format(total_mes)
-        registro_totales['total_mes_pct'] = '{:0,.2f}%'.format(100)
-        registro_totales['total_mes_aa'] = '{:0,.0f}'.format(total_mes_aa)
-        registro_totales['total_mes_aa_pct'] = '{:0,.2f}%'.format(100)
-        registro_totales['total_acu'] = '{:0,.0f}'.format(total_acu)
-        registro_totales['total_acu_aa'] = '{:0,.0f}'.format(total_acu_aa)
-        registro_totales['total_acu_pct'] = '{:0,.2f}%'.format(100)
-        registro_totales['total_acu_comp_pct'] = '{:0,.2f}%'.format(
-            total_prc_comp)
-        if(total_prc_comp < 0):
-            registro_totales['color_acu'] = 'rojo'
+        if(row[5] != 0):
+            temp['total_acu_comp_pct'] = '{:0,.1f}'.format(
+                ((row[4] - row[5]) / row[5]) * 100.00)
         else:
-            registro_totales['color_acu'] = ''
+            temp['total_acu_comp_pct'] = '∞'
 
-        lista_resultado.append(registro_totales)
+        if(temp['total_acu_comp_pct'] == '-100.0'):
+            temp['total_acu_comp_pct'] = '-∞'
+
+        if(temp['total_acu_comp_pct'][0] == '-'):
+            temp['color_acu'] = 'rojo'
+        else:
+            temp['color_acu'] = ''
+
+        lista_resultado.append(temp)
+
+    tempTotal['total_mes'] = '{:0,.2f}'.format(tempTotal['total_mes'])
+    tempTotal['total_mes_aa'] = '{:0,.2f}'.format(tempTotal['total_mes_aa'])
+    tempTotal['total_acu'] = '{:0,.2f}'.format(tempTotal['total_acu'])
+    tempTotal['total_acu_aa'] = '{:0,.2f}'.format(tempTotal['total_acu_aa'])
+
+    lista_resultado.append(tempTotal)
+
     return json.dumps(lista_resultado)
 
 # tabla x convenio cartera
@@ -321,41 +324,43 @@ def consulta_convenio_cartera():
 
     mes_numero = int(mes[4] + mes[5])
     anio = int(mes[0] + mes[1] + mes[2] + mes[3])
+    lista_meses = [	'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul',
+                    'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 
     # se realiza la consulta
     lista_resultado = {}
 
-    lista_mes = ['May 17', 'Abr 18', 'May 18']
+    lista_mes = [lista_meses[mes_numero-1]+' ' + str(anio-1), lista_meses[mes_numero-2]+' ' + str(anio), lista_meses[mes_numero-1]+' ' + str(anio)]
     # [mes actual, mes anterior, mes año anterior]
 
-    query_convenio_cartera = """select 
-        case 
+    query_convenio_cartera="""select
+        case
             when universo_1.clave_corresponsal is null then mact_aa.clave_corresponsal
             else universo_1.clave_corresponsal
         end as clave_corresponsal,
         case
             when universo_1.razon_social is null then mact_aa.razon_social
             else universo_1.razon_social
-        end as razon_social,     
+        end as razon_social,
         ifnull(universo_1.saldo_contable_mact,0) as saldo_contable_mact,
         ifnull(universo_1.saldo_contable_mant,0) as saldo_contable_mant,
         ifnull(mact_aa.saldo_contable_mact_aa,0) as saldo_contable_mact_aa
     from (
-        select 
-        case 
+        select
+        case
             when mact.clave_corresponsal is null then mant.clave_corresponsal
             else mact.clave_corresponsal
         end as clave_corresponsal,
-        case 
+        case
             when mact.razon_social is null then  mant.razon_social
             else mact.razon_social
         end as razon_social,
         ifnull(mact.saldo_contable_mact,0) as saldo_contable_mact,
         ifnull(mant.saldo_contable_mant,0) as saldo_contable_mant
         from (
-            select 
+            select
             clave_corresponsal, razon_social, sum(saldo_contable) as saldo_contable_mact
-            from BUO_Masnomina.contratos_hist 
+            from BUO_Masnomina.contratos_hist
             where 1 = 1 """
     query_convenio_cartera += "and mes = " + mes + " "
     if(int(division)):
@@ -368,7 +373,7 @@ def consulta_convenio_cartera():
     full join
       (
         select clave_corresponsal, razon_social, sum(saldo_contable) as saldo_contable_mant
-        from BUO_Masnomina.contratos_hist 
+        from BUO_Masnomina.contratos_hist
         where 1 = 1 """
     if(mes_numero == 1):
         query_convenio_cartera += "and mes = " + str(anio-1) + "12 "
@@ -385,7 +390,7 @@ def consulta_convenio_cartera():
     ) universo_1
     full join (
         select clave_corresponsal, razon_social, sum(saldo_contable) as saldo_contable_mact_aa
-        from BUO_Masnomina.contratos_hist 
+        from BUO_Masnomina.contratos_hist
         where 1 = 1 """
     query_convenio_cartera += "and mes = " + \
         str(anio-1) + formatear_no_mes(mes_numero) + " "
@@ -398,97 +403,101 @@ def consulta_convenio_cartera():
     ) mact_aa on mact_aa.clave_corresponsal = universo_1.clave_corresponsal
     order by 3 desc"""
 
-    #lista_datos=obtener_datos(query01, False, ())
-    lista_datos = []
+    print(query_convenio_cartera)
 
-    lista_resultado['cartera'] = []
-    lista_resultado['meses'] = lista_mes
+    lista_datos=obtener_datos(query_convenio_cartera, False, ())
+
+    if(not len(lista_datos)):
+        return json.dumps({})
+
+    lista_resultado['cartera']=[]
+    lista_resultado['meses']=lista_mes
 
     # Obtenemos totales
-    total_mes = 0
-    total_ma = 0
-    total_maa = 0
+    total_mes=0
+    total_ma=0
+    total_maa=0
     # de esto podriamos hacer una consulta a DB con un SUM para quitarle carga al back
     # ya que si es mucha informacion la que se va a sacar entonces esta iteracion lo hara
     # más lento
     for row in lista_datos:
-        total_mes += row[1]
-        total_ma += row[2]
-        total_maa += row[3]
+        total_mes += row[2]
+        total_ma += row[3]
+        total_maa += row[4]
 
-    for row in enumerate(lista_datos):
+    for row in lista_datos:
 
-        registro = {}
-        registro['nombre'] = row[0]
+        registro={}
+        registro['nombre']=row[1]
 
-        registro['total_mes'] = '{:0,.0f}'.format(row[1])
-        registro['total_ma'] = '{:0,.0f}'.format(row[2])
-        registro['total_maa'] = '{:0,.0f}'.format(row[3])
+        registro['total_mes']='{:0,.0f}'.format(row[2])
+        registro['total_ma']='{:0,.0f}'.format(row[3])
+        registro['total_maa']='{:0,.0f}'.format(row[4])
 
-        registro['total_mes_vs_ma'] = '{:0,.0f}'.format(row[1]-row[2])
-        registro['total_mes_vs_maa'] = '{:0,.0f}'.format(row[1]-row[3])
+        registro['total_mes_vs_ma']='{:0,.0f}'.format(row[2]-row[3])
+        registro['total_mes_vs_maa']='{:0,.0f}'.format(row[2]-row[4])
 
-        if row[2] == 0:
-            registro['total_mes_vs_ma_pct'] = '0.00%'
+        if row[3] == 0:
+            registro['total_mes_vs_ma_pct']='0.00%'
         else:
-            pct_m_ma = 0
-            pct_m_ma = (row[1] * 1.00) / (row[2] * 1.00) - 1
-            pct_m_ma = pct_m_ma * 100.00
-            registro['total_mes_vs_ma_pct'] = '{:0,.2f}%'.format(pct_m_ma)
+            pct_m_ma=0
+            pct_m_ma=(row[2] * 1.00) / (row[3] * 1.00) - 1
+            pct_m_ma=pct_m_ma * 100.00
+            registro['total_mes_vs_ma_pct']='{:0,.2f}%'.format(pct_m_ma)
 
             if pct_m_ma < 0:
-                registro['colorMA'] = "rojo"
+                registro['colorMA']="rojo"
             else:
-                registro['colorMA'] = "blanco"
-        if row[3] == 0:
-            registro['total_mes_vs_maa_pct'] = '0.00%'
+                registro['colorMA']="blanco"
+        if row[4] == 0:
+            registro['total_mes_vs_maa_pct']='0.00%'
         else:
-            pct_m_maa = 0
-            if row[1] == 0:
-                pct_m_maa = 0
+            pct_m_maa=0
+            if row[2] == 0:
+                pct_m_maa=0
             else:
-                pct_m_maa = (row[3] * 1.00) / (row[1] * 1.00) - 1
-            pct_m_maa = pct_m_maa * 100.00
-            registro['total_mes_vs_maa_pct'] = '{:0,.2f}%'.format(pct_m_maa)
+                pct_m_maa=(row[4] * 1.00) / (row[2] * 1.00) - 1
+            pct_m_maa=pct_m_maa * 100.00
+            registro['total_mes_vs_maa_pct']='{:0,.2f}%'.format(pct_m_maa)
 
             if pct_m_maa < 0:
-                registro['colorMAA'] = "rojo"
+                registro['colorMAA']="rojo"
             else:
-                registro['colorMAA'] = "blanco"
+                registro['colorMAA']="blanco"
 
         lista_resultado['cartera'].append(registro)
 
-    registro_totales = {}
-    registro_totales['nombre'] = 'TOTAL'
+    registro_totales={}
+    registro_totales['nombre']='TOTAL'
 
-    registro_totales['total_mes'] = '{:0,.0f}'.format(total_mes)
-    registro_totales['total_ma'] = '{:0,.0f}'.format(total_ma)
-    registro_totales['total_maa'] = '{:0,.0f}'.format(total_maa)
+    registro_totales['total_mes']='{:0,.0f}'.format(total_mes)
+    registro_totales['total_ma']='{:0,.0f}'.format(total_ma)
+    registro_totales['total_maa']='{:0,.0f}'.format(total_maa)
 
-    registro_totales['total_mes_vs_ma'] = '{:0,.0f}'.format(total_mes-total_ma)
-    registro_totales['total_mes_vs_maa'] = '{:0,.0f}'.format(
+    registro_totales['total_mes_vs_ma']='{:0,.0f}'.format(total_mes-total_ma)
+    registro_totales['total_mes_vs_maa']='{:0,.0f}'.format(
         total_maa-total_mes)
 
     if total_ma == 0:
-        registro_totales['total_mes_vs_ma_pct'] = '0.00%'
+        registro_totales['total_mes_vs_ma_pct']='0.00%'
     else:
-        registro_totales['total_mes_vs_ma_pct'] = '{:0,.2f}%'.format(
+        registro_totales['total_mes_vs_ma_pct']='{:0,.2f}%'.format(
             ((total_mes * 1.00) / (total_ma * 1.00)-1)*100)
-        polaridad = ((total_mes * 1.00) / (total_ma * 1.00)-1)*100
+        polaridad=((total_mes * 1.00) / (total_ma * 1.00)-1)*100
         if polaridad < 0:
-            registro_totales['colorMA'] = "rojo"
+            registro_totales['colorMA']="rojo"
         else:
-            registro_totales['colorMA'] = "blanco"
+            registro_totales['colorMA']="blanco"
     if total_maa == 0:
-        registro_totales['total_mes_vs_maa_pct'] = '0.00%'
+        registro_totales['total_mes_vs_maa_pct']='0.00%'
     else:
-        polaridad = ((total_maa * 1.00) / (total_mes * 1.00)-1)*100
-        registro_totales['total_mes_vs_maa_pct'] = '{:0,.2f}%'.format(
+        polaridad=((total_maa * 1.00) / (total_mes * 1.00)-1)*100
+        registro_totales['total_mes_vs_maa_pct']='{:0,.2f}%'.format(
             ((total_maa * 1.00) / (total_mes * 1.00)-1)*100)
         if polaridad < 0:
-            registro_totales['colorMAA'] = "rojo"
+            registro_totales['colorMAA']="rojo"
         else:
-            registro_totales['colorMAA'] = "blanco"
+            registro_totales['colorMAA']="blanco"
 
     lista_resultado['cartera'].append(registro_totales)
 
@@ -496,45 +505,47 @@ def consulta_convenio_cartera():
 
 
 # tabla venta x estado
-@app.route(url_base+'/consulta_estado_colocacion', methods=['GET'])
+@app.route(url_base+'/consulta_estado_colocacion', methods = ['GET'])
 def consulta_estado_colocacion():
-    division = request.args.get('division')
-    mes = request.args.get('mes')
-    producto = request.args.get('producto')
+    division=request.args.get('division')
+    mes=request.args.get('mes')
+    producto=request.args.get('producto')
     if division == None:
         # define consulta para toda las divisiones
         print('No limita consulta por division')
     if mes == None:
         print('Limita a mes actual')  # define consulta para mes actual
 
-    mes_numero = int(mes[4] + mes[5])
-    anio = int(mes[0] + mes[1] + mes[2] + mes[3])
+    mes_numero=int(mes[4] + mes[5])
+    anio=int(mes[0] + mes[1] + mes[2] + mes[3])
 
-    lista_estados_todos = []
+    lista_estados_todos=[]
 
     for i in range(13):
-        no_mes = mes_numero - i
-        sobreflujo = False
+        no_mes=mes_numero - i
+        sobreflujo=False
 
         if(no_mes < 1):
-            sobreflujo = True
+            sobreflujo=True
 
-        ##SE HACE EL QUERY DE PUESTO
-        query_puesto = """select p.puesto, s.estado, count(*)
+        # SE HACE EL QUERY DE PUESTO
+        query_puesto="""select p.puesto, s.estado, count(*)
         from BUO_Masnomina.masnomina_plantilla p
         left join BUO_Masnomina.masnomina_sucursales s on s.sucursal = p.sucursal
         where 1 = 1 """
         if(sobreflujo):
-            query_puesto += "and p.mes = " + str(anio - 1) + formatear_no_mes(12 + no_mes) + " "
+            query_puesto += "and p.mes = " + \
+                str(anio - 1) + formatear_no_mes(12 + no_mes) + " "
         else:
-            query_puesto += "and p.mes = " + str(anio) + formatear_no_mes(no_mes) + " " 
+            query_puesto += "and p.mes = " + \
+                str(anio) + formatear_no_mes(no_mes) + " "
         if(int(division)):
-            query_puesto += "and s.division = " + division +" "
+            query_puesto += "and s.division = " + division + " "
         query_puesto += "group by p.puesto, s.estado"
 
-        ##SE HACE EL QUERY DE ESTADO
-        query_estado = """select s.estado, sum(c.monto_dispuesto) as monto
-        from BUO_Masnomina.contratos_hist c 
+        # SE HACE EL QUERY DE ESTADO
+        query_estado="""select s.estado, sum(c.monto_dispuesto) as monto
+        from BUO_Masnomina.contratos_hist c
         left join BUO_Masnomina.masnomina_sucursales s on s.sucursal = c.sucursal
         where 1 = 1 """
         if(sobreflujo):
@@ -544,36 +555,32 @@ def consulta_estado_colocacion():
                     str(anio)+"-01-01' "
             else:
                 query_estado += "and c.fecha_disposicion >= '" + str(anio - 1)+"-" + formatear_no_mes(
-                    12 + no_mes) + "-01' and c.fecha_disposicion < '" + str(anio - 1)+"-" + formatear_no_mes(13 +no_mes) + "-01' "
-            query_estado += "and c.mes = " + \
-                str(anio - 1) + formatear_no_mes(12 + no_mes) + " "
+                    12 + no_mes) + "-01' and c.fecha_disposicion < '" + str(anio - 1)+"-" + formatear_no_mes(13 + no_mes) + "-01' "
+            query_estado += "and c.mes = " + str(anio - 1) + formatear_no_mes(12 + no_mes) + " "
         else:
             if(no_mes == 12):
-                query_estado += "and c.fecha_disposicion >= '" + \
-                    str(anio)+"-12-01' and c.fecha_disposicion < '" + \
-                    str(anio+1)+"-01-01' "
+                query_estado += "and c.fecha_disposicion >= '" + str(anio)+"-12-01' and c.fecha_disposicion < '" + str(anio+1)+"-01-01' "
             else:
                 query_estado += "and c.fecha_disposicion >= '" + str(anio)+"-" + formatear_no_mes(
                     no_mes) + "-01' and c.fecha_disposicion < '" + str(anio)+"-" + formatear_no_mes(no_mes+1) + "-01' "
-            query_estado += "and c.mes = " + \
-                str(anio) + formatear_no_mes(no_mes) + " "
+            query_estado += "and c.mes = " + str(anio) + formatear_no_mes(no_mes) + " "
         if(int(division)):
-            query_estado += "and c.division = " + division +" "
+            query_estado += "and c.division = " + division + " "
         query_estado += "group by s.estado order by 1"
 
         lista_estados_todos.append(obtener_datos(query_estado, False, ()))
-        
+
         print(query_puesto)
 
     print(lista_estados_todos)
-    lista_estados_anio_actual = [
+    lista_estados_anio_actual=[
         ['HIDALGO', 876173, 1318727, 1079677, 883818],
         ['PUEBLA', 289156, 447978, 557991, 371353],
         ['GUERRERO', 338514, 315634, 407835, 372686],
         ['GUANAJUATO', 279147, 110599, 389762, 183667],
         ['QUERETARO', 0, 14110, 3000, 21000]
     ]
-    lista_brokers_todos = [
+    lista_brokers_todos= [
         ['BROKER_LEON', 25173, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ['BROKER_PACHUCA_4', 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 17000],
@@ -584,14 +591,14 @@ def consulta_estado_colocacion():
         ['BROKERGUERRERO', 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 10000]
     ]
-    lista_brokers_anio_actual = [
+    lista_brokers_anio_actual= [
         ['BROKER_LEON', 0, 0, 0, 0],
         ['BROKER_PACHUCA_4', 0, 0, 0, 17000],
         ['BROKER_PACHUCA_5', 0, 0, 0, 205000],
         ['BROKER_PACHUCA_6', 0, 0, 11000, 82000],
         ['BROKERGUERRERO', 0, 0, 0, 10000]
     ]
-    lista_asesores_todos = [
+    lista_asesores_todos= [
         ['GUANAJUATO', 4, 3, 4, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 4],
         ['GUERRERO', 2, 6, 4, 7, 2, 2, 2,
          8, 8, 8, 7, 7, 10, 9, 9, 14],
@@ -604,9 +611,9 @@ def consulta_estado_colocacion():
     ]
 
     # Obtenemos totales
-    total_mes_general = []
-    total_mes_asesores = []
-    total_mes_promedio = []
+    total_mes_general= []
+    total_mes_asesores= []
+    total_mes_promedio= []
     # de esto podriamos hacer una consulta a DB con un SUM para quitarle carga al back
     # ya que si es mucha informacion la que se va a sacar entonces esta iteracion lo hara
     # más lento
@@ -730,38 +737,38 @@ def consulta_estado_colocacion():
 
 
 def calculo_x_estado(lista_todo, lista_actual):
-    lista_resultado = []
-    total = {}
-    total['nombre'] = 'TOTAL'
-    total['valores'] = {}
-    suma_anio_total = 0
+    lista_resultado= []
+    total= {}
+    total['nombre']= 'TOTAL'
+    total['valores']= {}
+    suma_anio_total= 0
     for i, row in enumerate(lista_todo, 1):
-        registro = {}
-        registro['nombre'] = row[0]
-        registro['valores'] = {}
+        registro= {}
+        registro['nombre']= row[0]
+        registro['valores']= {}
         for j, row2 in enumerate(row, 1):
             if j == len(row):
                 break
             else:
-                registro['valores'][str(j)] = '{:0,.0f}'.format(row[j])
-                total['valores'][str(j)] = '{:0,.0f}'.format(
+                registro['valores'][str(j)]= '{:0,.0f}'.format(row[j])
+                total['valores'][str(j)]= '{:0,.0f}'.format(
                     float(total['valores'].get(str(j), '0').replace(',', '')) + row[j])
-        suma_anio = 0
-        turno = lista_actual[i-1]
+        suma_anio=0
+        turno=lista_actual[i-1]
         for j, row2 in enumerate(turno, 1):
             if j == len(turno):
                 break
             else:
                 suma_anio += turno[j]
                 suma_anio_total += turno[j]
-        registro['suma_anio'] = '{:0,.0f}'.format(suma_anio)
-        registro['promedio_anio'] = '{:0,.0f}'.format(suma_anio/(len(turno)-1))
+        registro['suma_anio']='{:0,.0f}'.format(suma_anio)
+        registro['promedio_anio']='{:0,.0f}'.format(suma_anio/(len(turno)-1))
 
         lista_resultado.append(registro)
 
-    total['id'] = len(lista_resultado) + 1
-    total['suma_anio'] = '{:0,.0f}'.format(suma_anio_total)
-    total['promedio_anio'] = '{:0,.0f}'.format(
+    total['id']=len(lista_resultado) + 1
+    total['suma_anio']='{:0,.0f}'.format(suma_anio_total)
+    total['promedio_anio']='{:0,.0f}'.format(
         suma_anio_total/len(lista_resultado))
 
     lista_resultado.append(total)
@@ -875,10 +882,10 @@ def costos_colocacion():
     ) col_acum """
 
     lista_mes = obtener_datos(query01, False, ())
+
     lista_acumulado = obtener_datos(query02, False, ())
 
-
-    if len(lista_mes):
+    if(len(lista_mes)):
         lista_mes = [	['Colocación',  '$ {:0,.2f}'.format(lista_mes[0][0]), '%'],
                       ['Comisiones',  '$ {:0,.2f}'.format(
                           lista_mes[0][1]), '{:0,.2f}%'.format(lista_mes[0][9])],
@@ -897,7 +904,8 @@ def costos_colocacion():
                       ['TOTAL',  '$ {:0,.2f}'.format(
                           lista_mes[0][8]), '{:0,.2f}%'.format(lista_mes[0][16])]
                       ]
-    if lista_acumulado[0][0] != None:
+
+    if(lista_acumulado[0][0] != None):
         lista_acumulado = [	['Colocación',  '$ {:0,.2f}'.format(lista_acumulado[0][0]), '%'],
                             ['Comisiones',  '$ {:0,.2f}'.format(
                                 lista_acumulado[0][1]), '{:0,.2f}%'.format(lista_acumulado[0][9])],
@@ -923,43 +931,52 @@ def costos_colocacion():
     lista_costo = []
 
     for i in range(mes_numero):
-        query_meses = """select
+        i += 1
+        # SE GeNErA EL QUERY
+        query03 = """select
         round(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) as pct_total
         from BUO_Masnomina.costo_colocacion_hist col,
         (
         select  sum(monto_dispuesto) as colocacion
         from BUO_Masnomina.contratos_hist 
         where 1 = 1 """
-        if(i == 11):
-            query_meses += "and fecha_disposicion >= '"+ str(anio) +"-12-01' and fecha_disposicion < '"+ str(anio+1) +"-01-01' "
+        if(i == 12):
+            query03 += "and fecha_disposicion >= '" + \
+                str(anio) + "-12-01' and fecha_disposicion < '" + \
+                str(anio + 1) + "-01-01' "
         else:
-            query_meses += "and fecha_disposicion >= '"+ str(anio) +"-"+ formatear_no_mes(i+1) +"-01' and fecha_disposicion < '"+ str(anio) +"-"+ formatear_no_mes(i+2) +"-01' "
-        query_meses += "and mes = " + str(anio) + formatear_no_mes(i+1) + " "
+            query03 += "and fecha_disposicion >= '" + str(anio) + "-" + formatear_no_mes(
+                i) + "-01' and fecha_disposicion < '" + str(anio) + "-" + formatear_no_mes(i + 1) + "-01' "
+        query03 += "and mes = " + str(anio) + formatear_no_mes(i) + " "
         if(int(division)):
-            query_meses += "and division = "+ division +" "
+            query03 += "and division = " + division + " "
         if(producto != "0"):
-            query_meses += "and producto = '" + producto + "' "
-        query_meses += ") colmen where 1 = 1 "
-        query_meses += "and col.mes = " + str(anio) + formatear_no_mes(i+1) + " "
+            query03 += "and producto = '" + producto + "' "
+        query03 += ") colmen where 1 = 1 "
+        query03 += "and col.mes = " + str(anio) + formatear_no_mes(i) + " "
         if(int(division)):
-            query_meses += "and col.division = "+ division +" "
+            query03 += "and col.division = " + division
 
-        lista_costo.append([lista_meses[i] + ' ' + str(anio), obtener_datos(query_meses, False, ())])
-
-    for i in range(12 - mes_numero):
-        lista_costo.append([lista_meses[i + mes_numero] + ' ' + str(anio), ["0.0"]])
-
+        # SE HACE LA CONSULTA
+        lista_costo.append([lista_meses[i-1] + ' ' + mes[0] + mes[1] +
+                           mes[2] + mes[3], obtener_datos(query03, False, ())])
+    
+    if(lista_costo):
+        for i in range(12 - mes_numero):
+            lista_costo.append([lista_meses[i + mes_numero] + ' ' + mes[0] + mes[1] +
+                                mes[2] + mes[3], [0.0]])
+    
     lista_resultado = {}
 
-    if len(lista_mes) and lista_acumulado[0][0] != None:
-        lista_resultado['nombre_mes'] = lista_meses[mes_numero] + \
-                ' ' + mes[0] + mes[1] + mes[2] + mes[3]
+    if(lista_acumulado[0][0] != None):
+        lista_resultado['nombre_mes'] = lista_meses[mes_numero - 1] + \
+            ' ' + mes[0] + mes[1] + mes[2] + mes[3]
         lista_resultado['resultado_mes'] = lista_mes
         lista_resultado['resultado_acumulado'] = lista_acumulado
         lista_resultado['resultado_costo'] = lista_costo
 
+    print(lista_resultado)
     return json.dumps(lista_resultado)
-
 
 """
 
@@ -996,4 +1013,4 @@ def vendedores():
 
 if __name__ == '__main__':
     # si Rest.py
-    app.run(host='127.0.0.1', debug=True, port=9999, threaded=DEBUG)
+    app.run(host='127.0.0.1', debug=True, port='9999', threaded=DEBUG)

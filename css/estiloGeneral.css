@@ -88,13 +88,12 @@ thead{
     border-bottom: #535353 solid 2px;
 }
 
-
-#body{
-    display: none;
-}
-
 #landing h3, .loader{
     margin:auto;
+}
+
+.cuerpo{
+    display: none;
 }
 
 #loading{
