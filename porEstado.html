@@ -69,14 +69,16 @@
             </div>
             <div class="col-1">
                 <div id="alertaConsulta" class="alert alert-danger">
-                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Hubo un error al realizar la consulta, vea
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Hubo un error al realizar la consulta,
+                    vea
                     la consola para ver detalles.
                 </div>
                 <div id="alertaNoResultados" class="alert alert-warning">
                     <a class="close" onclick="cerrarAlerta(event)">&times;</a> La consulta no regresó resultados.
                 </div>
                 <div id="alertaValidacion" class="alert alert-warning">
-                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Debe llenar todos los datos para hacer una
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Debe llenar todos los datos para hacer
+                    una
                     consulta.
                 </div>
                 <button class="btn btn-primary" type="button" onclick="iniciarBusqueda()">Consultar</button>
@@ -94,14 +96,14 @@
         </div>
     </div>
 
-    <div class="row tabla" id="body">
+    <div class="row tabla cuerpo">
         <div class="col">
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th id="tituloTabla" colspan="99">Colocación</th>
                     </tr>
-                    <tr id="tablaColocacionHead">
+                    <tr class="tablasHead">
 
                     </tr>
                 </thead>
@@ -113,7 +115,7 @@
                     <tr>
                         <th id="tituloTabla" colspan="99">Venta Promedio por Asesor</th>
                     </tr>
-                    <tr class="tablaAsesorHead">
+                    <tr class="tablasHead">
 
                     </tr>
                 </thead>
@@ -125,7 +127,7 @@
                     <tr>
                         <th id="tituloTabla" colspan="99">Plantilla de Asesores</th>
                     </tr>
-                    <tr class="tablaAsesorHead">
+                    <tr class="tablasHead">
 
                     </tr>
                 </thead>
@@ -137,7 +139,7 @@
                     <tr>
                         <th id="tituloTabla" colspan="99">Venta Promedio por Supervisores</th>
                     </tr>
-                    <tr class="tablaAsesorHead">
+                    <tr class="tablasHead">
 
                     </tr>
                 </thead>
@@ -149,20 +151,16 @@
                     <tr>
                         <th id="tituloTabla" colspan="99">Plantilla de Supervisores</th>
                     </tr>
-                    <tr class="tablaAsesorHead">
+                    <tr class="tablasHead">
 
                     </tr>
                 </thead>
                 <tbody id="tablaSupervisorBody">
                 </tbody>
             </table>
-
-
-
-            </table>
         </div>
     </div>
-    <div class="row chart" id="body">
+    <div class="row chart cuerpo">
         <div class="col">
             <canvas id="canvasGraficaColocacion" width="500" height="400"></canvas>
         </div>
@@ -170,7 +168,7 @@
             <canvas id="canvasGraficaEstado" width="500" height="400"></canvas>
         </div>
     </div>
-    <div class="row chart" id="body">
+    <div class="row chart cuerpo">
         <div class="col">
             <canvas id="canvasGraficaAsesor" width="500" height="400"></canvas>
         </div>

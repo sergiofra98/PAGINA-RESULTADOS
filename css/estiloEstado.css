@@ -2,6 +2,19 @@
     margin-bottom: 32px !important;
 }
 
+table tbody tr th:last-of-type{
+    background-color: #e2e2f1;
+}
+
+table tbody tr th:nth-last-of-type(2){
+    background-color: #f8f8ff;
+}
+
+table tbody tr th:nth-last-of-type(3){
+    background-color: #f8f8ff;
+}
+
+
 form h3{
     display: block;
     margin: auto;

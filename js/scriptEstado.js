@@ -13,17 +13,13 @@ $(document).ready(function () {
 });
 
 function getColocacion() {
-    $("#tablaColocacionHead").html("");
-    $("#tablaBrokersHead").html("");
+    $(".tablasHead").html("");
     $("#tablaColocacionBody").html("");
-    $("#tablaAsesorHead").html("");
-    $("#tablaAsesorPromHead").html("");
     $("#tablaAsesorPromBody").html("");
     $("#tablaBrokersBody").html("");
     $("#tablaAsesorBody").html("");
     $("#tablaSupervisorPromBody").html("");
     $("#tablaSupervisorBody").html("");
-    $(".tablaAsesorHead").html("");
 
     if (graficaColocacion)
         graficaColocacion.destroy()
@@ -34,9 +30,9 @@ function getColocacion() {
     if (graficaMNBrokers)
         graficaMNBrokers.destroy()
 
-    $('#body, #titulo').hide();
     $('#landing').css("display", "none");
     $('#loading').css("display", "flex");
+    $('.cuerpo, #titulo').css("display", "none");
 
     $.getJSON(linkREST + "consulta_estado_colocacion", {
         mes: $('#inputAno').val() + $('#inputMes').val(),
@@ -44,166 +40,87 @@ function getColocacion() {
         producto: $('#inputProducto').val()
     },
         function (dataTablas) {
-            if (!dataTablas) {
+            console.log(dataTablas)
+            if (jQuery.isEmptyObject(dataTablas)) {
                 $("#alertaNoResultados").css('display', 'block')
+                $('#loading').css("display", "none");
+                $('#landing').css("display", "flex");
+                $('.cuerpo, #titulo').css("display", "none");
                 return;
             }
-            var append = '<th></th>'
-            for (const prop in dataTablas.meses) {
-                append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
+
+            let i = 0;
+            let j = 0;
+            let append = '<th></th>'
+            for (i; i < 13; i++) {
+                append += '<th>' + dataTablas.meses[i] + '</th>';
             }
-            append += '<th>Total ' + ano + ' </th> <th>Promedio</th>'
+            append += '<th><b>Total Año</b></th><th><b>Total AA</b></th> <th><b>Total</b></th>'
 
-            $("#tablaColocacionHead").append(append);
+            $(".tablasHead").append(append);
 
-            append = "";
-            for (let i = 0; i < dataTablas.estados.length; i++) {
-
-                if (i === dataTablas.estados.length - 1) {
-                    append += '<tr class="obscuro texto"><td>' + dataTablas.estados[i].nombre + '</td>';
+            //SE PEGAN LAS TABLAS DE ESTADOS
+            append = ''
+            for (i = 0; i < dataTablas.estados.length; i++) {
+                append += '<tr>'
+                for(j = 0; j < 17; j++){
+                    append += '<th>' + dataTablas.estados[i][j] + '</th>';
                 }
-                else {
-                    append += '<tr><td class="texto">' + dataTablas.estados[i].nombre + "</td>";
-                }
-
-
-                for (const prop in dataTablas.estados[i].valores) {
-                    append += '<td class="numero">' + (`${dataTablas.estados[i].valores[prop]}`) + '</td>'
-                }
-                append += '<td class="obscuro numero">' + dataTablas.estados[i].suma_anio + '</td>'
-                append += '<td class="numero">' + dataTablas.estados[i].promedio_anio + '</td>'
-
-                append += "</tr>"
+                append += '</tr>'
             }
-
-            append += '<tr><td  class="texto">BROKERS</td>'
-            let totalBrokers = dataTablas.brokers.length - 1;
-
-            for (const prop in dataTablas.brokers[totalBrokers].valores) {
-                append += '<td class="numero">' + (`${dataTablas.brokers[totalBrokers].valores[prop]}`) + '</td>'
-            }
-            append += '<td class="obscuro numero">' + dataTablas.brokers[totalBrokers].suma_anio + '</td><td>' +
-                dataTablas.brokers[totalBrokers].promedio_anio + '</td></tr><tr class="texto obscuro"><td>TOTAL GENERAL</td>'
-
-            for (const prop in dataTablas.total_general.valores) {
-                append += '<td class="numero">' + (`${dataTablas.total_general.valores[prop]}`) + '</td>'
-            }
-            append += '<td class="numero">' + dataTablas.total_general.suma_anio + '</td><td>' + dataTablas.total_general.promedio_anio + '</td></tr>'
 
             $("#tablaColocacionBody").append(append);
 
-            //PEGAR TABLA DE BROKERS
-            // append = "";
-
-            // for (let i = 0; i < dataTablas.brokers.length; i++) {
-
-            //     if (i === dataTablas.brokers.length - 1) {
-            //         append += '<tr class="obscuro texto"><td>' + dataTablas.brokers[i].nombre.replace(/_/g, ' '); + '</td>';
-            //     }
-            //     else {
-            //         append += '<tr><td class="texto">' + dataTablas.brokers[i].nombre.replace(/_/g, ' '); + "</td>";
-            //     }
-
-
-            //     for (const prop in dataTablas.brokers[i].valores) {
-            //         append += '<td class="numero">' + (`${dataTablas.brokers[i].valores[prop]}`) + '</td>'
-            //     }
-            //     append += '<td class="obscuro numero">' + dataTablas.brokers[i].suma_anio + '</td><td>' + dataTablas.brokers[i].promedio_anio + '</td></tr>'
-            // }
-
-            // $("#tablaBrokersBody").append(append);
-
-            //PEGAR TABLA DE ASESOR PROMEDIOS
-            append = '<th></th>'
-            for (const prop in dataTablas.meses) {
-                append += '<th>' + (`${dataTablas.meses[prop]}`) + '</th>';
-            }
-            $(".tablaAsesorHead").append(append);
-
-            append = "";
-            for (let i = 0; i < dataTablas.promedios_asesor.length; i++) {
-
-                if (i === dataTablas.promedios_asesor.length - 1) {
-                    append += '<tr class="obscuro"><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + '</td>';
+            //SE PEGAN LAS TABLAS DE SUPERVISORES
+            append = ''
+            for (i = 0; i < dataTablas.lista_supervisores.length; i++) {
+                append += '<tr>'
+                for(j = 0; j < 17; j++){
+                    append += '<th>' + dataTablas.lista_supervisores[i][j] + '</th>';
                 }
-                else {
-                    append += '<tr><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + "</td>";
-                }
-
-
-                for (const prep in dataTablas.promedios_asesor[i].valores) {
-                    append += '<td class="' + (`${dataTablas.promedios_asesor[i].valores[prep][1]}`) + ' numero">' + (`${dataTablas.promedios_asesor[i].valores[prep][0]}`) + '</td>'
-                }
-
-                append += "</tr>"
-            }
-
-            $("#tablaAsesorPromBody").append(append);
-
-            //PEGAR TABLA DE ASESOR 
-            append = "";
-            for (let i = 0; i < dataTablas.asesores.length; i++) {
-
-                if (i === dataTablas.asesores.length - 1) {
-                    append += '<tr class="obscuro texto"><td>' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + '</td>';
-                }
-                else {
-                    append += '<tr><td class="texto">' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + "</td>";
-                }
-
-
-                for (const prep in dataTablas.asesores[i].valores) {
-                    append += '<td class="numero">' + (`${dataTablas.asesores[i].valores[prep]}`) + '</td>'
-                }
-                append += "</tr>"
-            }
-
-            $("#tablaAsesorBody").append(append);
-
-            //PEGAR TABLA DE SUPEERVISORES PROMEDIOS
-            append = "";
-            for (let i = 0; i < dataTablas.promedios_asesor.length; i++) {
-
-                if (i === dataTablas.promedios_asesor.length - 1) {
-                    append += '<tr class="obscuro"><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + '</td>';
-                }
-                else {
-                    append += '<tr><td class="texto">' + dataTablas.promedios_asesor[i].nombre.replace(/_/g, ' '); + "</td>";
-                }
-
-
-                for (const prep in dataTablas.promedios_asesor[i].valores) {
-                    append += '<td class="' + (`${dataTablas.promedios_asesor[i].valores[prep][1]}`) + ' numero">' + (`${dataTablas.promedios_asesor[i].valores[prep][0]}`) + '</td>'
-                }
-
-                append += "</tr>"
-            }
-
-            $("#tablaSupervisorPromBody").append(append);
-
-            //PEGAR TABLA DE SUPEERVISORES 
-            append = "";
-            for (let i = 0; i < dataTablas.asesores.length; i++) {
-
-                if (i === dataTablas.asesores.length - 1) {
-                    append += '<tr class="obscuro texto"><td>' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + '</td>';
-                }
-                else {
-                    append += '<tr><td class="texto">' + dataTablas.asesores[i].nombre.replace(/_/g, ' '); + "</td>";
-                }
-
-
-                for (const prep in dataTablas.asesores[i].valores) {
-                    append += '<td class="numero">' + (`${dataTablas.asesores[i].valores[prep]}`) + '</td>'
-                }
-                append += "</tr>"
+                append += '</tr>'
             }
 
             $("#tablaSupervisorBody").append(append);
 
+            //SE PEGAN LAS TABLAS DE ASESORES
+            append = ''
+            for (i = 0; i < dataTablas.lista_asesores.length; i++) {
+                append += '<tr>'
+                for(j = 0; j < 17; j++){
+                    append += '<th>' + dataTablas.lista_asesores[i][j] + '</th>';
+                }
+                append += '</tr>'
+            }
+
+            $("#tablaAsesorBody").append(append);
+
+            //SE PEGAN LAS TABLAS DE PROMEDIO DE ASESOR
+            append = ''
+            for (i = 0; i < dataTablas.lista_asesores_promedio.length; i++) {
+                append += '<tr>'
+                for(j = 0; j < 17; j++){
+                    append += '<th>' + dataTablas.lista_asesores_promedio[i][j] + '</th>';
+                }
+                append += '</tr>'
+            }
+
+            $("#tablaAsesorPromBody").append(append);
+
+            //SE PEGAN LAS TABLAS DE PROMEDIO DE SUPERVISOR
+            append = ''
+            for (i = 0; i < dataTablas.lista_supervisores_promedio.length; i++) {
+                append += '<tr>'
+                for(j = 0; j < 17; j++){
+                    append += '<th>' + dataTablas.lista_supervisores_promedio[i][j] + '</th>';
+                }
+                append += '</tr>'
+            }
+
+            $("#tablaSupervisorPromBody").append(append);
 
 
-            totalAno = dataTablas.estados.pop().valores;
+            /*totalAno = dataTablas.estados.pop().valores;
 
             function esteAno() {
                 temp = []
@@ -337,15 +254,17 @@ function getColocacion() {
                         }
                     ]
                 }
-            )
+            )*/
 
         })
         .done(function () {
             $('#body, #titulo').css("display", "flex");
+            $('.cuerpo').css('display', 'block')
             $('#loading').css("display", "none");
         })
         .fail(function (textStatus) {
             $('#loading').css("display", "none");
+            $('#landing').css("display", "flex");
             $("#alertaConsulta").css('display', 'block');
         });
 }
