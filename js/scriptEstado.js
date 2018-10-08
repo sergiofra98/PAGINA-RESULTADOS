@@ -35,7 +35,7 @@ function getColocacion() {
     $('.cuerpo, #titulo').css("display", "none");
 
     $.getJSON(linkREST + "consulta_estado_colocacion", {
-        mes: $('#inputAno').val() + $('#inputMes').val(),
+        mes: $('#inputFecha').val(),
         division: $('#inputDivision').val(),
         producto: $('#inputProducto').val()
     },

@@ -7,6 +7,7 @@
     <title>Costo Por Estado</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
         crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="img/favicon.png">
 
     <link rel="stylesheet" href="css/estiloGeneral.css">
     <link rel="stylesheet" href="css/estiloEstado.css">
@@ -37,12 +38,9 @@
                 <div>
                     <label for="mes">Periodo<span class="rojo">*</span>: </label>
                 </div>
-                <select name="inputMes" id="inputMes" class="form-control">
+                <select name="inputFecha" id="inputFecha" class="form-control">
 
-                </select>
-                <select name="inputAno" id="inputAno" class="form-control">
-
-                </select>
+                </select>               
             </div>
             <div class="col-3">
                 <label for="mes">División<span class="rojo">*</span>: </label>
@@ -69,16 +67,14 @@
             </div>
             <div class="col-1">
                 <div id="alertaConsulta" class="alert alert-danger">
-                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Hubo un error al realizar la consulta,
-                    vea
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Hubo un error al realizar la consulta, vea
                     la consola para ver detalles.
                 </div>
                 <div id="alertaNoResultados" class="alert alert-warning">
                     <a class="close" onclick="cerrarAlerta(event)">&times;</a> La consulta no regresó resultados.
                 </div>
                 <div id="alertaValidacion" class="alert alert-warning">
-                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Debe llenar todos los datos para hacer
-                    una
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Debe llenar todos los datos para hacer una
                     consulta.
                 </div>
                 <button class="btn btn-primary" type="button" onclick="iniciarBusqueda()">Consultar</button>
@@ -96,7 +92,7 @@
         </div>
     </div>
 
-    <div class="row tabla cuerpo">
+    <div class="row tabla" id="body">
         <div class="col">
             <table class="table table-bordered">
                 <thead>
@@ -158,9 +154,13 @@
                 <tbody id="tablaSupervisorBody">
                 </tbody>
             </table>
+
+
+
+            </table>
         </div>
     </div>
-    <div class="row chart cuerpo">
+    <div class="row chart" id="body">
         <div class="col">
             <canvas id="canvasGraficaColocacion" width="500" height="400"></canvas>
         </div>
@@ -168,7 +168,7 @@
             <canvas id="canvasGraficaEstado" width="500" height="400"></canvas>
         </div>
     </div>
-    <div class="row chart cuerpo">
+    <div class="row chart" id="body">
         <div class="col">
             <canvas id="canvasGraficaAsesor" width="500" height="400"></canvas>
         </div>
