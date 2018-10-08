@@ -21,16 +21,16 @@ form h3{
 }
 
 .promedio{
-    background-color: #ffff2d;
+    background-color: #ffff2d ;
 }
 
 .malo{
-    background-color: #cc0d0d;
-    color:white;
+    background-color: #cc0d0d ;
+    color:white ;
 }
 .bueno{
-    background-color: #4ea24e;
-    color:white;
+    background-color: #4ea24e ;
+    color:white ;
 }
 
 .chart .col{

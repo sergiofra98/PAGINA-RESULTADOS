@@ -49,6 +49,9 @@ function getColocacion() {
                 return;
             }
 
+            let anio = parseInt($('#inputFecha').val()[0] + $('#inputFecha').val()[1] + $('#inputFecha').val()[2] + $('#inputFecha').val()[3])
+            let no_mes = parseInt($('#inputFecha').val()[4] + $('#inputFecha').val()[5])
+
             let i = 0;
             let j = 0;
             let append = '<th></th>'
@@ -63,7 +66,7 @@ function getColocacion() {
             append = ''
             for (i = 0; i < dataTablas.estados.length; i++) {
                 append += '<tr>'
-                for(j = 0; j < 17; j++){
+                for (j = 0; j < 17; j++) {
                     append += '<th>' + dataTablas.estados[i][j] + '</th>';
                 }
                 append += '</tr>'
@@ -75,7 +78,7 @@ function getColocacion() {
             append = ''
             for (i = 0; i < dataTablas.lista_supervisores.length; i++) {
                 append += '<tr>'
-                for(j = 0; j < 17; j++){
+                for (j = 0; j < 17; j++) {
                     append += '<th>' + dataTablas.lista_supervisores[i][j] + '</th>';
                 }
                 append += '</tr>'
@@ -87,7 +90,7 @@ function getColocacion() {
             append = ''
             for (i = 0; i < dataTablas.lista_asesores.length; i++) {
                 append += '<tr>'
-                for(j = 0; j < 17; j++){
+                for (j = 0; j < 17; j++) {
                     append += '<th>' + dataTablas.lista_asesores[i][j] + '</th>';
                 }
                 append += '</tr>'
@@ -99,8 +102,18 @@ function getColocacion() {
             append = ''
             for (i = 0; i < dataTablas.lista_asesores_promedio.length; i++) {
                 append += '<tr>'
-                for(j = 0; j < 17; j++){
-                    append += '<th>' + dataTablas.lista_asesores_promedio[i][j] + '</th>';
+                append += '<th>' + dataTablas.lista_asesores_promedio[i][0] + '</th>';
+                for (j = 1; j < 17; j++) {
+                    num = parseFloat(dataTablas.lista_asesores_promedio[i][j].replace(/,/g, ''))
+                    if (num > 120000) {
+                        append += '<th class="bueno">' + dataTablas.lista_asesores_promedio[i][j] + '</th>';
+                    }
+                    else if (num < 80000) {
+                        append += '<th class="malo">' + dataTablas.lista_asesores_promedio[i][j] + '</th>';
+                    }
+                    else {
+                        append += '<th class="promedio">' + dataTablas.lista_asesores_promedio[i][j] + '</th>';
+                    }
                 }
                 append += '</tr>'
             }
@@ -109,41 +122,130 @@ function getColocacion() {
 
             //SE PEGAN LAS TABLAS DE PROMEDIO DE SUPERVISOR
             append = ''
+
+
+
             for (i = 0; i < dataTablas.lista_supervisores_promedio.length; i++) {
                 append += '<tr>'
-                for(j = 0; j < 17; j++){
-                    append += '<th>' + dataTablas.lista_supervisores_promedio[i][j] + '</th>';
+                append += '<th>' + dataTablas.lista_supervisores_promedio[i][0] + '</th>';
+                for (j = 1; j < 17; j++) {
+                    num = parseFloat(dataTablas.lista_supervisores_promedio[i][j].replace(/,/g, ''))
+                    if (num > 120000) {
+                        append += '<th class="bueno">' + dataTablas.lista_supervisores_promedio[i][j] + '</th>';
+                    }
+                    else if (num < 80000) {
+                        append += '<th class="malo">' + dataTablas.lista_supervisores_promedio[i][j] + '</th>';
+                    }
+                    else {
+                        append += '<th class="promedio">' + dataTablas.lista_supervisores_promedio[i][j] + '</th>';
+                    }
                 }
                 append += '</tr>'
             }
 
             $("#tablaSupervisorPromBody").append(append);
 
+            totalEstado = dataTablas.estados[dataTablas.estados.length - 1]
 
-            /*totalAno = dataTablas.estados.pop().valores;
 
-            function esteAno() {
+            function anoEstadoA() {
                 temp = []
-                for (const prep in totalAno) {
-                    if (prep < 13) {
-                        temp.push(parseInt((`${totalAno[prep]}`).replace(/,/g, '')));
-
-                    }
+                for (i = 0; i < 12 - no_mes; i++) {
+                    temp.push(0)
                 }
+
+                for (i = 1; i < no_mes + 1; i++) {
+                    mes = no_mes - i
+                    temp.push(parseInt(totalEstado[i].replace(/,/g, '')))
+                }
+
+                console.log(temp)
+
                 return temp
             }
 
-            function pasadoAno() {
+            function anoEstadoAA() {
                 temp = []
-                for (const prep in totalAno) {
-                    if (prep > 12) {
-                        temp.push(parseInt((`${totalAno[prep]}`).replace(/,/g, '')));
-                    }
+                for (i = 1; i < 14 - no_mes; i++) {
+                    mes = no_mes + i
+                    temp.push(parseInt(totalEstado[i + no_mes].replace(/,/g, '')))
                 }
-                return temp;
+
+                for (i = 0; i < no_mes - 1; i++) {
+                    temp.push(0)
+                }
+                console.log(temp)
+                return temp
             }
 
-            function estadoGenerador() {
+            function listarMeses(sobreflujo) {
+                temp = []
+                if (sobreflujo) {
+                    for (i = 0; i < no_mes; i++) {
+                        temp.push(dataTablas.meses[i][0] + dataTablas.meses[i][1] + dataTablas.meses[i][2])
+                    }
+                }
+                else {
+                    for (i = 0; i < 13 - no_mes; i++) {
+                        temp.push(dataTablas.meses[i + no_mes][0] + dataTablas.meses[i + no_mes][1] + dataTablas.meses[i + no_mes][2])
+                    }
+                }
+
+
+
+                console.log(temp)
+            }
+
+            function colocacionPorEstado() {
+                temp = []
+
+                for (i = 0; i < dataTablas.estados.length - 1; i++) {
+                    temp.push([])
+                    for (j = 1; j < 14; j++) {
+                        temp[i].push(parseInt(dataTablas.estados[i][j].replace(/,/g, '')))
+                    }
+                }
+                console.log(temp)
+            }
+
+            function colocacionPorAsesor() {
+                temp = []
+                len = dataTablas.lista_asesores_promedio.length - 1
+
+                for (j = 1; j < 14; j++) {
+                    temp.push(parseInt(dataTablas.lista_asesores_promedio[len][j].replace(/,/g, '')))
+                }
+
+                console.log(temp)
+            }
+
+            function AsesorVSSupervisor() {
+                temp = [[], []]
+
+                lenAsesor = dataTablas.lista_asesores.length - 1
+                lenSupervisor = dataTablas.lista_supervisores.length - 1
+
+                for (j = 1; j < 14; j++) {
+                    temp[0].push(dataTablas.lista_supervisores[lenSupervisor][j])
+                }
+
+                for (j = 1; j < 14; j++) {
+                    temp[1].push(dataTablas.lista_asesores[lenAsesor][j])
+                }
+
+                resultado = [[],[]]
+
+                for (i = 0; i < 13; i++) {
+                    resultado[0][i] = (temp[0][i]*100.00)/(temp[0][i] + temp[1][i]) 
+                    resultado[1][i] = (temp[1][i]*100.00)/(temp[0][i] + temp[1][i]) 
+                }
+
+                console.log(resultado)
+            }
+
+            AsesorVSSupervisor()
+
+            /*function estadoGenerador() {
                 temp = [];
 
                 for (i = 0; i < dataTablas.estados.length; i++) {
@@ -172,7 +274,6 @@ function getColocacion() {
                 }
                 return temp;
             }
-
             function generadorMNvsBrokers() {
                 temp = [];
                 temp2 = [];
@@ -201,6 +302,7 @@ function getColocacion() {
             }
 
             arregloMNN = generadorMNvsBrokers()
+            
 
             declararCharts(
                 {
@@ -254,7 +356,7 @@ function getColocacion() {
                         }
                     ]
                 }
-            )*/
+            ) */
 
         })
         .done(function () {
