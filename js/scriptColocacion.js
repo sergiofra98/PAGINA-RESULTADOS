@@ -17,7 +17,7 @@ function getColocacion() {
     $('#loading').css("display", "flex");
 
     $.getJSON(linkREST + "costos_colocacion", {
-        mes: $('#inputAno').val() + '' + $('#inputMes').val(),
+        mes: $('#inputFecha').val(),
         division: $('#inputDivision').val(),
         producto: $('#inputProducto').val()
     },

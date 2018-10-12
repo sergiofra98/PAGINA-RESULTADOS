@@ -19,7 +19,7 @@ function getColocacion() {
 
     $.getJSON(linkREST + "consulta_convenio_colocacion",
         {
-            mes: $('#inputAno').val() + $('#inputMes').val(),
+            mes: $('#inputFecha').val(),
             division: $('#inputDivision').val(),
             producto: $('#inputProducto').val()
         },
