@@ -116,10 +116,11 @@ thead{
     margin-left: 20px;
 }
 
-tbody tr:last-of-type{
-    background-color: #e2e2f1;
-    font-weight: bold;
-    font-size: 14;
+tbody tr:last-of-type td{
+    background-color: #e2e2f1 !important;
+    color:black;
+    font-weight: bold !important;
+    font-size: 14 !important;
 }
 
 .btn-primary{
@@ -148,4 +149,8 @@ tbody tr td{
 
 tbody tr td:first-of-type{
     text-align: left;
+}
+
+.cuerpo{
+    display:none;
 }

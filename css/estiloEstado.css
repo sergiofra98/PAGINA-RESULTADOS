@@ -2,16 +2,21 @@
     margin-bottom: 32px !important;
 }
 
-table tbody tr th:last-of-type{
+table tbody tr td:last-of-type{
     background-color: #e2e2f1;
+    color: black;
 }
 
-table tbody tr th:nth-last-of-type(2){
+table tbody tr td:nth-last-of-type(2){
     background-color: #f8f8ff;
+    color: black;
+
 }
 
-table tbody tr th:nth-last-of-type(3){
+table tbody tr td:nth-last-of-type(3){
     background-color: #f8f8ff;
+    color: black;
+
 }
 
 

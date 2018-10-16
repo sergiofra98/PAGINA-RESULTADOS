@@ -67,7 +67,7 @@ function getColocacion() {
             for (i = 0; i < dataTablas.estados.length; i++) {
                 append += '<tr>'
                 for (j = 0; j < 17; j++) {
-                    append += '<th>' + dataTablas.estados[i][j] + '</th>';
+                    append += '<td>' + dataTablas.estados[i][j] + '</td>';
                 }
                 append += '</tr>'
             }
@@ -79,7 +79,7 @@ function getColocacion() {
             for (i = 0; i < dataTablas.lista_supervisores.length; i++) {
                 append += '<tr>'
                 for (j = 0; j < 17; j++) {
-                    append += '<th>' + dataTablas.lista_supervisores[i][j] + '</th>';
+                    append += '<td>' + dataTablas.lista_supervisores[i][j] + '</td>';
                 }
                 append += '</tr>'
             }
@@ -91,7 +91,7 @@ function getColocacion() {
             for (i = 0; i < dataTablas.lista_asesores.length; i++) {
                 append += '<tr>'
                 for (j = 0; j < 17; j++) {
-                    append += '<th>' + dataTablas.lista_asesores[i][j] + '</th>';
+                    append += '<td>' + dataTablas.lista_asesores[i][j] + '</td>';
                 }
                 append += '</tr>'
             }
@@ -102,17 +102,17 @@ function getColocacion() {
             append = ''
             for (i = 0; i < dataTablas.lista_asesores_promedio.length; i++) {
                 append += '<tr>'
-                append += '<th>' + dataTablas.lista_asesores_promedio[i][0] + '</th>';
+                append += '<td>' + dataTablas.lista_asesores_promedio[i][0] + '</td>';
                 for (j = 1; j < 17; j++) {
                     num = parseFloat(dataTablas.lista_asesores_promedio[i][j].replace(/,/g, ''))
                     if (num > 120000) {
-                        append += '<th class="bueno">' + dataTablas.lista_asesores_promedio[i][j] + '</th>';
+                        append += '<td class="bueno">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
                     }
                     else if (num < 80000) {
-                        append += '<th class="malo">' + dataTablas.lista_asesores_promedio[i][j] + '</th>';
+                        append += '<td class="malo">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
                     }
                     else {
-                        append += '<th class="promedio">' + dataTablas.lista_asesores_promedio[i][j] + '</th>';
+                        append += '<td class="promedio">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
                     }
                 }
                 append += '</tr>'
@@ -127,17 +127,17 @@ function getColocacion() {
 
             for (i = 0; i < dataTablas.lista_supervisores_promedio.length; i++) {
                 append += '<tr>'
-                append += '<th>' + dataTablas.lista_supervisores_promedio[i][0] + '</th>';
+                append += '<td>' + dataTablas.lista_supervisores_promedio[i][0] + '</td>';
                 for (j = 1; j < 17; j++) {
                     num = parseFloat(dataTablas.lista_supervisores_promedio[i][j].replace(/,/g, ''))
                     if (num > 120000) {
-                        append += '<th class="bueno">' + dataTablas.lista_supervisores_promedio[i][j] + '</th>';
+                        append += '<td class="bueno">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
                     }
                     else if (num < 80000) {
-                        append += '<th class="malo">' + dataTablas.lista_supervisores_promedio[i][j] + '</th>';
+                        append += '<td class="malo">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
                     }
                     else {
-                        append += '<th class="promedio">' + dataTablas.lista_supervisores_promedio[i][j] + '</th>';
+                        append += '<td class="promedio">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
                     }
                 }
                 append += '</tr>'
@@ -158,9 +158,6 @@ function getColocacion() {
                     mes = no_mes - i
                     temp.push(parseInt(totalEstado[i].replace(/,/g, '')))
                 }
-
-                console.log(temp)
-
                 return temp
             }
 
@@ -174,38 +171,35 @@ function getColocacion() {
                 for (i = 0; i < no_mes - 1; i++) {
                     temp.push(0)
                 }
-                console.log(temp)
                 return temp
-            }
-
-            function listarMeses(sobreflujo) {
-                temp = []
-                if (sobreflujo) {
-                    for (i = 0; i < no_mes; i++) {
-                        temp.push(dataTablas.meses[i][0] + dataTablas.meses[i][1] + dataTablas.meses[i][2])
-                    }
-                }
-                else {
-                    for (i = 0; i < 13 - no_mes; i++) {
-                        temp.push(dataTablas.meses[i + no_mes][0] + dataTablas.meses[i + no_mes][1] + dataTablas.meses[i + no_mes][2])
-                    }
-                }
-
-
-
-                console.log(temp)
             }
 
             function colocacionPorEstado() {
                 temp = []
+                retorno = []
+                nombres = []
 
                 for (i = 0; i < dataTablas.estados.length - 1; i++) {
                     temp.push([])
+                    nombres.push(dataTablas.estados[i][0])
                     for (j = 1; j < 14; j++) {
                         temp[i].push(parseInt(dataTablas.estados[i][j].replace(/,/g, '')))
                     }
                 }
-                console.log(temp)
+
+                for (i = 1; i < temp.length + 1; i++) {
+                    retorno.push({
+                        data: temp[i],
+                        label: nombres[i],
+                        borderColor: generadorColoresUno(i),
+                        backgroundColor: generadorColoresUno(i),
+                        fill: false
+                    })
+                }
+
+                console.log(retorno)
+
+                return retorno
             }
 
             function colocacionPorAsesor() {
@@ -216,7 +210,7 @@ function getColocacion() {
                     temp.push(parseInt(dataTablas.lista_asesores_promedio[len][j].replace(/,/g, '')))
                 }
 
-                console.log(temp)
+                return temp
             }
 
             function AsesorVSSupervisor() {
@@ -233,89 +227,36 @@ function getColocacion() {
                     temp[1].push(dataTablas.lista_asesores[lenAsesor][j])
                 }
 
-                resultado = [[],[]]
+                resultado = [[], []]
 
                 for (i = 0; i < 13; i++) {
-                    resultado[0][i] = (temp[0][i]*100.00)/(temp[0][i] + temp[1][i]) 
-                    resultado[1][i] = (temp[1][i]*100.00)/(temp[0][i] + temp[1][i]) 
-                }
+                    if (temp[0][i] + temp[1][i]) {
+                        resultado[0][i] = ((temp[0][i] * 100.00) / (temp[0][i] + temp[1][i]))
+                        resultado[1][i] = ((temp[1][i] * 100.00) / (temp[0][i] + temp[1][i]))
+                    }
+                    else {
+                        resultado[0][i] = 0
+                        resultado[1][i] = 0
+                    }
 
+                }
                 console.log(resultado)
+                return resultado
             }
 
-            AsesorVSSupervisor()
-
-            /*function estadoGenerador() {
-                temp = [];
-
-                for (i = 0; i < dataTablas.estados.length; i++) {
-                    temp2 = [];
-                    for (const prep in dataTablas.estados[i].valores) {
-                        if (prep > 12) {
-                            temp2.push(parseInt((`${dataTablas.estados[i].valores[prep]}`).replace(/,/g, '')))
-                        }
-                    }
-                    temp.push({
-                        data: temp2,
-                        label: dataTablas.estados[i].nombre,
-                        borderColor: generadorColoresUno(i),
-                        backgroundColor: generadorColoresUno(i),
-                        fill: false
-                    });
-                }
-                return temp;
-            }
-
-            function generadorPromedio() {
-                temp = [];
-                promedio = dataTablas.promedios_asesor.pop()
-                for (const prep in promedio.valores) {
-                    temp.push(parseInt((`${promedio.valores[prep]}`).replace(/,/g, '')));
-                }
-                return temp;
-            }
-            function generadorMNvsBrokers() {
-                temp = [];
-                temp2 = [];
-                temp3 = [];
-                total = dataTablas.brokers.pop();
-
-                for (const prep in total.valores) {
-                    if (prep > 12) {
-                        temp.push(parseInt((`${total.valores[prep]}`).replace(/,/g, '')));
-                    }
-                }
-
-
-                for (const prep in dataTablas.total_general.valores) {
-                    if (prep > 12) {
-                        temp2.push(parseInt((`${dataTablas.total_general.valores[prep]}`).replace(/,/g, '')));
-                    }
-                }
-
-                for (let i = 0; i < temp.length; i++) {
-                    temp[i] = (temp[i] * 100 / temp2[i]).toFixed(2);
-                    temp3.push(100 - temp[i])
-                }
-
-                return [temp, temp3]
-            }
-
-            arregloMNN = generadorMNvsBrokers()
-            
-
+            vsAsesor = AsesorVSSupervisor()
             declararCharts(
                 {
                     labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
                     datasets: [
                         {
-                            data: esteAno(),
+                            data: anoEstadoA(),
                             label: ano - 1,
                             borderColor: "#cc0d0d",
                             backgroundColor: "#cc0d0d",
                             fill: false
                         }, {
-                            data: pasadoAno(),
+                            data: anoEstadoAA(),
                             label: ano,
                             borderColor: "#3e95cd",
                             backgroundColor: "#3e95cd",
@@ -324,13 +265,13 @@ function getColocacion() {
                     ]
                 },
                 {
-                    labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
-                    datasets: estadoGenerador()
+                    labels: dataTablas.meses,
+                    datasets: colocacionPorEstado()
                 },
                 {
                     labels: dataTablas.meses,
                     datasets: [{
-                        data: generadorPromedio(),
+                        data: colocacionPorAsesor(),
                         borderColor: "#007bff",
                         backgroundColor: "#007bff",
                         label: "Ventas de asesores por mes",
@@ -341,14 +282,14 @@ function getColocacion() {
                     labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
                     datasets: [
                         {
-                            data: arregloMNN[1],
+                            data: vsAsesor[1],
                             borderColor: "#3e95cd",
                             backgroundColor: "#3e95cd",
                             fill: false,
                             label: "Asesores MN"
                         },
                         {
-                            data: arregloMNN[0],
+                            data: vsAsesor[0],
                             borderColor: "#cc0d0d",
                             backgroundColor: "#cc0d0d",
                             fill: false,
@@ -356,7 +297,7 @@ function getColocacion() {
                         }
                     ]
                 }
-            ) */
+            )
 
         })
         .done(function () {
@@ -504,6 +445,7 @@ function declararCharts(data1, data2, data3, data4) {
                     stacked: true
                 }],
                 yAxes: [{
+                    stacked: true,
                     ticks: {
                         callback: function (label) {
                             return label + '%';

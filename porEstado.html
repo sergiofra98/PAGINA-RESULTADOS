@@ -27,7 +27,7 @@
     <form onsubmit="getColocacion()" class="form-group" id="consulta">
         <div class="row" style="border: none; text-align: center;">
             <div class="col">
-                <h3>Costo por Colocación</h3>
+                <h3>Costo por Estado</h3>
             </div>
         </div>
         <div class="row">
@@ -40,7 +40,7 @@
                 </div>
                 <select name="inputFecha" id="inputFecha" class="form-control">
 
-                </select>               
+                </select>
             </div>
             <div class="col-3">
                 <label for="mes">División<span class="rojo">*</span>: </label>
@@ -67,14 +67,16 @@
             </div>
             <div class="col-1">
                 <div id="alertaConsulta" class="alert alert-danger">
-                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Hubo un error al realizar la consulta, vea
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Hubo un error al realizar la consulta,
+                    vea
                     la consola para ver detalles.
                 </div>
                 <div id="alertaNoResultados" class="alert alert-warning">
                     <a class="close" onclick="cerrarAlerta(event)">&times;</a> La consulta no regresó resultados.
                 </div>
                 <div id="alertaValidacion" class="alert alert-warning">
-                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Debe llenar todos los datos para hacer una
+                    <a class="close" onclick="cerrarAlerta(event)">&times;</a> Debe llenar todos los datos para hacer
+                    una
                     consulta.
                 </div>
                 <button class="btn btn-primary" type="button" onclick="iniciarBusqueda()">Consultar</button>
@@ -92,90 +94,93 @@
         </div>
     </div>
 
-    <div class="row tabla" id="body">
-        <div class="col">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th id="tituloTabla" colspan="99">Colocación</th>
-                    </tr>
-                    <tr class="tablasHead">
+    <div class="cuerpo">
+        <div class="row tabla ">
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th id="tituloTabla" colspan="99">Colocación</th>
+                        </tr>
+                        <tr class="tablasHead">
 
-                    </tr>
-                </thead>
-                <tbody id="tablaColocacionBody">
-                </tbody>
-            </table>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th id="tituloTabla" colspan="99">Venta Promedio por Asesor</th>
-                    </tr>
-                    <tr class="tablasHead">
+                        </tr>
+                    </thead>
+                    <tbody id="tablaColocacionBody">
+                    </tbody>
+                </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th id="tituloTabla" colspan="99">Venta Promedio por Asesor</th>
+                        </tr>
+                        <tr class="tablasHead">
 
-                    </tr>
-                </thead>
-                <tbody id="tablaAsesorPromBody">
-                </tbody>
-            </table>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th id="tituloTabla" colspan="99">Plantilla de Asesores</th>
-                    </tr>
-                    <tr class="tablasHead">
+                        </tr>
+                    </thead>
+                    <tbody id="tablaAsesorPromBody">
+                    </tbody>
+                </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th id="tituloTabla" colspan="99">Plantilla de Asesores</th>
+                        </tr>
+                        <tr class="tablasHead">
 
-                    </tr>
-                </thead>
-                <tbody id="tablaAsesorBody">
-                </tbody>
-            </table>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th id="tituloTabla" colspan="99">Venta Promedio por Supervisores</th>
-                    </tr>
-                    <tr class="tablasHead">
+                        </tr>
+                    </thead>
+                    <tbody id="tablaAsesorBody">
+                    </tbody>
+                </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th id="tituloTabla" colspan="99">Venta Promedio por Supervisores</th>
+                        </tr>
+                        <tr class="tablasHead">
 
-                    </tr>
-                </thead>
-                <tbody id="tablaSupervisorPromBody">
-                </tbody>
-            </table>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th id="tituloTabla" colspan="99">Plantilla de Supervisores</th>
-                    </tr>
-                    <tr class="tablasHead">
+                        </tr>
+                    </thead>
+                    <tbody id="tablaSupervisorPromBody">
+                    </tbody>
+                </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th id="tituloTabla" colspan="99">Plantilla de Supervisores</th>
+                        </tr>
+                        <tr class="tablasHead">
 
-                    </tr>
-                </thead>
-                <tbody id="tablaSupervisorBody">
-                </tbody>
-            </table>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaSupervisorBody">
+                    </tbody>
+                </table>
 
 
 
-            </table>
+                </table>
+            </div>
+        </div>
+        <div class="row chart ">
+            <div class="col">
+                <canvas id="canvasGraficaColocacion" width="500" height="400"></canvas>
+            </div>
+            <div class="col">
+                <canvas id="canvasGraficaEstado" width="500" height="400"></canvas>
+            </div>
+        </div>
+        <div class="row chart ">
+            <div class="col">
+                <canvas id="canvasGraficaAsesor" width="500" height="400"></canvas>
+            </div>
+            <div class="col">
+                <canvas id="canvasGraficaMNBrokers" width="500" height="400"></canvas>
+            </div>
         </div>
     </div>
-    <div class="row chart" id="body">
-        <div class="col">
-            <canvas id="canvasGraficaColocacion" width="500" height="400"></canvas>
-        </div>
-        <div class="col">
-            <canvas id="canvasGraficaEstado" width="500" height="400"></canvas>
-        </div>
-    </div>
-    <div class="row chart" id="body">
-        <div class="col">
-            <canvas id="canvasGraficaAsesor" width="500" height="400"></canvas>
-        </div>
-        <div class="col">
-            <canvas id="canvasGraficaMNBrokers" width="500" height="400"></canvas>
-        </div>
-    </div>
+
 </body>
 
 </html>
