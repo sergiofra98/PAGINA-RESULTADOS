@@ -97,11 +97,6 @@ def consulta_convenio_colocacion():
     division = request.args.get('division')
     mes = request.args.get('mes')
     producto = request.args.get('producto')
-    if division == None:
-        # define consulta para toda las divisiones
-        print('No limita consulta por division')
-    if mes == None:
-        print('Limita a mes actual')  # define consulta para mes actual
 
     mes_numero = int(mes[4] + mes[5])
     anio = int(mes[0] + mes[1] + mes[2] + mes[3])
@@ -253,6 +248,9 @@ def consulta_convenio_colocacion():
         tempTotal['total_mes_aa'] += row[3]
         tempTotal['total_acu'] += row[4]
         tempTotal['total_acu_aa'] += row[5]
+    
+    if (not tempTotal['total_mes'] or not tempTotal['total_mes_aa'] or not tempTotal['total_acu'] or not tempTotal['total_acu_aa']):
+        return json.dumps({})
 
     if(tempTotal['total_acu_aa'] != 0):
         tempTotal['total_acu_comp_pct'] = '{:0,.1f}'.format(
@@ -316,11 +314,6 @@ def consulta_convenio_cartera():
     division = request.args.get('division')
     mes = request.args.get('mes')
     producto = request.args.get('producto')
-    if division == None:
-        # define consulta para toda las divisiones
-        print('No limita consulta por division')
-    if mes == None:
-        print('Limita a mes actual')  # define consulta para mes actual
 
     mes_numero = int(mes[4] + mes[5])
     anio = int(mes[0] + mes[1] + mes[2] + mes[3])
@@ -402,8 +395,6 @@ def consulta_convenio_cartera():
     query_convenio_cartera += """group by clave_corresponsal, razon_social
     ) mact_aa on mact_aa.clave_corresponsal = universo_1.clave_corresponsal
     order by 3 desc"""
-
-    print(query_convenio_cartera)
 
     lista_datos=obtener_datos(query_convenio_cartera, False, ())
 
@@ -545,11 +536,6 @@ def consulta_estado_colocacion():
     division=request.args.get('division')
     mes=request.args.get('mes')
     producto=request.args.get('producto')
-    if division == None:
-        # define consulta para toda las divisiones
-        print('No limita consulta por division')
-    if mes == None:
-        print('Limita a mes actual')  # define consulta para mes actual
 
     mes_numero =int(mes[4] + mes[5])
     anio =int(mes[0] + mes[1] + mes[2] + mes[3])
@@ -583,9 +569,9 @@ def consulta_estado_colocacion():
         query_asesor += "and s.division = " + division + " "
     query_asesor += "group by p.mes, s.estado order by p.mes, s.estado"
 
-    
-    #lista_estados_asesores.append(obtener_datos(query_asesor, False, ()))
-    #lista_estados_supervisores.append(obtener_datos(query_supervisor, False, ()))
+
+    lista_estados_asesores.append(obtener_datos(query_asesor, False, ()))
+    lista_estados_supervisores.append(obtener_datos(query_supervisor, False, ()))
 
     for i in range(13):
         no_mes=mes_numero - i
@@ -624,20 +610,15 @@ def consulta_estado_colocacion():
         if(int(division)):
             query_estado += "and c.division = " + division + " "
         query_estado += "group by s.estado order by 1"
-        print(query_estado)
-        #lista_estados_todos.append(obtener_datos(query_estado, False, ()))
-    
-
-    lista_estados_supervisores = [[(201708, u'GUANAJUATO', 1), (201708, u'GUERRERO', 1), (201708, u'HIDALGO', 1), (201708, u'PUEBLA', 1), (201709, u'GUANAJUATO', 1), (201709, u'GUERRERO', 1), (201709, u'HIDALGO', 1), (201709, u'PUEBLA', 1), (201710, u'GUANAJUATO', 1), (201710, u'GUERRERO', 1), (201710, u'HIDALGO', 1), (201710, u'PUEBLA', 1), (201711, u'GUANAJUATO', 1), (201711, u'GUERRERO', 2), (201711, u'HIDALGO', 1), (201711, u'PUEBLA', 1), (201712, u'GUANAJUATO', 1), (201712, u'GUERRERO', 2), (201712, u'HIDALGO', 1), (201712, u'PUEBLA', 1), (201801, u'GUANAJUATO', 1), (201801, u'GUERRERO', 3), (201801, u'HIDALGO', 1), (201801, u'PUEBLA', 2), (201801, u'QUERETARO', 1), (201802, u'GUANAJUATO', 1), (201802, u'GUERRERO', 2), (201802, u'HIDALGO', 1), (201802, u'PUEBLA', 2),(201802, u'QUERETARO', 1), (201803, u'GUANAJUATO', 1), (201803, u'GUERRERO', 3), (201803, u'HIDALGO', 1), (201803, u'MORELOS', 1), (201803, u'PUEBLA', 2), (201803, u'QUERETARO', 1), (201804, u'GUANAJUATO', 1), (201804, u'GUERRERO', 1), (201804, u'HIDALGO', 1), (201804, u'PUEBLA', 2), (201805, u'GUANAJUATO', 1), (201805, u'GUERRERO', 1), (201805, u'HIDALGO', 1), (201805, u'PUEBLA', 2), (201806, u'GUANAJUATO', 1), (201806, u'GUERRERO', 1), (201806, u'HIDALGO', 1), (201806, u'PUEBLA', 1), (201806, u'QUERETARO', 1), (201807, u'GUANAJUATO', 1), (201807, u'GUERRERO', 1), (201807, u'HIDALGO', 1), (201807, u'PUEBLA', 1), (201807, u'QUERETARO', 1), (201808, u'GUANAJUATO', 1), (201808, u'HIDALGO', 1), (201808, u'PUEBLA', 1), (201808, u'QUERETARO', 1)]]
-    lista_estados_asesores = [[(201708, u'GUANAJUATO', 4), (201708, u'GUERRERO', 7), (201708, u'HIDALGO', 4), (201708, u'PUEBLA', 6), (201709, u'GUANAJUATO', 3), (201709, u'GUERRERO', 7), (201709, u'HIDALGO', 4), (201709, u'PUEBLA', 6), (201710, u'GUANAJUATO', 3), (201710, u'GUERRERO', 6), (201710, u'HIDALGO', 4), (201710, u'PUEBLA', 6), (201711, u'GUANAJUATO', 4), (201711, u'GUERRERO', 4), (201711, u'HIDALGO', 4), (201711, u'PUEBLA', 7), (201712, u'GUANAJUATO', 3), (201712, u'GUERRERO', 7), (201712, u'HIDALGO', 4), (201712, u'PUEBLA', 6), (201801, u'GUANAJUATO', 3), (201801, u'GUERRERO', 10), (201801, u'HIDALGO', 7), (201801, u'PUEBLA', 4), (201801, u'QUERETARO', 1), (201802, u'GUANAJUATO', 3), (201802, u'GUERRERO', 9), (201802, u'HIDALGO', 6), (201802, u'PUEBLA', 4), (201802, u'QUERETARO', 2), (201803, u'GUANAJUATO', 3), (201803, u'GUERRERO', 9), (201803, u'HIDALGO', 6), (201803, u'PUEBLA', 5), (201803, u'QUERETARO', 1), (201804, u'GUANAJUATO', 4), (201804, u'GUERRERO', 14), (201804, u'HIDALGO', 7), (201804, u'PUEBLA', 5), (201804, u'QUERETARO', 1), (201805, u'GUANAJUATO', 4), (201805, u'GUERRERO', 12), (201805, u'HIDALGO', 6), (201805, u'PUEBLA', 5), (201806, u'GUANAJUATO', 3), (201806, u'GUERRERO', 9), (201806, u'HIDALGO', 5), (201806, u'PUEBLA', 7), (201807, u'GUANAJUATO', 5), (201807, u'GUERRERO', 8), (201807, u'HIDALGO', 7), (201807, u'PUEBLA', 7), (201807, u'QUERETARO', 2), (201808, u'GUANAJUATO', 4), (201808, u'GUERRERO', 4), (201808, u'HIDALGO', 5), (201808, u'PUEBLA', 7), (201808, u'QUERETARO', 3)]]
-    lista_estados_todos = [[(u'GUANAJUATO', 361089.9), (u'GUERRERO', 407834.77), (u'HIDALGO', 1090676.5), (u'PUEBLA', 557991.35), (u'QUERETARO', 3000.0)], [(u'GUANAJUATO', 70598.58), (u'GUERRERO', 315634.14999999997), (u'HIDALGO', 1318726.94), (u'PUEBLA', 447978.16000000003), (u'QUERETARO', 14110.41)], [(u'GUANAJUATO', 279147.12), (u'GUERRERO', 338513.51999999996), (u'HIDALGO', 876173.3700000001), (u'PUEBLA', 289155.83999999997)], [(u'GUANAJUATO', 213427.33000000002), (u'GUERRERO', 142262.44), (u'HIDALGO', 175715.41), (u'PUEBLA', 124423.28)], [(u'GUANAJUATO', 111408.23999999999), (u'GUERRERO', 309023.42), (u'HIDALGO', 245726.09), (u'PUEBLA', 292404.0)], [(u'GUANAJUATO', 164854.74), (u'GUERRERO', 504929.59), (u'HIDALGO', 308608.83999999997), (u'PUEBLA', 229127.36999999997)], [(u'GUANAJUATO', 210791.42), (u'GUERRERO', 557175.2), (u'HIDALGO', 490676.88999999996), (u'MORELOS', 21259.36), (u'PUEBLA', 115000.0)], [(u'GUANAJUATO', 87026.65), (u'GUERRERO', 299567.64), (u'HIDALGO', 404383.17000000004), (u'PUEBLA', 313290.46), (u'QUERETARO', 20000.0)], [(u'GUANAJUATO', 70432.44), (u'GUERRERO', 435856.07), (u'HIDALGO', 423029.62), (u'PUEBLA', 173043.28), (u'QUERETARO', 143277.47)], [(u'GUANAJUATO', 314691.26), (u'GUERRERO', 470866.89), (u'HIDALGO', 381345.91000000003), (u'MORELOS', 57000.0), (u'PUEBLA', 69000.0), (u'QUERETARO', 113546.27), (u'TLAXCALA', 29000.0)], [(u'GUANAJUATO', 114191.78), (u'GUERRERO', 234733.72), (u'HIDALGO', 399515.50999999995), (u'PUEBLA', 227048.63999999998), (u'QUERETARO', 184993.94)], [(u'GUANAJUATO', 109120.93999999999), (u'GUERRERO', 177000.0), (u'HIDALGO', 381426.97000000003), (u'PUEBLA', 221927.37), (u'QUERETARO', 156418.76)], [(u'GUANAJUATO', 160200.55), (u'GUERRERO', 305000.0), (u'HIDALGO', 180712.19), (u'PUEBLA', 55242.48), (u'QUERETARO', 480981.50125)]]
+        lista_estados_todos.append(obtener_datos(query_estado, False, ()))
         
     lista_estados_supervisores = arreglar_tablas(arreglar_tablas_empleados(lista_estados_supervisores, mes_numero, anio), mes_numero)
     lista_estados_asesores =arreglar_tablas(arreglar_tablas_empleados(lista_estados_asesores, mes_numero, anio), mes_numero)
     lista_estados_todos = arreglar_tablas(lista_estados_todos, mes_numero)
     lista_promedio_asesores = formatear_dinero(calcular_promedios(lista_estados_todos, lista_estados_asesores))
     lista_promedio_supervisores = formatear_dinero(calcular_promedios(lista_estados_todos, lista_estados_supervisores))
- 
+
+
     lista_retorno['estados'] = formatear_dinero(lista_estados_todos)
     lista_retorno['lista_supervisores'] = lista_estados_supervisores
     lista_retorno['lista_asesores'] = lista_estados_asesores
@@ -672,7 +653,7 @@ def arreglar_tablas(arregloInicial, contador_mes):
         totalA = 0
         totalAA = 0
         retorno[i] = []
-        retorno[i].append(arregloInicial[i][i][0])
+        retorno[i].append(arregloInicial[0][i][0])
         for j in range(13):
             if(j < contador_mes):
                 totalA +=arregloInicial[j][i][1]
@@ -754,11 +735,6 @@ def costos_colocacion():
     division = request.args.get('division')
     mes = request.args.get('mes')
     producto = request.args.get('producto')
-    if division == None:
-        # define consulta para toda las divisiones
-        print('No limita consulta por division')
-    if mes == None:
-        print('Limita a mes actual')  # define consulta para mes actual
 
     # SE SEPARA LA FECHA EN SUS RESPECTIVAS PARTES
     mes_numero = int(mes[4] + mes[5])
@@ -778,7 +754,7 @@ def costos_colocacion():
     round(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) as pct_total
     from BUO_Masnomina.costo_colocacion_hist col,
     (
-    select  sum(monto_dispuesto) as colocacion
+    select  ifnull(sum(monto_dispuesto),0) as colocacion
     from BUO_Masnomina.contratos_hist   
     where 1 = 1 
     /* aqui va el rango del mes seleccionado */ """
@@ -828,7 +804,7 @@ def costos_colocacion():
         query02 += "and col.division = " + division + " "
     query02 += """) acum,
     (
-    select sum(contratos.monto_dispuesto) as colocacion
+    select ifnull(sum(contratos.monto_dispuesto),0) as colocacion
     from (
         select distinct contrato, monto_dispuesto
         from BUO_Masnomina.contratos_hist 
@@ -859,7 +835,7 @@ def costos_colocacion():
         lista_mes = [	['Colocación',  '$ {:0,.2f}'.format(lista_mes[0][0]), '%'],
                       ['Comisiones',  '$ {:0,.2f}'.format(
                           lista_mes[0][1]), '{:0,.2f}%'.format(lista_mes[0][9])],
-                      ['Sueldos fijo',  '$ {:0,.2f}%'.format(
+                      ['Sueldos fijo',  '$ {:0,.2f}'.format(
                           lista_mes[0][2]), '{:0,.2f}%'.format(lista_mes[0][10])],
                       ['Carga social + aguinaldo',  '$ {:0,.2f}'.format(
                           lista_mes[0][3]), '{:0,.2f}%'.format(lista_mes[0][11])],
@@ -879,7 +855,7 @@ def costos_colocacion():
         lista_acumulado = [	['Colocación',  '$ {:0,.2f}'.format(lista_acumulado[0][0]), '%'],
                             ['Comisiones',  '$ {:0,.2f}'.format(
                                 lista_acumulado[0][1]), '{:0,.2f}%'.format(lista_acumulado[0][9])],
-                            ['Sueldos fijo',  '$ {:0,.2f}%'.format(
+                            ['Sueldos fijo',  '$ {:0,.2f}'.format(
                                 lista_acumulado[0][2]), '{:0,.2f}%'.format(lista_acumulado[0][10])],
                             ['Carga social + aguinaldo',  '$ {:0,.2f}'.format(
                                 lista_acumulado[0][3]), '{:0,.2f}%'.format(lista_acumulado[0][11])],
@@ -900,14 +876,13 @@ def costos_colocacion():
 
     lista_costo = []
 
+    temp01 = []
+    temp02 = []
+
     for i in range(mes_numero):
         i += 1
         # SE GeNErA EL QUERY
-        query03 = """select
-        round(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) as pct_total
-        from BUO_Masnomina.costo_colocacion_hist col,
-        (
-        select  sum(monto_dispuesto) as colocacion
+        query03 = """select  sum(monto_dispuesto) as colocacion
         from BUO_Masnomina.contratos_hist 
         where 1 = 1 """
         if(i == 12):
@@ -922,14 +897,22 @@ def costos_colocacion():
             query03 += "and division = " + division + " "
         if(producto != "0"):
             query03 += "and producto = '" + producto + "' "
-        query03 += ") colmen where 1 = 1 "
-        query03 += "and col.mes = " + str(anio) + formatear_no_mes(i) + " "
+        
+        query04 = """select
+        sum(col.comisiones) + sum(col.sueldo_fijo) + sum(col.carga_social_aguinaldo) + sum(col.viaticos) + sum(col.gasolina) + sum(col.costos_autos) + sum(col.rentas)      
+        from BUO_Masnomina.costo_colocacion_hist col
+        where 1 = 1 """
+        query04 += "and mes = " + str(anio) + formatear_no_mes(i) + " "
         if(int(division)):
-            query03 += "and col.division = " + division
+            query04 += "and division = " + division + " "
 
-        # SE HACE LA CONSULTA
-        lista_costo.append([lista_meses[i-1] + ' ' + mes[0] + mes[1] +
-                           mes[2] + mes[3], obtener_datos(query03, False, ())])
+
+        temp01.append(obtener_datos(query03, False, ()))
+        temp02.append(obtener_datos(query04, False, ()))
+
+    for i in range(len(temp01)):
+        lista_costo.append([lista_meses[i] + ' ' + mes[0] + mes[1] +
+                                mes[2] + mes[3], '{:0,.2f}'.format((temp02[i][0][0]*100)/temp01[i][0][0])])
     
     if(lista_costo):
         for i in range(12 - mes_numero):
@@ -945,7 +928,6 @@ def costos_colocacion():
         lista_resultado['resultado_acumulado'] = lista_acumulado
         lista_resultado['resultado_costo'] = lista_costo
 
-    print(lista_resultado)
     return json.dumps(lista_resultado)
 
 """

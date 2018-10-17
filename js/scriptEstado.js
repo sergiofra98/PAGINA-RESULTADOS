@@ -104,7 +104,10 @@ function getColocacion() {
                 append += '<tr>'
                 append += '<td>' + dataTablas.lista_asesores_promedio[i][0] + '</td>';
                 for (j = 1; j < 17; j++) {
-                    num = parseFloat(dataTablas.lista_asesores_promedio[i][j].replace(/,/g, ''))
+                    if(dataTablas.lista_asesores_promedio[i][j] != undefined)
+                        num = parseFloat(dataTablas.lista_asesores_promedio[i][j].replace(/,/g, ''));
+                    else    
+                        num = 0;
                     if (num > 120000) {
                         append += '<td class="bueno">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
                     }
@@ -196,9 +199,6 @@ function getColocacion() {
                         fill: false
                     })
                 }
-
-                console.log(retorno)
-
                 return retorno
             }
 
@@ -240,7 +240,6 @@ function getColocacion() {
                     }
 
                 }
-                console.log(resultado)
                 return resultado
             }
 

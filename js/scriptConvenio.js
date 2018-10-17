@@ -71,8 +71,9 @@ function getColocacion() {
 
     $.getJSON(linkREST + "consulta_convenio_cartera",
         {
-            division: $("#inputDivision").val(),
-            mes: $('#inputAno').val() + $('#inputMes').val()
+            mes: $('#inputFecha').val(),
+            division: $('#inputDivision').val(),
+            producto: $('#inputProducto').val()
         },
         function (dataTablas) {
 
@@ -104,8 +105,8 @@ function getColocacion() {
                     '<td class="colObscuro numero"> ' + dataTablas.cartera[i].total_mes + '</td>' +
                     '<td class="numero"> ' + dataTablas.cartera[i].total_mes_vs_ma + '</td>' +
                     '<td class="colObscuro ' + dataTablas.cartera[i].colorMA + '" style="border-right:#535353 solid 2px;">' + dataTablas.cartera[i].total_mes_vs_ma_pct + '</td>' +
-                    '<td class="numero"> ' + dataTablas.cartera[i].total_mes + '</td>' +
-                    '<td class="colObscuro numero"> ' + dataTablas.cartera[i].total_maa + '</td>' +
+                    '<td class="numero"> ' + dataTablas.cartera[i].total_maa + '</td>' +
+                    '<td class="colObscuro numero"> ' + dataTablas.cartera[i].total_mes + '</td>' +
                     '<td  class="numero"> ' + dataTablas.cartera[i].total_mes_vs_maa + '</td>' +
                     '<td class="colObscuro ' + dataTablas.cartera[i].colorMAA + '">' + dataTablas.cartera[i].total_mes_vs_maa_pct + '</td>' +
                     '</tr>';
