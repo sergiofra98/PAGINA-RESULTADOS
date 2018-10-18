@@ -741,23 +741,12 @@ def costos_colocacion():
     anio = int(mes[0] + mes[1] + mes[2] + mes[3])
 
     # SE GENERA EL PRIMER QUERYYY
-    query01 = """select colmen.colocacion, 
-    col.comisiones, col.sueldo_fijo, col.carga_social_aguinaldo, col.viaticos, col.gasolina, col.costos_autos, col.rentas,
-    (col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) as total,
-    round((col.comisiones / colmen.colocacion) * 100,2) as pct_comisiones,
-    round((col.sueldo_fijo / colmen.colocacion) * 100,2) as pct_sueldo_fijo,
-    round((col.carga_social_aguinaldo / colmen.colocacion) * 100,2) as pct_carga_social_aguinaldo,
-    round((col.viaticos / colmen.colocacion) * 100,2) as pct_viaticos,
-    round((col.gasolina / colmen.colocacion) * 100,2) as pct_gasolina,
-    round((col.costos_autos / colmen.colocacion) * 100,2) as pct_costos_autos,
-    round((col.rentas / colmen.colocacion) * 100,2) as pct_rentas,
-    round(((col.comisiones + col.sueldo_fijo + col.carga_social_aguinaldo + col.viaticos + col.gasolina + col.costos_autos + col.rentas) / colmen.colocacion) * 100,2) as pct_total
-    from BUO_Masnomina.costo_colocacion_hist col,
-    (
-    select  ifnull(sum(monto_dispuesto),0) as colocacion
+
+    ##PRIMERO QUE NADA SE SACA EL TOTAL ACUmULADO
+
+    query01 = """select  sum(monto_dispuesto) as colocacion
     from BUO_Masnomina.contratos_hist   
-    where 1 = 1 
-    /* aqui va el rango del mes seleccionado */ """
+    where 1 = 1 """
     query01 += "and fecha_disposicion >= '" + \
         str(anio) + "-" + formatear_no_mes(mes_numero) + "-01' "
     if(mes_numero == 12):
@@ -765,50 +754,31 @@ def costos_colocacion():
     else:
         query01 += "and fecha_disposicion < '" + \
             str(anio) + "-" + formatear_no_mes(mes_numero+1) + "-01' "
-
     query01 += "and mes = " + mes + " "
     if(int(division)):
         query01 += "and division = " + division + " "
     if(producto != "0"):
         query01 += "and producto = '" + producto + "' "
-    query01 += """ ) colmen
-    where 1 = 1
-    /* mes seleccionado */"""
-    query01 += " and col.mes = " + mes + "  "
+
+    totalColocacion = obtener_datos(query01, False, ())[0][0]
+
+    query01 = "select   " + str(totalColocacion) + ", "
+    query01 += """sum(col.comisiones), sum(col.sueldo_fijo), sum(col.carga_social_aguinaldo), sum(col.viaticos), sum(col.gasolina), sum(col.costos_autos), sum(col.rentas),
+    (sum(col.comisiones) + sum(col.sueldo_fijo) + sum(col.carga_social_aguinaldo) + sum(col.viaticos) + sum(col.gasolina) + sum(col.costos_autos) + sum(col.rentas)) as total
+    from BUO_Masnomina.costo_colocacion_hist col
+    where 1 = 1 """
+    query01 += "and col.mes = " + mes + " "
     if(int(division)):
         query01 += " and col.division = " + division
 
     # SE ESCRIBE EL SEGUndO QUERY
 
-    query02 = """select col_acum.colocacion, 
-    acum.comisiones, acum.sueldo_fijo, acum.carga_social_aguinaldo, acum.viaticos, acum.gasolina, acum.costos_autos, acum.rentas,
-    acum.total,
-    round((acum.comisiones / col_acum.colocacion) * 100,2) as pct_comisiones,
-    round((acum.sueldo_fijo / col_acum.colocacion) * 100,2) as pct_sueldo_fijo,
-    round((acum.carga_social_aguinaldo / col_acum.colocacion) * 100,2) as pct_carga_social_aguinaldo,
-    round((acum.viaticos / col_acum.colocacion) * 100,2) as pct_viaticos,
-    round((acum.gasolina / col_acum.colocacion) * 100,2) as pct_gasolina,
-    round((acum.costos_autos / col_acum.colocacion) * 100,2) as pct_costos_autos,
-    round((acum.rentas / col_acum.colocacion) * 100,2) as pct_rentas,
-    round(((acum.total) / col_acum.colocacion) * 100,2) as pct_total
-    from
-    (
-    select  sum(col.comisiones) as comisiones , sum(col.sueldo_fijo) as sueldo_fijo, sum(col.carga_social_aguinaldo) as carga_social_aguinaldo, 
-            sum(col.viaticos) as viaticos, sum(col.gasolina) as gasolina, sum(col.costos_autos) as costos_autos, sum(col.rentas) as rentas, 
-            sum(col.comisiones) + sum(col.sueldo_fijo) + sum(col.carga_social_aguinaldo) + 
-            sum(col.viaticos) + sum(col.gasolina) + sum(col.costos_autos) + sum(col.rentas) as total        
-    from BUO_Masnomina.costo_colocacion_hist col
-    where 1 = 1 """
-    query02 += "and col.mes >= " + str(anio) + "01 and col.mes < " + mes + "  "
-    if(int(division)):
-        query02 += "and col.division = " + division + " "
-    query02 += """) acum,
-    (
-    select ifnull(sum(contratos.monto_dispuesto),0) as colocacion
+    ## SE SACA EL ACUMULADO 
+
+    query02 = """select sum(contratos.monto_dispuesto) as colocacion
     from (
         select distinct contrato, monto_dispuesto
-        from BUO_Masnomina.contratos_hist 
-        /* aqui va el rango de enero al mes seleccionado */ """
+        from BUO_Masnomina.contratos_hist """
     if(mes_numero == 12):
         query02 += "where fecha_disposicion >= '" + \
             str(anio) + "-01-01' and fecha_disposicion < '" + \
@@ -817,58 +787,69 @@ def costos_colocacion():
         query02 += "where fecha_disposicion >= '" + \
             str(anio) + "-01-01' and fecha_disposicion < '" + str(anio) + \
             "-" + formatear_no_mes(mes_numero + 1) + "-01' "
-
-    query02 += "and mes >= " + str(anio) + "01 and mes < " + mes + " "
-
+    query02 += "and mes >= " + str(anio) + "01 and mes <= " + mes + "  "
     if(int(division)):
         query02 += "and division = " + division + " "
     if(producto != "0"):
         query02 += "and producto = '" + producto + "' "
-    query02 += """ ) contratos
-    ) col_acum """
+    query02 += " ) contratos"
 
+    totalAcumulado = obtener_datos(query02, False, ())[0][0]
+
+    query02 = "select  " + str(totalAcumulado) + ", "
+    query02 += """sum(col.comisiones), sum(col.sueldo_fijo), sum(col.carga_social_aguinaldo), sum(col.viaticos), sum(col.gasolina), sum(col.costos_autos), sum(col.rentas),
+    (sum(col.comisiones) + sum(col.sueldo_fijo) + sum(col.carga_social_aguinaldo) + sum(col.viaticos) + sum(col.gasolina) + sum(col.costos_autos) + sum(col.rentas)) as total
+    from BUO_Masnomina.costo_colocacion_hist col
+    where 1 = 1 """
+    query02 += "and col.mes >= " + str(anio) + "01 and col.mes <= " + mes + " "
+    if(int(division)):
+        query02 += "and col.division = " + division + " "
+    
     lista_mes = obtener_datos(query01, False, ())
 
     lista_acumulado = obtener_datos(query02, False, ())
 
+    print(lista_mes)
+    print(lista_acumulado)
+
     if(len(lista_mes)):
         lista_mes = [	['Colocación',  '$ {:0,.2f}'.format(lista_mes[0][0]), '%'],
                       ['Comisiones',  '$ {:0,.2f}'.format(
-                          lista_mes[0][1]), '{:0,.2f}%'.format(lista_mes[0][9])],
+                          lista_mes[0][1]), '{:0,.2f}%'.format((lista_mes[0][1]*100)/lista_mes[0][0])],
                       ['Sueldos fijo',  '$ {:0,.2f}'.format(
-                          lista_mes[0][2]), '{:0,.2f}%'.format(lista_mes[0][10])],
+                          lista_mes[0][2]), '{:0,.2f}%'.format((lista_mes[0][2]*100)/lista_mes[0][0])],
                       ['Carga social + aguinaldo',  '$ {:0,.2f}'.format(
-                          lista_mes[0][3]), '{:0,.2f}%'.format(lista_mes[0][11])],
+                          lista_mes[0][3]), '{:0,.2f}%'.format((lista_mes[0][3]*100)/lista_mes[0][0])],
                       ['Viáticos',  '$ {:0,.2f}'.format(
-                          lista_mes[0][4]), '{:0,.2f}%'.format(lista_mes[0][12])],
+                          lista_mes[0][4]), '{:0,.2f}%'.format((lista_mes[0][4]*100)/lista_mes[0][0])],
                       ['Gasolina',  '$ {:0,.2f}'.format(
-                          lista_mes[0][5]), '{:0,.2f}%'.format(lista_mes[0][13])],
+                          lista_mes[0][5]), '{:0,.2f}%'.format((lista_mes[0][5]*100)/lista_mes[0][0])],
                       ['Costo autos',  '$ {:0,.2f}'.format(
-                          lista_mes[0][6]), '{:0,.2f}%'.format(lista_mes[0][14])],
+                          lista_mes[0][6]), '{:0,.2f}%'.format((lista_mes[0][6]*100)/lista_mes[0][0])],
                       ['Rentas',  '$ {:0,.2f}'.format(
-                          lista_mes[0][7]), '{:0,.2f}%'.format(lista_mes[0][15])],
+                          lista_mes[0][7]), '{:0,.2f}%'.format((lista_mes[0][7]*100)/lista_mes[0][0])],
                       ['TOTAL',  '$ {:0,.2f}'.format(
-                          lista_mes[0][8]), '{:0,.2f}%'.format(lista_mes[0][16])]
+                          lista_mes[0][8]), '{:0,.2f}%'.format((lista_mes[0][8]*100)/lista_mes[0][0])]
                       ]
 
     if(lista_acumulado[0][0] != None):
         lista_acumulado = [	['Colocación',  '$ {:0,.2f}'.format(lista_acumulado[0][0]), '%'],
                             ['Comisiones',  '$ {:0,.2f}'.format(
-                                lista_acumulado[0][1]), '{:0,.2f}%'.format(lista_acumulado[0][9])],
+                                lista_acumulado[0][1]), '{:0,.2f}%'.format((lista_acumulado[0][1]*100)/lista_acumulado[0][0])],
                             ['Sueldos fijo',  '$ {:0,.2f}'.format(
-                                lista_acumulado[0][2]), '{:0,.2f}%'.format(lista_acumulado[0][10])],
+                                lista_acumulado[0][2]), '{:0,.2f}%'.format((lista_acumulado[0][2]*100)/lista_acumulado[0][0])],
                             ['Carga social + aguinaldo',  '$ {:0,.2f}'.format(
-                                lista_acumulado[0][3]), '{:0,.2f}%'.format(lista_acumulado[0][11])],
+                                lista_acumulado[0][3]), '{:0,.2f}%'.format((lista_acumulado[0][3]*100)/lista_acumulado[0][0])],
                             ['Viáticos',  '$ {:0,.2f}'.format(
-                                lista_acumulado[0][4]), '{:0,.2f}%'.format(lista_acumulado[0][12])],
+                                lista_acumulado[0][4]), '{:0,.2f}%'.format((lista_acumulado[0][4]*100)/lista_acumulado[0][0])],
                             ['Gasolina',  '$ {:0,.2f}'.format(
-                                lista_acumulado[0][5]), '{:0,.2f}%'.format(lista_acumulado[0][13])],
+                                lista_acumulado[0][5]), '{:0,.2f}%'.format((lista_acumulado[0][5]*100)/lista_acumulado[0][0])],
                             ['Costo autos',  '$ {:0,.2f}'.format(
-                                lista_acumulado[0][6]), '{:0,.2f}%'.format(lista_acumulado[0][14])],
+                                lista_acumulado[0][6]), '{:0,.2f}%'.format((lista_acumulado[0][6]*100)/lista_acumulado[0][0])],
                             ['Rentas',  '$ {:0,.2f}'.format(
-                                lista_acumulado[0][7]), '{:0,.2f}%'.format(lista_acumulado[0][15])],
+                                lista_acumulado[0][7]), '{:0,.2f}%'.format((lista_acumulado[0][7]*100)/lista_acumulado[0][0])],
                             ['TOTAL',  '$ {:0,.2f}'.format(
-                                lista_acumulado[0][8]), '{:0,.2f}%'.format(lista_acumulado[0][16])]
+                                lista_acumulado[0][8]), '{:0,.2f}%'.format((lista_acumulado[0][8]*100)/lista_acumulado[0][0])]
                             ]
 
     lista_meses = [	'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul',
