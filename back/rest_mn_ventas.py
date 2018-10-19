@@ -535,7 +535,6 @@ def juntar_tablas(arregloInicial):
 def consulta_estado_colocacion():
     division=request.args.get('division')
     mes=request.args.get('mes')
-    producto=request.args.get('producto')
 
     mes_numero =int(mes[4] + mes[5])
     anio =int(mes[0] + mes[1] + mes[2] + mes[3])
@@ -552,7 +551,8 @@ def consulta_estado_colocacion():
     query_supervisor="""select p.mes, s.estado, count(*)
     from BUO_Masnomina.masnomina_plantilla p
     left join BUO_Masnomina.masnomina_sucursales s on s.sucursal = p.sucursal
-    where 1 = 1 and  
+    where 1 = 1 
+    and s.estado is not null and 
     p.puesto = 'SUPERVISOR COMERCIAL MAS NOMINA' """
     query_supervisor += "and p.mes >= "+ str(anio-1) + formatear_no_mes(mes_numero) +" and p.mes <= "+ str(anio) + formatear_no_mes(mes_numero) +" "
     if(int(division)):
@@ -563,7 +563,8 @@ def consulta_estado_colocacion():
     from BUO_Masnomina.masnomina_plantilla p
     left join BUO_Masnomina.masnomina_sucursales s on s.sucursal = p.sucursal
     where 1 = 1 and  
-    p.puesto = 'ASESOR MAS NOMINA' """
+    p.puesto = 'ASESOR MAS NOMINA' 
+    and s.estado is not null """
     query_asesor += "and p.mes >= "+ str(anio-1) + formatear_no_mes(mes_numero) +" and p.mes <= "+ str(anio) + formatear_no_mes(mes_numero) +" "
     if(int(division)):
         query_asesor += "and s.division = " + division + " "
@@ -572,6 +573,11 @@ def consulta_estado_colocacion():
 
     lista_estados_asesores.append(obtener_datos(query_asesor, False, ()))
     lista_estados_supervisores.append(obtener_datos(query_supervisor, False, ()))
+    print(lista_estados_asesores)
+    print(lista_estados_supervisores)
+    
+    if(len(lista_estados_asesores[0]) == 0 or len(lista_estados_supervisores[0]) == 0):
+        return json.dumps({})
 
     for i in range(13):
         no_mes=mes_numero - i
@@ -590,7 +596,8 @@ def consulta_estado_colocacion():
         query_estado="""select s.estado, sum(c.monto_dispuesto) as monto
         from BUO_Masnomina.contratos_hist c
         left join BUO_Masnomina.masnomina_sucursales s on s.sucursal = c.sucursal
-        where 1 = 1 """
+        where 1 = 1 
+        and s.estado is not null """
         if(sobreflujo):
             if(no_mes == 0):
                 query_estado += "and c.fecha_disposicion >= '" + \
@@ -611,6 +618,7 @@ def consulta_estado_colocacion():
             query_estado += "and c.division = " + division + " "
         query_estado += "group by s.estado order by 1"
         lista_estados_todos.append(obtener_datos(query_estado, False, ()))
+        print(query_estado)
         
     lista_estados_supervisores = arreglar_tablas(arreglar_tablas_empleados(lista_estados_supervisores, mes_numero, anio), mes_numero)
     lista_estados_asesores =arreglar_tablas(arreglar_tablas_empleados(lista_estados_asesores, mes_numero, anio), mes_numero)
@@ -757,8 +765,6 @@ def costos_colocacion():
     query01 += "and mes = " + mes + " "
     if(int(division)):
         query01 += "and division = " + division + " "
-    if(producto != "0"):
-        query01 += "and producto = '" + producto + "' "
 
     totalColocacion = obtener_datos(query01, False, ())[0][0]
 
@@ -790,8 +796,6 @@ def costos_colocacion():
     query02 += "and mes >= " + str(anio) + "01 and mes <= " + mes + "  "
     if(int(division)):
         query02 += "and division = " + division + " "
-    if(producto != "0"):
-        query02 += "and producto = '" + producto + "' "
     query02 += " ) contratos"
 
     totalAcumulado = obtener_datos(query02, False, ())[0][0]
@@ -809,10 +813,7 @@ def costos_colocacion():
 
     lista_acumulado = obtener_datos(query02, False, ())
 
-    print(lista_mes)
-    print(lista_acumulado)
-
-    if(len(lista_mes)):
+    if(lista_mes[0][1] != None or lista_acumulado[0][1] != None ):
         lista_mes = [	['Colocación',  '$ {:0,.2f}'.format(lista_mes[0][0]), '%'],
                       ['Comisiones',  '$ {:0,.2f}'.format(
                           lista_mes[0][1]), '{:0,.2f}%'.format((lista_mes[0][1]*100)/lista_mes[0][0])],
@@ -832,7 +833,6 @@ def costos_colocacion():
                           lista_mes[0][8]), '{:0,.2f}%'.format((lista_mes[0][8]*100)/lista_mes[0][0])]
                       ]
 
-    if(lista_acumulado[0][0] != None):
         lista_acumulado = [	['Colocación',  '$ {:0,.2f}'.format(lista_acumulado[0][0]), '%'],
                             ['Comisiones',  '$ {:0,.2f}'.format(
                                 lista_acumulado[0][1]), '{:0,.2f}%'.format((lista_acumulado[0][1]*100)/lista_acumulado[0][0])],
@@ -852,64 +852,65 @@ def costos_colocacion():
                                 lista_acumulado[0][8]), '{:0,.2f}%'.format((lista_acumulado[0][8]*100)/lista_acumulado[0][0])]
                             ]
 
-    lista_meses = [	'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul',
-                    'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+        lista_meses = [	'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul',
+                        'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 
-    lista_costo = []
+        lista_costo = []
 
-    temp01 = []
-    temp02 = []
+        temp01 = []
+        temp02 = []
 
-    for i in range(mes_numero):
-        i += 1
-        # SE GeNErA EL QUERY
-        query03 = """select  sum(monto_dispuesto) as colocacion
-        from BUO_Masnomina.contratos_hist 
-        where 1 = 1 """
-        if(i == 12):
-            query03 += "and fecha_disposicion >= '" + \
-                str(anio) + "-12-01' and fecha_disposicion < '" + \
-                str(anio + 1) + "-01-01' "
-        else:
-            query03 += "and fecha_disposicion >= '" + str(anio) + "-" + formatear_no_mes(
-                i) + "-01' and fecha_disposicion < '" + str(anio) + "-" + formatear_no_mes(i + 1) + "-01' "
-        query03 += "and mes = " + str(anio) + formatear_no_mes(i) + " "
-        if(int(division)):
-            query03 += "and division = " + division + " "
-        if(producto != "0"):
-            query03 += "and producto = '" + producto + "' "
+        for i in range(mes_numero):
+            i += 1
+            # SE GeNErA EL QUERY
+            query03 = """select  sum(monto_dispuesto) as colocacion
+            from BUO_Masnomina.contratos_hist 
+            where 1 = 1 """
+            if(i == 12):
+                query03 += "and fecha_disposicion >= '" + \
+                    str(anio) + "-12-01' and fecha_disposicion < '" + \
+                    str(anio + 1) + "-01-01' "
+            else:
+                query03 += "and fecha_disposicion >= '" + str(anio) + "-" + formatear_no_mes(
+                    i) + "-01' and fecha_disposicion < '" + str(anio) + "-" + formatear_no_mes(i + 1) + "-01' "
+            query03 += "and mes = " + str(anio) + formatear_no_mes(i) + " "
+            if(int(division)):
+                query03 += "and division = " + division + " "
+            query04 = """select
+            sum(col.comisiones) + sum(col.sueldo_fijo) + sum(col.carga_social_aguinaldo) + sum(col.viaticos) + sum(col.gasolina) + sum(col.costos_autos) + sum(col.rentas)      
+            from BUO_Masnomina.costo_colocacion_hist col
+            where 1 = 1 """
+            query04 += "and mes = " + str(anio) + formatear_no_mes(i) + " "
+            if(int(division)):
+                query04 += "and division = " + division + " "
+
+
+            temp01.append(obtener_datos(query03, False, ()))
+            print(query03)
+            temp02.append(obtener_datos(query04, False, ()))
+
+        for i in range(len(temp01)):
+            lista_costo.append([lista_meses[i] + ' ' + mes[0] + mes[1] +
+                                    mes[2] + mes[3], '{:0,.2f}'.format((temp02[i][0][0]*100)/temp01[i][0][0])])
         
-        query04 = """select
-        sum(col.comisiones) + sum(col.sueldo_fijo) + sum(col.carga_social_aguinaldo) + sum(col.viaticos) + sum(col.gasolina) + sum(col.costos_autos) + sum(col.rentas)      
-        from BUO_Masnomina.costo_colocacion_hist col
-        where 1 = 1 """
-        query04 += "and mes = " + str(anio) + formatear_no_mes(i) + " "
-        if(int(division)):
-            query04 += "and division = " + division + " "
+        if(lista_costo):
+            for i in range(12 - mes_numero):
+                lista_costo.append([lista_meses[i + mes_numero] + ' ' + mes[0] + mes[1] +
+                                    mes[2] + mes[3], [0.0]])
+        
+        lista_resultado = {}
 
+        if(lista_acumulado[0][0] != None):
+            lista_resultado['nombre_mes'] = lista_meses[mes_numero - 1] + \
+                ' ' + mes[0] + mes[1] + mes[2] + mes[3]
+            lista_resultado['resultado_mes'] = lista_mes
+            lista_resultado['resultado_acumulado'] = lista_acumulado
+            lista_resultado['resultado_costo'] = lista_costo
 
-        temp01.append(obtener_datos(query03, False, ()))
-        temp02.append(obtener_datos(query04, False, ()))
-
-    for i in range(len(temp01)):
-        lista_costo.append([lista_meses[i] + ' ' + mes[0] + mes[1] +
-                                mes[2] + mes[3], '{:0,.2f}'.format((temp02[i][0][0]*100)/temp01[i][0][0])])
-    
-    if(lista_costo):
-        for i in range(12 - mes_numero):
-            lista_costo.append([lista_meses[i + mes_numero] + ' ' + mes[0] + mes[1] +
-                                mes[2] + mes[3], [0.0]])
-    
-    lista_resultado = {}
-
-    if(lista_acumulado[0][0] != None):
-        lista_resultado['nombre_mes'] = lista_meses[mes_numero - 1] + \
-            ' ' + mes[0] + mes[1] + mes[2] + mes[3]
-        lista_resultado['resultado_mes'] = lista_mes
-        lista_resultado['resultado_acumulado'] = lista_acumulado
-        lista_resultado['resultado_costo'] = lista_costo
-
-    return json.dumps(lista_resultado)
+        return json.dumps(lista_resultado)
+    else:
+        return json.dumps({})
+        
 
 """
 

@@ -3,18 +3,18 @@
 }
 
 table tbody tr td:last-of-type{
-    background-color: #e2e2f1;
+    background-color: #c8c8de;
     color: black;
 }
 
 table tbody tr td:nth-last-of-type(2){
-    background-color: #f8f8ff;
+    background-color: #dee2e6;
     color: black;
 
 }
 
 table tbody tr td:nth-last-of-type(3){
-    background-color: #f8f8ff;
+    background-color: #dee2e6;
     color: black;
 
 }

@@ -12,6 +12,7 @@ function getColocacion() {
     $('#tablaConvenioRow').css("display", "none");
     $('#tablaCarteraRow').css("display", "none");
 
+    $('#btnConsulta').attr('disabled', true)
 
     if (graficaColocacion)
         graficaColocacion.destroy();
@@ -29,6 +30,7 @@ function getColocacion() {
                 $('#loading').css("display", "none");
                 $('#landing').css("display", "flex");
                 $('.cuerpo, #titulo').css("display", "none");
+                $('#btnConsulta').attr('disabled', false)
                 return;
             }
             append = "";
@@ -118,11 +120,13 @@ function getColocacion() {
         })
         .done(function () {
             $('#loading').css("display", "none");
+            $('#btnConsulta').attr('disabled', false)
         })
         .fail(function (textStatus) {
             $('#alertaConsulta').css("display", "block");
             $('#loading').css("display", "none");
             $('#landing').css("display", "flex");
+            $('#btnConsulta').attr('disabled', false)
         });
 }
 

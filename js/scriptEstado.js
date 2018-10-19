@@ -34,18 +34,18 @@ function getColocacion() {
     $('#loading').css("display", "flex");
     $('.cuerpo, #titulo').css("display", "none");
 
+    $('#btnConsulta').attr('disabled', true)
+
     $.getJSON(linkREST + "consulta_estado_colocacion", {
         mes: $('#inputFecha').val(),
-        division: $('#inputDivision').val(),
-        producto: $('#inputProducto').val()
+        division: $('#inputDivision').val()
     },
         function (dataTablas) {
             console.log(dataTablas)
             if (jQuery.isEmptyObject(dataTablas)) {
                 $("#alertaNoResultados").css('display', 'block')
-                $('#loading').css("display", "none");
                 $('#landing').css("display", "flex");
-                $('.cuerpo, #titulo').css("display", "none");
+                $('.cuerpo').css("display", "none");          
                 return;
             }
 
@@ -297,17 +297,18 @@ function getColocacion() {
                     ]
                 }
             )
-
+            
+            $('.cuerpo, #titulo').css("display", "flex");
         })
         .done(function () {
-            $('#body, #titulo').css("display", "flex");
-            $('.cuerpo').css('display', 'block')
             $('#loading').css("display", "none");
+            $('#btnConsulta').attr('disabled', false)
         })
         .fail(function (textStatus) {
             $('#loading').css("display", "none");
             $('#landing').css("display", "flex");
             $("#alertaConsulta").css('display', 'block');
+            $('#btnConsulta').attr('disabled', false)
         });
 }
 
@@ -447,7 +448,7 @@ function declararCharts(data1, data2, data3, data4) {
                     stacked: true,
                     ticks: {
                         callback: function (label) {
-                            return label + '%';
+                            return label.toFixed(2) + '%';
                         }
                     },
                     scaleLabel: {

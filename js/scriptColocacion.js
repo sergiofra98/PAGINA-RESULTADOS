@@ -16,6 +16,7 @@ function getColocacion() {
     $('#landing').css("display", "none");
     $('#loading').css("display", "flex");
 
+    $('#btnConsulta').attr('disabled', true)
     $.getJSON(linkREST + "costos_colocacion", {
         mes: $('#inputFecha').val(),
         division: $('#inputDivision').val(),
@@ -26,8 +27,8 @@ function getColocacion() {
             if (jQuery.isEmptyObject(dataTablas)) {
                 $("#alertaNoResultados").css('display', 'block')
                 $('#loading').css("display", "none");
-                $('#landing').css("display", "block");
-
+                $('#landing').css("display", "flex");
+                $('#btnConsulta').attr('disabled', false)
                 $('.cuerpo, #titulo').css("display", "none");
                 return;
             }
@@ -115,10 +116,12 @@ function getColocacion() {
         })
         .done(function () {
             $('#loading').css("display", "none");
+            $('#btnConsulta').attr('disabled', false)
         })
         .fail(function (textStatus) {
             $('#loading').css("display", "none");
             $("#alertaConsulta").css('display', 'block');
+            $('#btnConsulta').attr('disabled', false)
             console.log(textStatus)
         })
 }

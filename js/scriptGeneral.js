@@ -133,3 +133,13 @@ function iniciarBusqueda() {
         getColocacion()
     }
 }
+function iniciarBusquedaEstado() {
+    $(".alert").css('display', 'none')
+
+    if (!$('#inputFecha').val() || !$('#inputDivision').val()) {
+        $("#alertaValidacion").css('display', 'block')
+    }
+    else {
+        getColocacion()
+    }
+}
