@@ -58,8 +58,8 @@ def f_consulta_anios():
 
 @app.route(url_base+'/consulta_divisiones', methods=['GET'])
 def f_consulta_divisiones():
-    registros = consulta_divisiones()
-    return json.dumps(registros)
+    
+    return json.dumps(obtener_datos("""select * from BUO_Masnomina.masnomina_divisiones""", False, ()))
 
 
 # combo box de periodos

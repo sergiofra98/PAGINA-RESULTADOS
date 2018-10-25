@@ -3,8 +3,29 @@ var currentTime = new Date();
 var mes = currentTime.getMonth();
 var ano = currentTime.getFullYear();
 
-$(document).ready(function () {
+function obtenerDivisiones(){
+    $.getJSON(linkREST + "consulta_divisiones", {},
+        function (dataTablas) {
 
+            var append = '<option disabled="" hidden="" selected="" value="">Elija una opción</option>'
+            append += '<option value="0">TODAS</option>'
+
+            for(let i = 0; i < dataTablas.length; i++){
+                append += '<option value="' + dataTablas[i][0] +'">' + dataTablas[i][1] +'</option>'
+            }
+
+            $('#inputDivision').html(append)
+         })
+        .done(function () {
+        })
+        .fail(function (textStatus) {
+        });
+
+
+}
+
+$(document).ready(function () {
+    obtenerDivisiones()
 
     append = "<option hidden selected disabled>Elija un Periodo</option>";
     let i = 0
