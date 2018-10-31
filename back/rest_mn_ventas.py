@@ -752,7 +752,7 @@ def costos_colocacion():
 
     ##PRIMERO QUE NADA SE SACA EL TOTAL ACUmULADO
 
-    query01 = """select  sum(monto_dispuesto) as colocacion
+    query01 = """select  ifnull(SUM(monto_dispuesto), 0) AS colocacion
     from BUO_Masnomina.contratos_hist   
     where 1 = 1 """
     query01 += "and fecha_disposicion >= '" + \
@@ -766,7 +766,14 @@ def costos_colocacion():
     if(int(division)):
         query01 += "and division = " + division + " "
 
+    print('---------------------------')
+    print(query01)
+    print('---------------------------')
+
     totalColocacion = obtener_datos(query01, False, ())[0][0]
+
+    if(not totalColocacion):
+        return json.dumps({})
 
     query01 = "select   " + str(totalColocacion) + ", "
     query01 += """sum(col.comisiones), sum(col.sueldo_fijo), sum(col.carga_social_aguinaldo), sum(col.viaticos), sum(col.gasolina), sum(col.costos_autos), sum(col.rentas),
@@ -810,6 +817,8 @@ def costos_colocacion():
         query02 += "and col.division = " + division + " "
     
     lista_mes = obtener_datos(query01, False, ())
+
+    
 
     lista_acumulado = obtener_datos(query02, False, ())
 
