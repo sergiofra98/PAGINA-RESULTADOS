@@ -101,6 +101,9 @@ function getColocacion() {
             //SE PEGAN LAS TABLAS DE PROMEDIO DE ASESOR
             append = ''
             for (i = 0; i < dataTablas.lista_asesores_promedio.length; i++) {
+                if(dataTablas.lista_asesores_promedio[i].length == 0){
+                    break;
+                }
                 append += '<tr>'
                 append += '<td>' + dataTablas.lista_asesores_promedio[i][0] + '</td>';
                 for (j = 1; j < 17; j++) {
@@ -129,6 +132,9 @@ function getColocacion() {
 
 
             for (i = 0; i < dataTablas.lista_supervisores_promedio.length; i++) {
+                if(dataTablas.lista_supervisores_promedio[i].length == 0){
+                    break;
+                }
                 append += '<tr>'
                 append += '<td>' + dataTablas.lista_supervisores_promedio[i][0] + '</td>';
                 for (j = 1; j < 17; j++) {
