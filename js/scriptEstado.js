@@ -45,7 +45,7 @@ function getColocacion() {
             if (jQuery.isEmptyObject(dataTablas)) {
                 $("#alertaNoResultados").css('display', 'block')
                 $('#landing').css("display", "flex");
-                $('.cuerpo').css("display", "none");          
+                $('.cuerpo').css("display", "none");
                 return;
             }
 
@@ -101,27 +101,26 @@ function getColocacion() {
             //SE PEGAN LAS TABLAS DE PROMEDIO DE ASESOR
             append = ''
             for (i = 0; i < dataTablas.lista_asesores_promedio.length; i++) {
-                if(dataTablas.lista_asesores_promedio[i].length == 0){
-                    break;
+                if (dataTablas.lista_asesores_promedio[i].length != 0) {
+                    append += '<tr>'
+                    append += '<td>' + dataTablas.lista_asesores_promedio[i][0] + '</td>';
+                    for (j = 1; j < 17; j++) {
+                        if (dataTablas.lista_asesores_promedio[i][j] != undefined)
+                            num = parseFloat(dataTablas.lista_asesores_promedio[i][j].replace(/,/g, ''));
+                        else
+                            num = 0;
+                        if (num > 120000) {
+                            append += '<td class="bueno">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
+                        }
+                        else if (num < 80000) {
+                            append += '<td class="malo">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
+                        }
+                        else {
+                            append += '<td class="promedio">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
+                        }
+                    }
+                    append += '</tr>'
                 }
-                append += '<tr>'
-                append += '<td>' + dataTablas.lista_asesores_promedio[i][0] + '</td>';
-                for (j = 1; j < 17; j++) {
-                    if(dataTablas.lista_asesores_promedio[i][j] != undefined)
-                        num = parseFloat(dataTablas.lista_asesores_promedio[i][j].replace(/,/g, ''));
-                    else    
-                        num = 0;
-                    if (num > 120000) {
-                        append += '<td class="bueno">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
-                    }
-                    else if (num < 80000) {
-                        append += '<td class="malo">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
-                    }
-                    else {
-                        append += '<td class="promedio">' + dataTablas.lista_asesores_promedio[i][j] + '</td>';
-                    }
-                }
-                append += '</tr>'
             }
 
             $("#tablaAsesorPromBody").append(append);
@@ -132,24 +131,23 @@ function getColocacion() {
 
 
             for (i = 0; i < dataTablas.lista_supervisores_promedio.length; i++) {
-                if(dataTablas.lista_supervisores_promedio[i].length == 0){
-                    break;
+                if (dataTablas.lista_supervisores_promedio[i].length != 0) {
+                    append += '<tr>'
+                    append += '<td>' + dataTablas.lista_supervisores_promedio[i][0] + '</td>';
+                    for (j = 1; j < 17; j++) {
+                        num = parseFloat(dataTablas.lista_supervisores_promedio[i][j].replace(/,/g, ''))
+                        if (num > 120000) {
+                            append += '<td class="bueno">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
+                        }
+                        else if (num < 80000) {
+                            append += '<td class="malo">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
+                        }
+                        else {
+                            append += '<td class="promedio">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
+                        }
+                    }
+                    append += '</tr>'
                 }
-                append += '<tr>'
-                append += '<td>' + dataTablas.lista_supervisores_promedio[i][0] + '</td>';
-                for (j = 1; j < 17; j++) {
-                    num = parseFloat(dataTablas.lista_supervisores_promedio[i][j].replace(/,/g, ''))
-                    if (num > 120000) {
-                        append += '<td class="bueno">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
-                    }
-                    else if (num < 80000) {
-                        append += '<td class="malo">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
-                    }
-                    else {
-                        append += '<td class="promedio">' + dataTablas.lista_supervisores_promedio[i][j] + '</td>';
-                    }
-                }
-                append += '</tr>'
             }
 
             $("#tablaSupervisorPromBody").append(append);
@@ -303,7 +301,7 @@ function getColocacion() {
                     ]
                 }
             )
-            
+
             $('.cuerpo, #titulo').css("display", "flex");
         })
         .done(function () {
