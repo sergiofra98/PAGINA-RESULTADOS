@@ -248,6 +248,7 @@ function getColocacion() {
             }
 
             vsAsesor = AsesorVSSupervisor()
+           
             declararCharts(
                 {
                     labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'],
@@ -302,7 +303,7 @@ function getColocacion() {
                 }
             )
 
-            $('.cuerpo, #titulo').css("display", "flex");
+            $('.cuerpo, #titulo').css("display", "block");
         })
         .done(function () {
             $('#loading').css("display", "none");
